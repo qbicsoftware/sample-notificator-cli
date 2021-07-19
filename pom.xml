@@ -22,6 +22,7 @@
   <!-- we only need to tell maven where to find our parent pom and other QBiC
 		dependencies -->
   <repositories>
+    <!-- maven repository -->
     <repository>
       <releases>
         <enabled>true</enabled>
@@ -35,10 +36,54 @@
       <name>Maven central</name>
       <url>https://repo.maven.apache.org/maven2</url>
     </repository>
+    <!-- QBiC nexus repositories -->
+    <repository>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+        <checksumPolicy>fail</checksumPolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>nexus-releases</id>
+      <name>QBiC Releases</name>
+      <url>https://qbic-repo.qbic.uni-tuebingen.de/repository/maven-releases</url>
+    </repository>
+    <repository>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+        <checksumPolicy>fail</checksumPolicy>
+      </snapshots>
+      <id>nexus-snapshots</id>
+      <name>QBiC Snapshots</name>
+      <url>https://qbic-repo.qbic.uni-tuebingen.de/repository/maven-snapshots</url>
+    </repository>
   </repositories>
+
+  <distributionManagement>
+    <!-- QBiC nexus repositories -->
+    <repository>
+      <uniqueVersion>true</uniqueVersion>
+      <id>nexus-releases</id>
+      <name>QBiC Releases</name>
+      <url>https://qbic-repo.qbic.uni-tuebingen.de/repository/maven-releases</url>
+    </repository>
+    <snapshotRepository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>nexus-snapshots</id>
+      <name>QBiC Snapshots</name>
+      <url>https://qbic-repo.qbic.uni-tuebingen.de/repository/maven-snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
 
   <dependencyManagement>
     <dependencies>
+      <!-- Groovy dependencies -->
       <dependency>
         <groupId>org.codehaus.groovy</groupId>
         <artifactId>groovy-bom</artifactId>
@@ -52,6 +97,12 @@
         <version>2.0-groovy-3.0</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <!-- QBiC dependencies -->
+      <dependency>
+        <groupId>life.qbic</groupId>
+        <artifactId>data-model-lib</artifactId>
+        <version>2.10.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -75,6 +126,7 @@
       <artifactId>spock-core</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- QBiC dependencies -->
   </dependencies>
 
   <build>

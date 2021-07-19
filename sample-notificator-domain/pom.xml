@@ -11,9 +11,12 @@
 
   <artifactId>sample-notificator-domain</artifactId>
 
-  <properties>
-    <maven.compiler.source>8</maven.compiler.source>
-    <maven.compiler.target>8</maven.compiler.target>
-  </properties>
+  <dependencies>
+    <!-- QBiC dependencies -->
+    <dependency>
+      <groupId>life.qbic</groupId>
+      <artifactId>data-model-lib</artifactId>
+    </dependency>
+  </dependencies>
 
 </project>
