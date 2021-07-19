@@ -5,7 +5,7 @@ package life.qbic.business.notification.send
  *
  * <p><detailed description></p>
  *
- * @since <versiontag>
+ * @since 1.0.0
  */
 interface SendNotificationDataSource {
 

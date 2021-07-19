@@ -7,7 +7,7 @@ import spock.lang.Specification
  *
  * <p><detailed description></p>
  *
- * @since <versiontag>
+ * @since 1.0.0
  */
 class SubscribableSpec extends Specification {
 }
