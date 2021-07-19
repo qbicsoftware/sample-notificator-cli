@@ -1,3 +1,4 @@
+package life.qbic.samplenotificator
 /**
  * <b>Entry point to the sample notificator application</b>
  *
