@@ -7,4 +7,15 @@ package life.qbic.samplenotificator
  * @since 1.0.0
  */
 class EntryPoint {
+    public static void main(String[] args){
+        ConfigurationManager configurationManager = ConfigurationManagerFactory.getInstance()
+
+        String user = Objects.requireNonNull(configurationManager.getMysqlUser(), "Mysql user missing.")
+        String password = Objects.requireNonNull(configurationManager.getMysqlPass(), "Mysql password missing.")
+        String host = Objects.requireNonNull(configurationManager.getMysqlHost(), "Mysql host missing.")
+        String port = Objects.requireNonNull(configurationManager.getMysqlPort(), "Mysql port missing.")
+        String sqlDatabase = Objects.requireNonNull(configurationManager.getMysqlDB(), "Mysql database name missing.")
+
+        DatabaseSession.init(user, password, host, port, sqlDatabase)
+    }
 }
