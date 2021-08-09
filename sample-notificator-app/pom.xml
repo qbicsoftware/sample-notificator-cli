@@ -15,7 +15,28 @@
     <!-- QBiC dependencies -->
     <dependency>
       <groupId>life.qbic</groupId>
+      <artifactId>sample-notificator-domain</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>life.qbic</groupId>
       <artifactId>data-model-lib</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mariadb.jdbc</groupId>
+      <artifactId>mariadb-java-client</artifactId>
+      <version>2.7.3</version>
+    </dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>8.0.25</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-dbcp2 -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-dbcp2</artifactId>
+      <version>2.7.0</version>
     </dependency>
   </dependencies>
 
