@@ -1,4 +1,9 @@
 package life.qbic.samplenotificator
+
+import life.qbic.portal.utils.ConfigurationManager
+import life.qbic.portal.utils.ConfigurationManagerFactory
+import life.qbic.samplenotificator.datasource.database.DatabaseSession
+
 /**
  * <b>Entry point to the sample notificator application</b>
  *

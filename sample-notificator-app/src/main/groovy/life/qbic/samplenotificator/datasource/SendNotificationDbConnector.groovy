@@ -6,7 +6,6 @@ import life.qbic.datamodel.samples.Status
 import life.qbic.samplenotificator.datasource.database.ConnectionProvider
 
 import java.sql.Connection
-import java.sql.Date
 import java.sql.PreparedStatement
 import java.sql.Timestamp
 import java.time.Instant
