@@ -1,5 +1,7 @@
 package life.qbic.samplenotificator.datasource
 
+import groovy.util.logging.Log4j2
+import life.qbic.business.exception.DatabaseQueryException
 import life.qbic.business.notification.send.SendNotificationDataSource
 import life.qbic.business.subscription.Subscriber
 import life.qbic.datamodel.samples.Status
@@ -19,6 +21,7 @@ import java.time.Instant
  * @since 1.0.0
  *
 */
+@Log4j2
 class SendNotificationDbConnector implements SendNotificationDataSource{
     private ConnectionProvider connectionProvider
 
@@ -30,14 +33,21 @@ class SendNotificationDbConnector implements SendNotificationDataSource{
     @Override
     List<Subscriber> getSubscribersForTodaysNotifications(Instant today) {
         List<Subscriber> subscriberList = []
-        //1. get todays notifications
-        Map sampleToStatus = getTodaysNotifications(today)
-        // retrieve the project code
-        Map subscriberIdsToSamples = getSubscriberIdForSamples(sampleToStatus)
-        //2. get the subscribers for the subscriptions
-        subscriberIdsToSamples.each { Map.Entry<Integer,List<String>> subscriberMap ->
-            Map allSamplesToStatus = sampleToStatus.findAll {it.key in subscriberMap.value}
-            subscriberList << getSubscriber(subscriberMap.key,allSamplesToStatus)
+        try{
+            //1. get todays notifications
+            Map sampleToStatus = getTodaysNotifications(today)
+            // retrieve the project code
+            Map subscriberIdsToSamples = getSubscriberIdForSamples(sampleToStatus)
+            //2. get the subscribers for the subscriptions
+            subscriberIdsToSamples.each { Map.Entry<Integer,List<String>> subscriberMap ->
+                Map allSamplesToStatus = sampleToStatus.findAll {it.key in subscriberMap.value}
+                subscriberList << getSubscriber(subscriberMap.key,allSamplesToStatus)
+            }
+        }catch(Exception e){
+            log.error e.message
+            log.error(e.stackTrace.join("\n"))
+
+            throw new DatabaseQueryException(e.message)
         }
 
         return subscriberList
