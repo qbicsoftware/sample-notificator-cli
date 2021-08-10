@@ -1,11 +1,8 @@
 package life.qbic.samplenotificator
 
-import life.qbic.portal.utils.ConfigurationManager
-import life.qbic.portal.utils.ConfigurationManagerFactory
+import life.qbic.business.notification.send.SendNotification
 import life.qbic.samplenotificator.datasource.SendNotificationDbConnector
 import life.qbic.samplenotificator.datasource.database.DatabaseSession
-
-import java.time.Instant
 
 /**
  * <b>Entry point to the sample notificator application</b>
@@ -14,14 +11,10 @@ import java.time.Instant
  *
  * @since 1.0.0
  */
-class EntryPoint {
+class NotificatorApp {
     public static void main(String[] args){
-
-        Properties properties = new Properties()
-        File propertiesFile = new File(EntryPoint.class.getClassLoader().getResource('developer.properties').toURI())
-        propertiesFile.withInputStream {
-            properties.load(it)
-        }
+        //retrieve information from developer.properties
+        Properties properties = getProperties()
 
         String user = Objects.requireNonNull(properties.get("mysql.user"), "Mysql user missing.")
         String password = Objects.requireNonNull(properties.get("mysql.pass"), "Mysql password missing.")
@@ -31,7 +24,22 @@ class EntryPoint {
 
         DatabaseSession.init(user, password, host, port, sqlDatabase)
 
-        SendNotificationDbConnector connector = new SendNotificationDbConnector(DatabaseSession.getInstance())
-        connector.getSubscribersForTodaysNotifications(Instant.now())
+        sendNotificationsToSubscriber()
     }
+
+    private static Properties getProperties(){
+        Properties properties = new Properties()
+        File propertiesFile = new File(NotificatorApp.class.getClassLoader().getResource('developer.properties').toURI())
+        propertiesFile.withInputStream {
+            properties.load(it)
+        }
+        return properties
+    }
+
+    private static sendNotificationsToSubscriber(){
+        SendNotificationDbConnector connector = new SendNotificationDbConnector(DatabaseSession.getInstance())
+        SendNotification sendNotification = new SendNotification(connector)
+        sendNotification.sendNotifications()
+    }
+
 }
