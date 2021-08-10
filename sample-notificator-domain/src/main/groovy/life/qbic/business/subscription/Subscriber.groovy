@@ -25,4 +25,10 @@ class Subscriber {
         this.email = Objects.requireNonNull(email, "Email must not be null")
         this.subscriptions = Objects.requireNonNull(subscriptions, "The list of subscriptions must not be null")
     }
+
+
+    @Override
+    public String toString() {
+        return  firstName + ' ' + lastName + ', ' + email + ', subscriptions: ' + subscriptions.toString()
+    }
 }
