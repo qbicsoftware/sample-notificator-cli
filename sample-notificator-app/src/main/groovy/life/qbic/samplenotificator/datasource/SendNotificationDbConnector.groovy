@@ -30,7 +30,7 @@ class SendNotificationDbConnector implements SendNotificationDataSource{
     List<Subscriber> getSubscribersForTodaysNotifications(Instant today) {
         List<Subscriber> subscriberList = []
         //1. get todays notifications
-        getTodaysNotifications(today)
+        println getTodaysNotifications(today)
         // retrieve the project code
         //2. get the subscribers for the subscriptions
 
@@ -46,7 +46,10 @@ class SendNotificationDbConnector implements SendNotificationDataSource{
         connection.withCloseable {
             PreparedStatement preparedStatement = it.prepareStatement(sqlQuery)
             //todo create a timestemp for the beginning of the current day
-            preparedStatement.setTimestamp(1, Timestamp.from(today.))
+            Timestamp todaysTimeStamp = Timestamp.from(today)
+            preparedStatement.setTimestamp(1, todaysTimeStamp)
+            preparedStatement.setTimestamp(2, todaysTimeStamp)
+            preparedStatement.setTimestamp(3, todaysTimeStamp)
             preparedStatement.execute()
 
             def resultSet = preparedStatement.getResultSet()
