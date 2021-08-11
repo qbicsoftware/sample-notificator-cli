@@ -6,7 +6,6 @@ import life.qbic.business.notification.send.SendNotificationDataSource
 import life.qbic.business.subscription.Subscriber
 import life.qbic.datamodel.samples.Status
 import life.qbic.samplenotificator.datasource.database.ConnectionProvider
-import org.apache.commons.collections.map.HashedMap
 
 import java.sql.Connection
 import java.sql.PreparedStatement
@@ -81,7 +80,7 @@ class SendNotificationDbConnector implements SendNotificationDataSource{
     private Map<Integer,List<String>> getSubscriberIdForSamples(Map<String,Status> sampleToStatus){
 
         Connection connection = connectionProvider.connect()
-        Map<Integer,List<String>> userToString = new HashedMap()
+        Map<Integer,List<String>> userToString = new HashMap<>()
 
         connection.withCloseable { Connection con ->
             sampleToStatus.each {
