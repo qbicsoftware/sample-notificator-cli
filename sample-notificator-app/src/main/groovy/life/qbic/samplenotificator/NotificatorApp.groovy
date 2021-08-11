@@ -1,9 +1,8 @@
 package life.qbic.samplenotificator
 
 import groovy.util.logging.Log4j2
-import life.qbic.business.notification.create.CreateNotification
-import life.qbic.samplenotificator.datasource.CreateNotificationDbConnector
-import life.qbic.samplenotificator.datasource.database.DatabaseSession
+import life.qbic.samplenotificator.cli.CommandLineParser
+import life.qbic.samplenotificator.cli.NotificatorCommandLineOptions
 
 /**
  * <b>Entry point to the sample notificator application</b>
@@ -16,7 +15,11 @@ import life.qbic.samplenotificator.datasource.database.DatabaseSession
 class NotificatorApp {
     public static void main(String[] args) {
         try {
-            DependencyManager dependencyManager = new DependencyManager()
+            NotificatorCommandLineOptions commandLineParameters =
+                    CommandLineParser.parseAndVerifyCommandLineParameters(args);
+
+
+            DependencyManager dependencyManager = new DependencyManager(commandLineParameters)
             dependencyManager.sendNotifications()
         }catch(Exception exception){
             log.error "Could not run sample-notificator-cli"

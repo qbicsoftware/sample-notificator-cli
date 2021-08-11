@@ -3,7 +3,8 @@ package life.qbic.samplenotificator
 import groovy.util.logging.Log4j2
 import life.qbic.business.notification.create.CreateNotification
 import life.qbic.business.notification.create.CreateNotificationOutput
-import life.qbic.samplenotificator.datasource.CreateNotificationDbConnector
+import life.qbic.samplenotificator.cli.NotificatorCommandLineOptions
+import life.qbic.samplenotificator.datasource.notification.create.CreateNotificationDbConnector
 import life.qbic.samplenotificator.datasource.database.DatabaseSession
 
 /**
@@ -18,9 +19,9 @@ class DependencyManager {
     private Properties properties
     private CreateNotification createNotifcations
 
-    DependencyManager(){
+    DependencyManager(NotificatorCommandLineOptions commandLineParameters){
         //todo remove this after the commandline arguments were added
-        properties = getProperties()
+        properties = getProperties(commandLineParameters.pathToConfig)
         initializeDependencies()
     }
 
@@ -47,10 +48,10 @@ class DependencyManager {
         }
     }
 
-    private static Properties getProperties(){
+    private static Properties getProperties(String pathToConfig){
         Properties properties = new Properties()
         //todo remove dependency on properties file and use commanline instead
-        File propertiesFile = new File(NotificatorApp.class.getClassLoader().getResource('developer.properties').toURI())
+        File propertiesFile = new File(pathToConfig)
         propertiesFile.withInputStream {
             properties.load(it)
         }

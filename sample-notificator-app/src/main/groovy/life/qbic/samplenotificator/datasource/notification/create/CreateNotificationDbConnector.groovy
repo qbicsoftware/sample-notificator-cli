@@ -1,4 +1,4 @@
-package life.qbic.samplenotificator.datasource
+package life.qbic.samplenotificator.datasource.notification.create
 
 import groovy.util.logging.Log4j2
 import life.qbic.business.exception.DatabaseQueryException
