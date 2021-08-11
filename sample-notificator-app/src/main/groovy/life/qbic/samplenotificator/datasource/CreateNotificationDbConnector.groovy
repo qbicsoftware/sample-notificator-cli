@@ -2,15 +2,13 @@ package life.qbic.samplenotificator.datasource
 
 import groovy.util.logging.Log4j2
 import life.qbic.business.exception.DatabaseQueryException
-import life.qbic.business.notification.send.SendNotificationDataSource
+import life.qbic.business.notification.create.CreateNotificationDataSource
 import life.qbic.business.subscription.Subscriber
 import life.qbic.datamodel.samples.Status
 import life.qbic.samplenotificator.datasource.database.ConnectionProvider
 
 import java.sql.Connection
 import java.sql.PreparedStatement
-import java.sql.Timestamp
-import java.time.Instant
 import java.time.LocalDate
 
 /**
@@ -22,10 +20,10 @@ import java.time.LocalDate
  *
 */
 @Log4j2
-class SendNotificationDbConnector implements SendNotificationDataSource{
+class CreateNotificationDbConnector implements CreateNotificationDataSource{
     private ConnectionProvider connectionProvider
 
-    SendNotificationDbConnector(ConnectionProvider connectionProvider){
+    CreateNotificationDbConnector(ConnectionProvider connectionProvider){
         this.connectionProvider = connectionProvider
     }
 

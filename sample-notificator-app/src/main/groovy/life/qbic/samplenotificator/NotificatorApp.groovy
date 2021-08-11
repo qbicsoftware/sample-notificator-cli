@@ -1,7 +1,7 @@
 package life.qbic.samplenotificator
 
-import life.qbic.business.notification.send.SendNotification
-import life.qbic.samplenotificator.datasource.SendNotificationDbConnector
+import life.qbic.business.notification.create.CreateNotification
+import life.qbic.samplenotificator.datasource.CreateNotificationDbConnector
 import life.qbic.samplenotificator.datasource.database.DatabaseSession
 
 /**
@@ -38,8 +38,8 @@ class NotificatorApp {
     }
 
     private static sendNotificationsToSubscriber(){
-        SendNotificationDbConnector connector = new SendNotificationDbConnector(DatabaseSession.getInstance())
-        SendNotification sendNotification = new SendNotification(connector)
+        CreateNotificationDbConnector connector = new CreateNotificationDbConnector(DatabaseSession.getInstance())
+        CreateNotification sendNotification = new CreateNotification(connector)
         sendNotification.sendNotifications()
     }
 
