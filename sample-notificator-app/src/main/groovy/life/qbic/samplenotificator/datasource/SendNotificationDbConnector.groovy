@@ -11,6 +11,7 @@ import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.Timestamp
 import java.time.Instant
+import java.time.LocalDate
 
 /**
  * <h1>A database connector to retrieve information for sending notifications</h1>
@@ -30,7 +31,7 @@ class SendNotificationDbConnector implements SendNotificationDataSource{
 
 
     @Override
-    List<Subscriber> getSubscribersForTodaysNotifications(Instant today) {
+    List<Subscriber> getSubscribersForTodaysNotifications(LocalDate today) {
         List<Subscriber> subscriberList = []
         try{
             //1. get todays notifications
@@ -52,19 +53,18 @@ class SendNotificationDbConnector implements SendNotificationDataSource{
         return subscriberList
     }
 
-    private Map<String, Status> getTodaysNotifications(Instant today){
+    private Map<String, Status> getTodaysNotifications(LocalDate today){
         //todo is this efficient?
-        String sqlQuery = SELECT_NOTIFICATIONS + " WHERE year(arrival_time) = year(?) AND month(arrival_time) = month(?) AND day(arrival_time) = day(?)"
+        String sqlQuery = SELECT_NOTIFICATIONS + " WHERE year(arrival_time) = ? AND month(arrival_time) = ? AND day(arrival_time) = ?"
         Map<String, Status> foundNotifications = new HashMap<>()
 
         Connection connection = connectionProvider.connect()
 
         connection.withCloseable {
             PreparedStatement preparedStatement = it.prepareStatement(sqlQuery)
-            Timestamp todaysTimeStamp = Timestamp.from(today)
-            preparedStatement.setTimestamp(1, todaysTimeStamp)
-            preparedStatement.setTimestamp(2, todaysTimeStamp)
-            preparedStatement.setTimestamp(3, todaysTimeStamp)
+            preparedStatement.setInt(1, today.year)
+            preparedStatement.setInt(2, today.monthValue)
+            preparedStatement.setInt(3, today.dayOfMonth)
             preparedStatement.execute()
 
             def resultSet = preparedStatement.getResultSet()

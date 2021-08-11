@@ -3,7 +3,7 @@ package life.qbic.business.notification.send
 import life.qbic.business.exception.DatabaseQueryException
 import life.qbic.business.subscription.Subscriber
 
-import java.time.Instant
+import java.time.LocalDate
 
 /**
  * <b><short description></b>
@@ -20,5 +20,5 @@ interface SendNotificationDataSource {
      * @param today The date of today
      * @return a list of subscribers that need to be notified
      */
-    List<Subscriber> getSubscribersForTodaysNotifications(Instant today) throws DatabaseQueryException
+    List<Subscriber> getSubscribersForTodaysNotifications(LocalDate today) throws DatabaseQueryException
 }

@@ -14,6 +14,7 @@ import life.qbic.samplenotificator.datasource.database.DatabaseSession
 class NotificatorApp {
     public static void main(String[] args){
         //retrieve information from developer.properties
+        //todo remove this after the commandline arguments were added
         Properties properties = getProperties()
 
         String user = Objects.requireNonNull(properties.get("mysql.user"), "Mysql user missing.")
