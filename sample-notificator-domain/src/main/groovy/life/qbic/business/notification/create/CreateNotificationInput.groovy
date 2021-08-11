@@ -10,5 +10,5 @@ interface CreateNotificationInput {
     /**
      * Trigger sending notifications to a list of subscribers about changes in their subscriptions
      */
-    void sendNotifications()
+    void createNotifications()
 }
