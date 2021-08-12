@@ -9,7 +9,9 @@ import life.qbic.samplenotificator.datasource.database.ConnectionProvider
 
 import java.sql.Connection
 import java.sql.PreparedStatement
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
 
 /**
  * <h1>A database connector to retrieve information for sending notifications</h1>
@@ -29,11 +31,11 @@ class CreateNotificationDbConnector implements CreateNotificationDataSource{
 
 
     @Override
-    List<Subscriber> getSubscribersForTodaysNotifications(LocalDate today) {
+    List<Subscriber> getSubscribersForNotificationsAt(LocalDate today) {
         List<Subscriber> subscriberList = []
         try{
             //1. get todays notifications
-            Map<String, Status> sampleToStatus = getTodaysNotifications(today)
+            Map<String, Status> sampleToStatus = getNotificationsForDay(today)
             // retrieve the project code
             Map<Integer,List<String>> subscriberIdsToSamples = getSubscriberIdForSamples(sampleToStatus)
             //2. get the subscribers for the subscriptions
@@ -52,8 +54,8 @@ class CreateNotificationDbConnector implements CreateNotificationDataSource{
     }
 
     private Map<String, Status> getNotificationsForDay(LocalDate day){
-        Instant startOfDay = today.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()
-        Instant endOfDay = today.plusDays(1).atStartOfDay().minusNanos(1).atZone(ZoneId.systemDefault()).toInstant()
+        Instant startOfDay = day.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()
+        Instant endOfDay = day.plusDays(1).atStartOfDay().minusNanos(1).atZone(ZoneId.systemDefault()).toInstant()
         String sqlQuery = SELECT_NOTIFICATIONS + " WHERE arrival_time BETWEEN ? AND ?"
         Map<String, Status> foundNotifications = new HashMap<>()
 
@@ -61,9 +63,9 @@ class CreateNotificationDbConnector implements CreateNotificationDataSource{
 
         connection.withCloseable {
             PreparedStatement preparedStatement = it.prepareStatement(sqlQuery)
-            preparedStatement.setInt(1, today.year)
-            preparedStatement.setInt(2, today.monthValue)
-            preparedStatement.setInt(3, today.dayOfMonth)
+            preparedStatement.setInt(1, day.year)
+            preparedStatement.setInt(2, day.monthValue)
+            preparedStatement.setInt(3, day.dayOfMonth)
             preparedStatement.execute()
 
             def resultSet = preparedStatement.getResultSet()

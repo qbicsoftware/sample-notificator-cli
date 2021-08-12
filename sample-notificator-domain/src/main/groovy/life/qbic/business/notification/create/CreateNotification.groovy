@@ -22,7 +22,7 @@ class CreateNotification implements CreateNotificationInput{
     @Override
     void createNotifications() {
         //todo when do we want to run the tool? Is "today" sufficient or do we want to do it for the day before?
-        List<Subscriber> subscribers = ds.getSubscribersForTodaysNotifications(LocalDate.now().minusDays(1))
+        List<Subscriber> subscribers = ds.getSubscribersForNotificationsAt(LocalDate.now().minusDays(1))
         println subscribers
         //todo send notifications and fill template
     }
