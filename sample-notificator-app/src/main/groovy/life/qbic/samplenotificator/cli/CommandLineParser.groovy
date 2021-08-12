@@ -1,5 +1,6 @@
 package life.qbic.samplenotificator.cli
 
+import groovy.util.logging.Log4j2
 import picocli.CommandLine
 
 /**
@@ -10,6 +11,7 @@ import picocli.CommandLine
  * @since 1.0.0
  *
 */
+@Log4j2
 class CommandLineParser {
 
     public static NotificatorCommandLineOptions parseAndVerifyCommandLineParameters(String[] args)
@@ -23,13 +25,12 @@ class CommandLineParser {
 
 
         if (commandLineParameters.helpRequested) {
-            CommandLine.usage(new NotificatorCommandLineOptions(), System.out);
-            System.exit(0);
+            CommandLine.usage(new NotificatorCommandLineOptions(), System.out)
+            System.exit(0)
         }
 
         if (commandLineParameters.pathToConfig == null || commandLineParameters.pathToConfig.isEmpty()) {
-            System.out.println(
-                    "You have to provide a config file.")
+            log.info "You have to provide a config file."
             System.exit(1)
         }
 
