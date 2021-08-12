@@ -18,7 +18,7 @@ class CommandLineParser {
             throws IOException {
         if (args.length == 0) {
             CommandLine.usage(new NotificatorCommandLineOptions(), System.out)
-            System.exit(0)
+            System.exit(1)
         }
         NotificatorCommandLineOptions commandLineParameters = new NotificatorCommandLineOptions()
         new CommandLine(commandLineParameters).parseArgs(args)
