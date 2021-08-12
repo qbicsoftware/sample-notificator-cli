@@ -4,11 +4,10 @@ import java.sql.Connection
 import java.sql.SQLException
 
 /**
- * <h1><short description></h1>
+ * <p>A connection provider needs to provide a SQL connection. This interface serves a separation between the building up the connect
+ * to any database and the actual connection itself.</p>
  *
- * <p><detailed description></p>
- *
- * @since <versiontag>
+ * @since 1.0.0
  *
 */
 interface ConnectionProvider {

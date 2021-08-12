@@ -31,7 +31,6 @@ class CommandLineParser {
 
         if (commandLineParameters.pathToConfig == null || commandLineParameters.pathToConfig.isEmpty()) {
             log.info "You have to provide a config file."
-            println "You have to provide a config file."
             System.exit(1)
         }
 

@@ -29,7 +29,7 @@ class DependencyManager {
         setupCreateNotification()
     }
 
-    void sendNotifications(){
+    void run(){
         createNotification.createNotifications()
     }
 

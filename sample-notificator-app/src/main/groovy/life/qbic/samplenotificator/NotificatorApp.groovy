@@ -16,11 +16,10 @@ class NotificatorApp {
     public static void main(String[] args) {
         try {
             NotificatorCommandLineOptions commandLineParameters =
-                    CommandLineParser.parseAndVerifyCommandLineParameters(args);
-
+                    CommandLineParser.parseAndVerifyCommandLineParameters(args)
 
             DependencyManager dependencyManager = new DependencyManager(commandLineParameters)
-            dependencyManager.sendNotifications()
+            dependencyManager.run()
         }catch(Exception exception){
             log.error "Could not run sample-notificator-cli"
         }

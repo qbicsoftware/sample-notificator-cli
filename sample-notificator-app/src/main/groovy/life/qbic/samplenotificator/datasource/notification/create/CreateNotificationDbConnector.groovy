@@ -9,6 +9,7 @@ import life.qbic.samplenotificator.datasource.database.ConnectionProvider
 
 import java.sql.Connection
 import java.sql.PreparedStatement
+import java.sql.Timestamp
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -39,8 +40,8 @@ class CreateNotificationDbConnector implements CreateNotificationDataSource{
             // retrieve the project code
             Map<Integer,List<String>> subscriberIdsToSamples = getSubscriberIdForSamples(sampleToStatus)
             //2. get the subscribers for the subscriptions
-            subscriberIdsToSamples.each { Map.Entry<Integer,List<String>> subscriberMap ->
-                Map allSamplesToStatus = sampleToStatus.findAll {it.key in subscriberMap.value}
+            subscriberIdsToSamples.each { subscriberMap ->
+                Map<String,Status> allSamplesToStatus = sampleToStatus.findAll {it.key in subscriberMap.value}
                 subscriberList << getSubscriber(subscriberMap.key,allSamplesToStatus)
             }
         }catch(Exception e){
@@ -63,9 +64,8 @@ class CreateNotificationDbConnector implements CreateNotificationDataSource{
 
         connection.withCloseable {
             PreparedStatement preparedStatement = it.prepareStatement(sqlQuery)
-            preparedStatement.setInt(1, day.year)
-            preparedStatement.setInt(2, day.monthValue)
-            preparedStatement.setInt(3, day.dayOfMonth)
+            preparedStatement.setTimestamp(1, Timestamp.from(startOfDay))
+            preparedStatement.setTimestamp(2, Timestamp.from(endOfDay))
             preparedStatement.execute()
 
             def resultSet = preparedStatement.getResultSet()
