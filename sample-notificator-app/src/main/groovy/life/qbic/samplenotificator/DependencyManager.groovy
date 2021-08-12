@@ -17,10 +17,9 @@ import life.qbic.samplenotificator.datasource.database.DatabaseSession
 class DependencyManager {
 
     private Properties properties
-    private CreateNotification createNotifcations
+    private CreateNotification createNotification
 
     DependencyManager(NotificatorCommandLineOptions commandLineParameters){
-        //todo remove this after the commandline arguments were added
         properties = getProperties(commandLineParameters.pathToConfig)
         initializeDependencies()
     }
@@ -31,7 +30,7 @@ class DependencyManager {
     }
 
     void sendNotifications(){
-        createNotifcations.createNotifications()
+        createNotification.createNotifications()
     }
 
     private void setupDatabase(){
@@ -50,7 +49,6 @@ class DependencyManager {
 
     private static Properties getProperties(String pathToConfig){
         Properties properties = new Properties()
-        //todo remove dependency on properties file and use commanline instead
         File propertiesFile = new File(pathToConfig)
         propertiesFile.withInputStream {
             properties.load(it)
@@ -61,7 +59,7 @@ class DependencyManager {
     private void setupCreateNotification(){
         CreateNotificationDbConnector connector = new CreateNotificationDbConnector(DatabaseSession.getInstance())
         CreateNotificationOutput someOutput = null //todo implement me
-        createNotifcations = new CreateNotification(connector,someOutput)
+        createNotification = new CreateNotification(connector,someOutput)
     }
 
 }
