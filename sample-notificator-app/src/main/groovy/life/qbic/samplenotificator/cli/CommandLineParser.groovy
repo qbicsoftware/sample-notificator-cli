@@ -3,11 +3,11 @@ package life.qbic.samplenotificator.cli
 import picocli.CommandLine
 
 /**
- * <h1><short description></h1>
+ * <h1>Parses the command line</h1>
  *
- * <p><detailed description></p>
+ * <p>A parser for processing the commandline input.</p>
  *
- * @since <versiontag>
+ * @since 1.0.0
  *
 */
 class CommandLineParser {
@@ -15,34 +15,23 @@ class CommandLineParser {
     public static NotificatorCommandLineOptions parseAndVerifyCommandLineParameters(String[] args)
             throws IOException {
         if (args.length == 0) {
-            CommandLine.usage(new NotificatorCommandLineOptions(), System.out);
-            System.exit(0);
+            CommandLine.usage(new NotificatorCommandLineOptions(), System.out)
+            System.exit(0)
         }
+        NotificatorCommandLineOptions commandLineParameters = new NotificatorCommandLineOptions()
+        new CommandLine(commandLineParameters).parseArgs(args)
 
 
-        NotificatorCommandLineOptions commandLineParameters = new NotificatorCommandLineOptions();
-        new CommandLine(commandLineParameters).parse(args) //todo fix me
-
-        /**
         if (commandLineParameters.helpRequested) {
             CommandLine.usage(new NotificatorCommandLineOptions(), System.out);
             System.exit(0);
         }
 
-        if ((commandLineParameters.ids == null || commandLineParameters.ids.isEmpty())
-                && commandLineParameters.filePath == null) {
+        if (commandLineParameters.pathToConfig == null || commandLineParameters.pathToConfig.isEmpty()) {
             System.out.println(
-                    "You have to provide one ID as command line argument or a file containing IDs.");
-            System.exit(1);
-        } else if ((commandLineParameters.ids != null) && (commandLineParameters.filePath != null)) {
-            System.out.println(
-                    "Arguments --identifier and --file are mutually exclusive, please provide only one.");
-            System.exit(1);
-        } else if (commandLineParameters.filePath != null) {
-            commandLineParameters.ids =
-                    IdentifierParser.readProvidedIdentifiers(commandLineParameters.filePath.toFile());
+                    "You have to provide a config file.")
+            System.exit(1)
         }
-         */
 
         return commandLineParameters
     }

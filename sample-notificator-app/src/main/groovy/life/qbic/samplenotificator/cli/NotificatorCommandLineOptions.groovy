@@ -20,4 +20,10 @@ class NotificatorCommandLineOptions {
             required = true,
             description = "Path to a config file")
     public String pathToConfig
+
+    @CommandLine.Option(
+            names = ["-h", "--help"],
+            usageHelp = true,
+            description = "display a help message")
+    public boolean helpRequested = false
 }
