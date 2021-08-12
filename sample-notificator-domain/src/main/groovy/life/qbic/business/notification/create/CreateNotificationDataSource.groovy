@@ -20,5 +20,5 @@ interface CreateNotificationDataSource {
      * @param today The date of today
      * @return a list of subscribers that need to be notified
      */
-    List<Subscriber> getSubscribersForTodaysNotifications(LocalDate today) throws DatabaseQueryException
+    List<Subscriber> getSubscribersForNotificationsAt(LocalDate today) throws DatabaseQueryException
 }

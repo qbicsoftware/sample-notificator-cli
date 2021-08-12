@@ -33,9 +33,9 @@ class CreateNotificationDbConnector implements CreateNotificationDataSource{
         List<Subscriber> subscriberList = []
         try{
             //1. get todays notifications
-            Map sampleToStatus = getTodaysNotifications(today)
+            Map<String, Status> sampleToStatus = getTodaysNotifications(today)
             // retrieve the project code
-            Map subscriberIdsToSamples = getSubscriberIdForSamples(sampleToStatus)
+            Map<Integer,List<String>> subscriberIdsToSamples = getSubscriberIdForSamples(sampleToStatus)
             //2. get the subscribers for the subscriptions
             subscriberIdsToSamples.each { Map.Entry<Integer,List<String>> subscriberMap ->
                 Map allSamplesToStatus = sampleToStatus.findAll {it.key in subscriberMap.value}
@@ -51,9 +51,10 @@ class CreateNotificationDbConnector implements CreateNotificationDataSource{
         return subscriberList
     }
 
-    private Map<String, Status> getTodaysNotifications(LocalDate today){
-        //todo is this efficient?
-        String sqlQuery = SELECT_NOTIFICATIONS + " WHERE year(arrival_time) = ? AND month(arrival_time) = ? AND day(arrival_time) = ?"
+    private Map<String, Status> getNotificationsForDay(LocalDate day){
+        Instant startOfDay = today.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()
+        Instant endOfDay = today.plusDays(1).atStartOfDay().minusNanos(1).atZone(ZoneId.systemDefault()).toInstant()
+        String sqlQuery = SELECT_NOTIFICATIONS + " WHERE arrival_time BETWEEN ? AND ?"
         Map<String, Status> foundNotifications = new HashMap<>()
 
         Connection connection = connectionProvider.connect()
