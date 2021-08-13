@@ -17,7 +17,7 @@ import life.qbic.samplenotificator.datasource.database.DatabaseSession
 class DependencyManager {
 
     private Properties properties
-    private CreateNotification createNotification
+    private CreateNotificationInput createNotification
 
     DependencyManager(NotificatorCommandLineOptions commandLineParameters){
         properties = getProperties(commandLineParameters.pathToConfig)
