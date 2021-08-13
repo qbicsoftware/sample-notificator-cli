@@ -1,9 +1,7 @@
 package life.qbic.business.notification.create
 
 /**
- * <h1><short description></h1>
- *
- * <p><detailed description></p>
+ * <p>Defines what information is forwarded from the {@link CreateNotification} use case</p>
  *
  * @since 1.0.0
  *
