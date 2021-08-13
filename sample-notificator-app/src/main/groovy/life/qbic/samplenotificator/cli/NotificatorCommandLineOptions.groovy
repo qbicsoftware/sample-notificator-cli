@@ -16,6 +16,12 @@ import picocli.CommandLine
 class NotificatorCommandLineOptions {
 
     @CommandLine.Option(
+            names = ["-d", "--date"],
+            required = true,
+            description = "Date of the day, for which status update notifications should be send. Required format: yyyy-mm-dd")
+    public String date
+
+    @CommandLine.Option(
             names = ["-c", "--config"],
             required = true,
             description = "Path to a config file")

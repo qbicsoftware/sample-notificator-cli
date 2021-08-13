@@ -65,7 +65,7 @@
             <configuration>
               <archive>
                 <manifest>
-                  <mainClass>life.qbic.samplenotificator.NotificatorApp</mainClass>
+                  <mainClass>life.qbic.samplenotificator.SampleNotificatorEntryPoint</mainClass>
                 </manifest>
               </archive>
               <descriptorRefs>
