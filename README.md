@@ -20,6 +20,21 @@ Execute the jar
 java -jar <path-to-jar>/target/sample-notificator-app-<version>-jar-with-dependencies.jar -c <path-to-config>
 ```
 
+To get help use following command:
+
+```
+java -jar sample-notificator-app/target/sample-notificator-app-1.0.0-SNAPSHOT-jar-with-dependencies.jar -h
+Usage: SampleNotificator [-h] -c=<pathToConfig> -d=<date>
+A service to send notifications to subscribers to inform them about changes
+within their projects
+  -c, --config=<pathToConfig>
+                      Path to a config file
+  -d, --date=<date>   Date of the day, for which status update notifications
+                        should be send. Required format: yyyy-mm-dd
+  -h, --help          display a help message
+
+```
+
 #### Provide a config file
 To run the tool you need to provide the credentials to access and read
 data from the database. Therefore, you need to set up a credential file
