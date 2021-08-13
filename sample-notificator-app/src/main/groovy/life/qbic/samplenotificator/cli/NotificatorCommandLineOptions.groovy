@@ -1,5 +1,6 @@
 package life.qbic.samplenotificator.cli
 
+import life.qbic.cli.AbstractCommand
 import picocli.CommandLine
 
 /**
@@ -13,7 +14,7 @@ import picocli.CommandLine
 @CommandLine.Command(
         name = "SampleNotificator",
         description = "A service to send notifications to subscribers to inform them about changes within their projects")
-class NotificatorCommandLineOptions {
+class NotificatorCommandLineOptions extends AbstractCommand{
 
     @CommandLine.Option(
             names = ["-d", "--date"],
@@ -26,10 +27,4 @@ class NotificatorCommandLineOptions {
             required = true,
             description = "Path to a properties config file")
     public String pathToConfig
-
-    @CommandLine.Option(
-            names = ["-h", "--help"],
-            usageHelp = true,
-            description = "display a help message")
-    public boolean helpRequested = false
 }

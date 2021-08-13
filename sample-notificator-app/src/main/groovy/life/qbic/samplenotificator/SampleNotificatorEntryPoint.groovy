@@ -1,7 +1,7 @@
 package life.qbic.samplenotificator
 
 import groovy.util.logging.Log4j2
-import life.qbic.samplenotificator.cli.CommandLineParser
+import life.qbic.cli.ToolExecutor
 import life.qbic.samplenotificator.cli.NotificatorCommandLineOptions
 
 /**
@@ -17,13 +17,12 @@ class SampleNotificatorEntryPoint {
 
     public static void main(String[] args) {
         try {
-            NotificatorCommandLineOptions commandLineParameters =
-                    CommandLineParser.parseAndVerifyCommandLineParameters(args)
-
-            NotificatorApp app = new NotificatorApp(commandLineParameters)
-            app.run()
+            log.info "Starting sample-notificator-cli service"
+            final ToolExecutor executor = new ToolExecutor()
+            executor.invoke(NotificatorApp.class, NotificatorCommandLineOptions.class, args)
         }catch(Exception exception){
             log.error "Could not run sample-notificator-cli"
+            log.error exception.stackTrace.toString()
         }
     }
 }

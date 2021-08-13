@@ -2,6 +2,7 @@ package life.qbic.samplenotificator
 
 import groovy.util.logging.Log4j2
 import life.qbic.business.notification.create.CreateNotificationInput
+import life.qbic.cli.QBiCTool
 import life.qbic.samplenotificator.cli.NotificatorCommandLineOptions
 
 /**
@@ -10,15 +11,16 @@ import life.qbic.samplenotificator.cli.NotificatorCommandLineOptions
  * @since 1.0.0
  */
 @Log4j2
-class NotificatorApp implements Runnable{
-    private NotificatorCommandLineOptions commandLineParameters
+class NotificatorApp extends QBiCTool<NotificatorCommandLineOptions>{
 
-    NotificatorApp (NotificatorCommandLineOptions commandLineParameters){
-        this.commandLineParameters = commandLineParameters
+    NotificatorApp(NotificatorCommandLineOptions command) {
+        super(command)
     }
 
     @Override
-    void run() {
+    void execute() {
+        NotificatorCommandLineOptions commandLineParameters = super.command as NotificatorCommandLineOptions
+
         DependencyManager dependencyManager = new DependencyManager(commandLineParameters)
         CreateNotificationInput createNotification = dependencyManager.getCreateNotification()
         createNotification.createNotifications(commandLineParameters.date)
