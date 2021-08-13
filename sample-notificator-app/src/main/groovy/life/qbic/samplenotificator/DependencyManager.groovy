@@ -29,10 +29,6 @@ class DependencyManager {
         setupCreateNotification()
     }
 
-    void run(){
-        createNotification.createNotifications()
-    }
-
     private void setupDatabase(){
         try{
             String user = Objects.requireNonNull(properties.get("mysql.user"), "Mysql user missing.")
@@ -62,4 +58,7 @@ class DependencyManager {
         createNotification = new CreateNotification(connector,someOutput)
     }
 
+    CreateNotification getCreateNotification() {
+        return createNotification
+    }
 }

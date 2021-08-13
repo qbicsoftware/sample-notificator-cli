@@ -14,7 +14,7 @@ import picocli.CommandLine
 @Log4j2
 class CommandLineParser {
 
-    public static NotificatorCommandLineOptions parseAndVerifyCommandLineParameters(String[] args)
+    static NotificatorCommandLineOptions parseAndVerifyCommandLineParameters(String[] args)
             throws IOException {
         if (args.length == 0) {
             CommandLine.usage(new NotificatorCommandLineOptions(), System.out)
