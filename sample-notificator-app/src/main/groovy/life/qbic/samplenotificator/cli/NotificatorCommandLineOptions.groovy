@@ -24,7 +24,7 @@ class NotificatorCommandLineOptions {
     @CommandLine.Option(
             names = ["-c", "--config"],
             required = true,
-            description = "Path to a config file")
+            description = "Path to a properties config file")
     public String pathToConfig
 
     @CommandLine.Option(
