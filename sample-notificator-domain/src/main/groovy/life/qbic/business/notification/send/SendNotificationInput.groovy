@@ -1,12 +1,12 @@
 package life.qbic.business.notification.send
-
 /**
- * <b><short description></b>
+ * <h1><short description></h1>
  *
  * <p><detailed description></p>
  *
  * @since 1.0.0
- */
-interface SendNotificationDataSource {
-
+ *
+*/
+interface SendNotificationInput {
+    //todo add methods
 }

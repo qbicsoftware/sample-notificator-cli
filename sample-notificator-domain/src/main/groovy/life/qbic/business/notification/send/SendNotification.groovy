@@ -7,6 +7,7 @@ package life.qbic.business.notification.send
  * @since 1.0.0
  *
 */
-interface SendNotificationOutput {
-    //todo add methods
+class SendNotification {
+
+    //todo add logic to send the created notifcations via email
 }
