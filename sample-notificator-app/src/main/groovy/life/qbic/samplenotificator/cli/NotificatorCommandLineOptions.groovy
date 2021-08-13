@@ -19,7 +19,7 @@ class NotificatorCommandLineOptions extends AbstractCommand{
     @CommandLine.Option(
             names = ["-d", "--date"],
             required = true,
-            description = "Date of the day, for which status update notifications should be send. Required format: yyyy-mm-dd")
+            description = "Date of the day, for which status update notifications should be sent. Required format: yyyy-MM-dd")
     public String date
 
     @CommandLine.Option(
