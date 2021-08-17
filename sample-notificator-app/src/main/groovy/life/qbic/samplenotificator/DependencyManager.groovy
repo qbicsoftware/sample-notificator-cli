@@ -2,6 +2,7 @@ package life.qbic.samplenotificator
 
 import groovy.util.logging.Log4j2
 import life.qbic.business.notification.create.CreateNotification
+import life.qbic.business.subscription.Subscriber
 import life.qbic.business.subscription.fetch.FetchSubscriber
 import life.qbic.business.subscription.fetch.FetchSubscriberInput
 import life.qbic.business.subscription.fetch.FetchSubscriberOutput
@@ -16,7 +17,7 @@ import life.qbic.samplenotificator.datasource.database.DatabaseSession
  *
 */
 @Log4j2
-class DependencyManager {
+class DependencyManager implements FetchSubscriberOutput{
 
     private Properties properties
     private FetchSubscriberInput fetchSubscriber
@@ -56,11 +57,17 @@ class DependencyManager {
 
     private void setupFetchSubscriber(){
         FetchSubscriberDbConnector connector = new FetchSubscriberDbConnector(DatabaseSession.getInstance())
-        FetchSubscriberOutput someOutput = null //todo implement me
+        FetchSubscriberOutput someOutput = this
         fetchSubscriber = new FetchSubscriber(connector,someOutput)
     }
 
     FetchSubscriberInput getFetchSubscriber() {
         return fetchSubscriber
+    }
+
+    @Override
+    void fetchedSubscribers(List<Subscriber> subscribers) {
+        println "received the subscribers"
+        println subscribers
     }
 }

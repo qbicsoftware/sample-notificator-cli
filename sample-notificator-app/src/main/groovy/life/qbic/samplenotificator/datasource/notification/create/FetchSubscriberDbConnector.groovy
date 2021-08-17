@@ -6,6 +6,7 @@ import life.qbic.business.subscription.fetch.FetchSubscriberDataSource
 import life.qbic.business.subscription.Subscriber
 import life.qbic.datamodel.samples.Status
 import life.qbic.samplenotificator.datasource.database.ConnectionProvider
+import life.qbic.samplenotificator.datasource.database.DatabaseSession
 
 import java.sql.Connection
 import java.sql.PreparedStatement
@@ -30,103 +31,94 @@ class FetchSubscriberDbConnector implements FetchSubscriberDataSource{
         this.connectionProvider = connectionProvider
     }
 
-
     @Override
-    List<Subscriber> getSubscribersForNotificationsAt(LocalDate today) {
-        List<Subscriber> subscriberList = []
-        try{
-            //1. get todays notifications
-            Map<String, Status> sampleToStatus = getNotificationsForDay(today)
-            // retrieve the project code
-            Map<Integer,List<String>> subscriberIdsToSamples = getSubscriberIdForSamples(sampleToStatus)
-            //2. get the subscribers for the subscriptions
-            subscriberIdsToSamples.each { subscriberMap ->
-                Map<String,Status> allSamplesToStatus = sampleToStatus.findAll {it.key in subscriberMap.value}
-                subscriberList << getSubscriber(subscriberMap.key,allSamplesToStatus)
-            }
-        }catch(Exception e){
-            log.error e.message
-            log.error(e.stackTrace.join("\n"))
-
-            throw new DatabaseQueryException(e.message)
-        }
-
-        return subscriberList
-    }
-
-    private Map<String, Status> getNotificationsForDay(LocalDate day){
+    Map<String, Status> getNotificationsForDay(LocalDate day){
         Instant startOfDay = day.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()
         Instant endOfDay = day.plusDays(1).atStartOfDay().minusNanos(1).atZone(ZoneId.systemDefault()).toInstant()
         String sqlQuery = SELECT_NOTIFICATIONS + " WHERE arrival_time BETWEEN ? AND ?"
         Map<String, Status> foundNotifications = new HashMap<>()
 
-        Connection connection = connectionProvider.connect()
+        try{
+            Connection connection = connectionProvider.connect()
 
-        connection.withCloseable {
-            PreparedStatement preparedStatement = it.prepareStatement(sqlQuery)
-            preparedStatement.setTimestamp(1, Timestamp.from(startOfDay))
-            preparedStatement.setTimestamp(2, Timestamp.from(endOfDay))
-            preparedStatement.execute()
+            connection.withCloseable {
+                PreparedStatement preparedStatement = it.prepareStatement(sqlQuery)
+                preparedStatement.setTimestamp(1, Timestamp.from(startOfDay))
+                preparedStatement.setTimestamp(2, Timestamp.from(endOfDay))
+                preparedStatement.execute()
 
-            def resultSet = preparedStatement.getResultSet()
-            while (resultSet.next()) {
-                String sampleCode = resultSet.getString("sample_code")
-                Status status = Status.valueOf(resultSet.getString("sample_status"))
-                foundNotifications.put(sampleCode,status)
+                def resultSet = preparedStatement.getResultSet()
+                while (resultSet.next()) {
+                    String sampleCode = resultSet.getString("sample_code")
+                    Status status = Status.valueOf(resultSet.getString("sample_status"))
+                    foundNotifications.put(sampleCode,status)
+                }
             }
+        }catch(Exception exception){
+            throw new DatabaseQueryException(exception.message)
         }
         return foundNotifications
     }
 
-    private Map<Integer,List<String>> getSubscriberIdForSamples(Map<String,Status> sampleToStatus){
+    @Override
+    Map<Integer,List<String>> getSubscriberIdForSamples(Map<String,Status> sampleToStatus){
 
-        Connection connection = connectionProvider.connect()
         Map<Integer,List<String>> userToString = new HashMap<>()
+        try{
+            Connection connection = connectionProvider.connect()
 
-        connection.withCloseable { Connection con ->
-            sampleToStatus.each {
-                //get all subscriptions for a person, id to list of project codes
-                String sqlQuery = SELECT_SUBSCRIPTIONS + " WHERE ? LIKE CONCAT(project_code ,'%') "
+            connection.withCloseable { Connection con ->
+                sampleToStatus.each {
+                    //get all subscriptions for a person, id to list of project codes
+                    String sqlQuery = SELECT_SUBSCRIPTIONS + " WHERE ? LIKE CONCAT(project_code ,'%') "
 
-                PreparedStatement preparedStatement = con.prepareStatement(sqlQuery)
-                preparedStatement.setString(1,it.key)
-                preparedStatement.execute()
-                def resultSet = preparedStatement.getResultSet()
+                    PreparedStatement preparedStatement = con.prepareStatement(sqlQuery)
+                    preparedStatement.setString(1,it.key)
+                    preparedStatement.execute()
+                    def resultSet = preparedStatement.getResultSet()
 
-                while(resultSet.next()){
-                    int user = resultSet.getInt("subscriber_id")
+                    while(resultSet.next()){
+                        int user = resultSet.getInt("subscriber_id")
 
-                    if(userToString.containsKey(user)){
-                        userToString.get(user) << it.key
-                    }
-                    else{
-                        userToString.put(user,[it.key])
+                        if(userToString.containsKey(user)){
+                            userToString.get(user) << it.key
+                        }
+                        else{
+                            userToString.put(user,[it.key])
+                        }
                     }
                 }
             }
+        }catch(Exception exception){
+            throw new DatabaseQueryException(exception.message)
         }
 
         return userToString
     }
 
-    private Subscriber getSubscriber(Integer subscriberId, Map<String,Status> sampleToStatus){
-        Connection connection = connectionProvider.connect()
+    @Override
+    Subscriber getSubscriber(Integer subscriberId, Map<String,Status> sampleToStatus){
         Subscriber subscriber = null
+        try{
+            Connection connection = connectionProvider.connect()
 
-        connection.withCloseable {
-            String sqlStatement = SELECT_SUBSCRIBERS + " WHERE id = ?"
+            connection.withCloseable {
+                String sqlStatement = SELECT_SUBSCRIBERS + " WHERE id = ?"
 
-            PreparedStatement preparedStatement = it.prepareStatement(sqlStatement)
-            preparedStatement.setInt(1,subscriberId)
-            preparedStatement.execute()
-            def resultSet = preparedStatement.getResultSet()
+                PreparedStatement preparedStatement = it.prepareStatement(sqlStatement)
+                preparedStatement.setInt(1,subscriberId)
+                preparedStatement.execute()
+                def resultSet = preparedStatement.getResultSet()
 
-            while(resultSet.next()) {
-                String firstName = resultSet.getString("first_name")
-                String lastName = resultSet.getString("last_name")
-                String email = resultSet.getString("email")
-                subscriber = new Subscriber(firstName,lastName,email,sampleToStatus)
+                while(resultSet.next()) {
+                    String firstName = resultSet.getString("first_name")
+                    String lastName = resultSet.getString("last_name")
+                    String email = resultSet.getString("email")
+                    subscriber = new Subscriber(firstName,lastName,email,sampleToStatus)
+                }
             }
+        }catch(Exception exception){
+            throw new DatabaseQueryException(exception.message)
         }
         return subscriber
     }

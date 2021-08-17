@@ -2,6 +2,7 @@ package life.qbic.business.subscription.fetch
 
 import life.qbic.business.exception.DatabaseQueryException
 import life.qbic.business.subscription.Subscriber
+import life.qbic.datamodel.samples.Status
 
 import java.time.LocalDate
 
@@ -13,10 +14,14 @@ import java.time.LocalDate
 interface FetchSubscriberDataSource {
 
     /**
-     * Retrieves a list of subscribers, that need to be notified.
-     * Based on the current date (today) a list of subscribers that subscribed to an updated project will be returned.
-     * @param today The date of today
-     * @return a list of subscribers that need to be notified
+     * Retrieves a map of sample codes with statuses, which has been updated at a given day.
+     * @param day The date of a day in yyyy-MM-dd
+     * @return a mip with updated sample codes and new statuses
      */
-    List<Subscriber> getSubscribersForNotificationsAt(LocalDate today) throws DatabaseQueryException
+    Map<String, Status> getNotificationsForDay(LocalDate day) throws DatabaseQueryException
+
+    Map<Integer,List<String>> getSubscriberIdForSamples(Map<String,Status> sampleToStatus) throws DatabaseQueryException
+
+    Subscriber getSubscriber(Integer subscriberId, Map<String,Status> sampleToStatus) throws DatabaseQueryException
+
 }

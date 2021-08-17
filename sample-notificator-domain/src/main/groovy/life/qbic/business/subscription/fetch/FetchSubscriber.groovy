@@ -1,7 +1,8 @@
 package life.qbic.business.subscription.fetch
 
-
+import life.qbic.business.exception.DatabaseQueryException
 import life.qbic.business.subscription.Subscriber
+import life.qbic.datamodel.samples.Status
 
 import java.time.LocalDate
 
@@ -25,7 +26,24 @@ class FetchSubscriber implements FetchSubscriberInput{
     @Override
     void fetchSubscriber(String date) {
         LocalDate localDate = LocalDate.parse(date)
-        List<Subscriber> subscribers = ds.getSubscribersForNotificationsAt(localDate)
-        output.fetchedSubscribers(subscribers)
+
+        List<Subscriber> subscriberList = []
+        try{
+            //1. get todays notifications
+            Map<String, Status> sampleToStatus = ds.getNotificationsForDay(localDate)
+            // retrieve the project code
+            Map<Integer,List<String>> subscriberIdsToSamples = ds.getSubscriberIdForSamples(sampleToStatus)
+            //2. get the subscribers for the subscriptions
+            subscriberIdsToSamples.each { subscriberMap ->
+                Map<String,Status> allSamplesToStatus = sampleToStatus.findAll {it.key in subscriberMap.value}
+                subscriberList << ds.getSubscriber(subscriberMap.key,allSamplesToStatus)
+            }
+        }catch(Exception e){
+            throw new Exception(e.message)
+        }
+
+        println subscriberList
+
+        output.fetchedSubscribers(subscriberList)
     }
 }
