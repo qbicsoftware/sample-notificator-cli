@@ -1,4 +1,4 @@
-package life.qbic.business.notification.create
+package life.qbic.business.subscription.fetch
 
 import life.qbic.business.exception.DatabaseQueryException
 import life.qbic.business.subscription.Subscriber
@@ -6,13 +6,11 @@ import life.qbic.business.subscription.Subscriber
 import java.time.LocalDate
 
 /**
- * <b><short description></b>
- *
- * <p><detailed description></p>
+ * <p>Fetches the subscribers from the database</p>
  *
  * @since 1.0.0
  */
-interface CreateNotificationDataSource {
+interface FetchSubscriberDataSource {
 
     /**
      * Retrieves a list of subscribers, that need to be notified.
