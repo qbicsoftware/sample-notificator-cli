@@ -1,7 +1,6 @@
 package life.qbic.business.notification.create
 
 import life.qbic.business.subscription.Subscriber
-import java.time.LocalDate
 
 /**
  * <h1>Sends an email to a lists of subscribers</h1>
@@ -21,21 +20,16 @@ class CreateNotification implements CreateNotificationInput{
     }
 
     @Override
-    void createNotifications(String date) {
-        LocalDate localDate = LocalDate.parse(date)
-        List<Subscriber> subscribers = ds.getSubscribersForNotificationsAt(localDate)
-        println subscribers
+    void createNotifications(List<Subscriber> subscribers) {
         Map<Subscriber, String> createdNotifications = createNotificationPerSubscriber(subscribers)
-        println(createdNotifications)
         output.createdNotifications(createdNotifications)
     }
 
     private static Map<Subscriber, String> createNotificationPerSubscriber(List<Subscriber> subscriber) {
 
-        //ToDo replace this with sampleCodes associated with subscriber
-        List<String> sampleCodes = ["ABCDESAMPLE1", "ABCDESAMPLE2", "ABCDESAMPLE3", "FGHIJSAMPLE1", "FGHIJSAMPLE2", "FGHIJSAMPLE3", "KLMNOPSAMPLE1", "KLMNOPSAMPLE2", "KLMNOPSAMPLE3"]
         Map<Subscriber, String> notificationPerSubscriber = [:]
         subscriber.each {
+            List<String> sampleCodes = getSampleCodesFromSubscriber(it)
             String failedNotification = failedQCMailMessage(it, sampleCodes)
             notificationPerSubscriber[it] = failedNotification
         }
@@ -43,26 +37,44 @@ class CreateNotification implements CreateNotificationInput{
         return notificationPerSubscriber
     }
 
+    private static List<String> getSampleCodesFromSubscriber(Subscriber subscriber) {
+        List<String> failedQCCodes = []
+        subscriber.subscriptions.each {
+            if(it.value.toString() == "FAILED_QC") {
+                failedQCCodes.add(it.key)
+            }}
+        return failedQCCodes
+    }
 
     private static String failedQCMailMessage(Subscriber subscriber, List<String> failedQCSampleCodes) {
-        String failedQCMessage = """Dear ${subscriber.firstName} ${subscriber.lastName},
-                                 this is an automated email to inform you that samples in the following projects have failed the quality control step:
-                                 <a href="Link to some explanation">Click here to learn more.</a>
-                                 If you would like to unsubscribe from this or other project updates, you can do so by clicking <a href="Link to subscription thingy">here</a>.
-                                 Best regards,
-                                 your QBiC team.
-                                 <signature>
-             """
-        return failedQCMessage
+
+        String notificationIntro = """
+                                   Dear ${subscriber.firstName} ${subscriber.lastName},
+                                   this is an automated email to inform you that samples in the following projects have failed the quality control step:
+                                   <a href="Link to some explanation">Click here to learn more.</a>
+                                   """
+        String projectList = listProjects(failedQCSampleCodes)
+
+        String notificationOutro = """
+                                   If you would like to unsubscribe from this or other project updates, you can do so by clicking <a href="Link to subscription thingy">here</a>.
+                                   Best regards,
+                                   your QBiC team.
+                                   <signature>
+                                   """
+
+        String completeMail = notificationIntro.concat(projectList).concat(notificationOutro)
+
+        return completeMail
     }
 
 
     private static String listProjects(List<String> failedQCSampleCodes){
 
-        StringBuffer listProjectsBuffer
+        StringBuffer listProjectsBuffer = new StringBuffer()
 
-        String previousProjectCode = "TestProject"
-        failedQCSampleCodes.each {String sampleCode ->
+        String previousProjectCode = "NONEXISTENT PROJECT CODE"
+        //Let's make sure the Samples are sorted by their ProjectCode before adding them to the generated Mail.
+        failedQCSampleCodes.sort().each {String sampleCode ->
             if (projectCodeIsSame(getProjectCodeFromSample(sampleCode), previousProjectCode)){
                 listProjectsBuffer.append(sampleCode)
                 listProjectsBuffer << "\n"
@@ -84,6 +96,7 @@ class CreateNotification implements CreateNotificationInput{
     }
 
     private static String getProjectCodeFromSample(String sampleCode) {
-        return sampleCode(0, 5)
+        String projectCode = sampleCode.substring(0, 5)
+        return projectCode
     }
 }

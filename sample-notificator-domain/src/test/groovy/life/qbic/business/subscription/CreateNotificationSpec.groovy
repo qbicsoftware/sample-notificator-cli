@@ -2,13 +2,9 @@ package life.qbic.business.subscription
 
 import life.qbic.business.notification.create.CreateNotification
 import life.qbic.business.notification.create.CreateNotificationDataSource
-import life.qbic.business.notification.create.CreateNotificationInput
 import life.qbic.business.notification.create.CreateNotificationOutput
-import life.qbic.datamodel.dtos.business.OfferId
 import life.qbic.datamodel.samples.Status
 import spock.lang.Specification
-
-import java.time.LocalDate
 
 /**
  * <class short description - One Line!>
@@ -30,14 +26,18 @@ class CreateNotificationSpec extends Specification{
         CreateNotification createNotification = new CreateNotification(ds, output)
 
         and: "a mocked subscriberList that is returned from the data source"
-        Subscriber subscriber1 = new Subscriber("Jenny", "Bödker", "Jenny.bödker@uni-tuebingen.de", new HashMap<String, Status>())
-        Subscriber subscriber2 = new Subscriber("Tobias", "Koch", "Tobias.Koch@uni-tuebingen.de", new HashMap<String, Status>())
-        ds.getSubscribersForNotificationsAt(_ as LocalDate) >> ["Jenny", "Tobi", "Sven", "Steffen", "Andreas", "Luis"]
+        Status failedQCStatus = Status.FAILED_QC
+        Status sequencingStatus = Status.SEQUENCING
+        Status dataAvailableStatus = Status.DATA_AVAILABLE
+        Map<String, Status> subscriptions1 = [QABCDE1: failedQCStatus, QABCDE2: failedQCStatus, QABCDE3: failedQCStatus, QABCDE4: failedQCStatus, QFGHIJ1: sequencingStatus, QFGHIJ2: sequencingStatus, QFGHIJ3: sequencingStatus, QKLMNO1: dataAvailableStatus, QKLMNO2: dataAvailableStatus, QKLMNO3: dataAvailableStatus]
+        Map<String, Status> subscriptions2 = [QABCDE1: sequencingStatus, QABCDE2: dataAvailableStatus, QABCDE3: sequencingStatus, QABCDE4: failedQCStatus, QFGHIJ1: dataAvailableStatus, QFGHIJ2: dataAvailableStatus, QFGHIJ3: sequencingStatus, QKLMNO1: dataAvailableStatus, QKLMNO2: failedQCStatus, QKLMNO3: sequencingStatus]
+        Subscriber subscriber1 = new Subscriber("J-Dog", "Bödker", "Jenny.bödker@uni-tuebingen.de", subscriptions1)
+        Subscriber subscriber2 = new Subscriber("Tobias", "Koch", "Tobias.Koch@uni-tuebingen.de", subscriptions2)
 
-        when: "The Create Notification is triggered"
-        createNotification.createNotifications("1998-04-12")
+        when: "The CreateNotification Use Case is triggered"
+        createNotification.createNotifications([subscriber1, subscriber2])
 
-        then: "A Map associated notifications with their subscriber for the provided date is returned"
+        then: "A map containing the notifications associated with the subscriber for the provided date is returned"
         1 * output.createdNotifications(_ as Map<Subscriber, String>)
     }
 }
