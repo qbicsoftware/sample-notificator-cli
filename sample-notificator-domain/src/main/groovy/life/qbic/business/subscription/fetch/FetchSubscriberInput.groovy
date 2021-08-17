@@ -12,5 +12,5 @@ interface FetchSubscriberInput {
      * Trigger sending notifications to a list of subscribers about changes in their subscriptions
      * @param date A date in the format yyyy-mm-dd
      */
-    void createNotifications(String date)
+    void fetchSubscriber(String date)
 }

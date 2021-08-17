@@ -23,7 +23,7 @@ class FetchSubscriber implements FetchSubscriberInput{
     }
 
     @Override
-    void createNotifications(String date) {
+    void fetchSubscriber(String date) {
         LocalDate localDate = LocalDate.parse(date)
         List<Subscriber> subscribers = ds.getSubscribersForNotificationsAt(localDate)
         output.fetchedSubscribers(subscribers)
