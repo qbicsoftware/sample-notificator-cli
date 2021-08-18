@@ -1,6 +1,5 @@
 package life.qbic.business.notification.create
-
-import life.qbic.business.subscription.Subscriber
+import java.time.LocalDate
 
 /**
  * <h1>Interface to access and trigger the {@link CreateNotification} use case</h1>
@@ -11,8 +10,8 @@ import life.qbic.business.subscription.Subscriber
 interface CreateNotificationInput {
 
     /**
-     * Trigger sending notifications to a list of subscribers about changes in their subscriptions
+     * Trigger creating template notification messages for a list of subscribers about changes in their subscriptions
      * @param date A date in the format yyyy-mm-dd
      */
-    void createNotifications(List<Subscriber> subscribers)
+    void createNotifications(LocalDate date)
 }

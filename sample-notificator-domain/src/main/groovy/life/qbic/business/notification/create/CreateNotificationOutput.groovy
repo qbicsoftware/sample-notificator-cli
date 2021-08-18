@@ -11,9 +11,9 @@ import life.qbic.business.subscription.Subscriber
 interface CreateNotificationOutput {
 
     /**
-     * Returns the notification messages associated with the provided Date
+     * Returns a map containing the notification messages associated with their relevant subscriber for the provided Date
      *
-     * @param List containing the created Notification Messages
+     * @param Map containing the created Notification Messages associated with the subscriber
      * @since 1.0.0
      */
 

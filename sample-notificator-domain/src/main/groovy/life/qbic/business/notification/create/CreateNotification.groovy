@@ -1,15 +1,17 @@
 package life.qbic.business.notification.create
 
 import life.qbic.business.subscription.Subscriber
+import java.time.LocalDate
 
 /**
- * <h1>Sends an email to a lists of subscribers</h1>
+ * This class implements the logic to create template email messages.
  *
- * <p>This use case collects a list of subscribers who's subscribed project got updated the current day</p>
+ * The template message generated in this class inform a subscriber
+ * about changes in the sample status for her projects after a provided date.
  *
- * @since 1.0.0
- *
-*/
+ * @since: 1.0.0
+ */
+
 class CreateNotification implements CreateNotificationInput{
     private final CreateNotificationDataSource ds
     private final CreateNotificationOutput output
@@ -20,15 +22,21 @@ class CreateNotification implements CreateNotificationInput{
     }
 
     @Override
-    void createNotifications(List<Subscriber> subscribers) {
+    void createNotifications(LocalDate localDate) {
+        List<Subscriber> subscribers = ds.getSubscribersForNotificationsAt(localDate)
         Map<Subscriber, String> createdNotifications = createNotificationPerSubscriber(subscribers)
         output.createdNotifications(createdNotifications)
     }
 
-    private static Map<Subscriber, String> createNotificationPerSubscriber(List<Subscriber> subscriber) {
+    /**
+     * Method which returns a map containing the FailedQC notification for each subscriber
+     * @param subscribers list of subscribers, which are to be informed about a change in SampleStatus
+     * @return map associating the generated notification with the to be informed subscriber
+     */
+    private static Map<Subscriber, String> createNotificationPerSubscriber(List<Subscriber> subscribers) {
 
         Map<Subscriber, String> notificationPerSubscriber = [:]
-        subscriber.each {
+        subscribers.each {
             List<String> sampleCodes = getSampleCodesFromSubscriber(it)
             String failedNotification = failedQCMailMessage(it, sampleCodes)
             notificationPerSubscriber[it] = failedNotification
@@ -37,6 +45,11 @@ class CreateNotification implements CreateNotificationInput{
         return notificationPerSubscriber
     }
 
+    /**
+     * Method which extracts the SampleCodes set to FAILED_QC for a given subscriber
+     * @param subscriber Subscriber which is to be notified about FAILED_QC Sample Codes
+     * @return List of SampleCodes whose status is set to FAILED_QC
+     */
     private static List<String> getSampleCodesFromSubscriber(Subscriber subscriber) {
         List<String> failedQCCodes = []
         subscriber.subscriptions.each {
@@ -46,6 +59,12 @@ class CreateNotification implements CreateNotificationInput{
         return failedQCCodes
     }
 
+    /**
+     * Method which assembles the email Template informing a subscriber about the projects containing FAILED_QC samples
+     * @param subscriber Subscriber for whom the template email is generated
+     * @param failedQCSampleCodes List of SampleCodes whose status were set to FAILED_QC
+     * @return String containing the assembled FAILED_QC template email message.
+     */
     private static String failedQCMailMessage(Subscriber subscriber, List<String> failedQCSampleCodes) {
 
         String notificationIntro = """
@@ -67,7 +86,11 @@ class CreateNotification implements CreateNotificationInput{
         return completeMail
     }
 
-
+    /**
+     * Method which generates the enumeration of project sample codes for which the status was set to FAILED_QC
+     * @param failedQCSampleCodes List of SampleCodes whose status were set to FAILED_QC
+     * @return String enumerating the projectCode with its Samples for which the status was set to FAILED_QC
+     */
     private static String listProjects(List<String> failedQCSampleCodes){
 
         StringBuffer listProjectsBuffer = new StringBuffer()
@@ -91,10 +114,21 @@ class CreateNotification implements CreateNotificationInput{
         return listProjectsBuffer.toString()
     }
 
+    /**
+     * Method comparing the currentProjectCode of a Sample with the projectCode of the previous Sample
+     * @param currentProjectCode ProjectCode of current Sample in a SampleCode list
+     * @param previousProjectCode ProjectCode of the previous Sample in a SampleCode list
+     * @return true if ProjectCode if equal, false otherwise
+     */
     private static boolean projectCodeIsSame(String currentProjectCode, String previousProjectCode) {
         return currentProjectCode == previousProjectCode
     }
 
+    /**
+     * Method extracting the ProjectCode from the SampleCode
+     * @param sampleCode SampleCode, which contains the ProjectCode in its first 5 characters
+     * @return projectCode of the provided SampleCode.
+     */
     private static String getProjectCodeFromSample(String sampleCode) {
         String projectCode = sampleCode.substring(0, 5)
         return projectCode
