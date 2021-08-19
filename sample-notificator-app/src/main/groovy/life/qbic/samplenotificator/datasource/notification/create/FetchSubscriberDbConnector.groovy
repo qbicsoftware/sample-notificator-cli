@@ -61,30 +61,31 @@ class FetchSubscriberDbConnector implements FetchSubscriberDataSource{
     }
 
     @Override
-    Map<Integer,List<String>> getSubscriberIdForSamples(Map<String,Status> sampleToStatus){
+    List<Subscriber> getSubscriberIdForSamples(Map<String,Status> sampleToStatus){
 
-        Map<Integer,List<String>> userToString = new HashMap<>()
+        List<Subscriber> subscribers = []
         try{
             Connection connection = connectionProvider.connect()
 
             connection.withCloseable { Connection con ->
-                sampleToStatus.each {
+                sampleToStatus.each {sampleEntry ->
                     //get all subscriptions for a person, id to list of project codes
-                    String sqlQuery = SELECT_SUBSCRIPTIONS + " WHERE ? LIKE CONCAT(project_code ,'%') "
+                    String sqlQuery = JOIN_SUBSCRIBERS_SUBSCRIPTIONS + " WHERE ? LIKE CONCAT(project_code ,'%') "
 
                     PreparedStatement preparedStatement = con.prepareStatement(sqlQuery)
-                    preparedStatement.setString(1,it.key)
+                    preparedStatement.setString(1,sampleEntry.key)
                     preparedStatement.execute()
                     def resultSet = preparedStatement.getResultSet()
 
                     while(resultSet.next()){
-                        int user = resultSet.getInt("subscriber_id")
+                        String firstName = resultSet.getString("first_name")
+                        String lastName = resultSet.getString("last_name")
+                        String email = resultSet.getString("email")
 
-                        if(userToString.containsKey(user)){
-                            userToString.get(user) << it.key
-                        }
-                        else{
-                            userToString.put(user,[it.key])
+                        if(subscribers.find {it.email == email}){
+                            subscribers.find{it.email == email}.subscriptions.put(sampleEntry.key,sampleEntry.value)
+                        }else{
+                            subscribers << new Subscriber(firstName,lastName,email,sampleToStatus)
                         }
                     }
                 }
@@ -93,39 +94,10 @@ class FetchSubscriberDbConnector implements FetchSubscriberDataSource{
             throw new DatabaseQueryException(exception.message)
         }
 
-        return userToString
+        return subscribers
     }
 
-    @Override
-    Subscriber getSubscriber(Integer subscriberId, Map<String,Status> sampleToStatus){
-        Subscriber subscriber = null
-        try{
-            Connection connection = connectionProvider.connect()
-
-            connection.withCloseable {
-                String sqlStatement = SELECT_SUBSCRIBERS + " WHERE id = ?"
-
-                PreparedStatement preparedStatement = it.prepareStatement(sqlStatement)
-                preparedStatement.setInt(1,subscriberId)
-                preparedStatement.execute()
-                def resultSet = preparedStatement.getResultSet()
-
-                while(resultSet.next()) {
-                    String firstName = resultSet.getString("first_name")
-                    String lastName = resultSet.getString("last_name")
-                    String email = resultSet.getString("email")
-                    subscriber = new Subscriber(firstName,lastName,email,sampleToStatus)
-                }
-            }
-        }catch(Exception exception){
-            throw new DatabaseQueryException(exception.message)
-        }
-        return subscriber
-    }
-
-
-    private String SELECT_SUBSCRIBERS = "SELECT first_name, last_name, email FROM subscriber"
-    private String SELECT_SUBSCRIPTIONS = "SELECT project_code, subscriber_id FROM subscription"
+    private String JOIN_SUBSCRIBERS_SUBSCRIPTIONS = "SELECT * FROM subscription LEFT JOIN subscriber ON subscription.subscriber_id = subscriber.id"
     private String SELECT_NOTIFICATIONS = "SELECT sample_code, sample_status FROM notification"
 
 }

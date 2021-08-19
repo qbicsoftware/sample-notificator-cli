@@ -27,23 +27,16 @@ class FetchSubscriber implements FetchSubscriberInput{
     void fetchSubscriber(String date) {
         LocalDate localDate = LocalDate.parse(date)
 
-        List<Subscriber> subscriberList = []
         try{
             //1. get todays notifications
             Map<String, Status> sampleToStatus = ds.getNotificationsForDay(localDate)
             // retrieve the project code
-            Map<Integer,List<String>> subscriberIdsToSamples = ds.getSubscriberIdForSamples(sampleToStatus)
-            //2. get the subscribers for the subscriptions
-            subscriberIdsToSamples.each { subscriberMap ->
-                Map<String,Status> allSamplesToStatus = sampleToStatus.findAll {it.key in subscriberMap.value}
-                subscriberList << ds.getSubscriber(subscriberMap.key,allSamplesToStatus)
-            }
-        }catch(Exception e){
+            List<Subscriber> subscribers = ds.getSubscriberIdForSamples(sampleToStatus)
+            println subscribers
+            output.fetchedSubscribers(subscribers)
+        } catch(Exception e){
             throw new Exception(e.message)
         }
-
-        println subscriberList
-
-        output.fetchedSubscribers(subscriberList)
     }
+
 }

@@ -65,6 +65,7 @@ class DependencyManager implements FetchSubscriberOutput{
         return fetchSubscriber
     }
 
+    //todo we might not want to have the dependency manager implement the output interface
     @Override
     void fetchedSubscribers(List<Subscriber> subscribers) {
         println "received the subscribers"
