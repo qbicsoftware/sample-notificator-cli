@@ -131,7 +131,6 @@ class CreateNotificationDbConnector implements CreateNotificationDataSource{
         return subscriber
     }
 
-
     private String SELECT_SUBSCRIBERS = "SELECT first_name, last_name, email FROM subscriber"
     private String SELECT_SUBSCRIPTIONS = "SELECT project_code, subscriber_id FROM subscription"
     private String SELECT_NOTIFICATIONS = "SELECT sample_code, sample_status FROM notification"

@@ -2,9 +2,10 @@ package life.qbic.samplenotificator
 
 import groovy.util.logging.Log4j2
 import life.qbic.business.notification.create.CreateNotification
-import life.qbic.business.notification.create.CreateNotificationInput
-import life.qbic.business.notification.create.CreateNotificationOutput
+import life.qbic.business.subscription.Subscriber
 import life.qbic.samplenotificator.cli.NotificatorCommandLineOptions
+import life.qbic.samplenotificator.components.CreateNotificationController
+import life.qbic.samplenotificator.components.CreateNotificationPresenter
 import life.qbic.samplenotificator.datasource.notification.create.CreateNotificationDbConnector
 import life.qbic.samplenotificator.datasource.database.DatabaseSession
 
@@ -18,11 +19,17 @@ import life.qbic.samplenotificator.datasource.database.DatabaseSession
 class DependencyManager {
 
     private Properties properties
-    private CreateNotificationInput createNotification
+    private String date
+    private CreateNotificationPresenter createNotificationPresenter
+    private CreateNotification createNotification
+    private CreateNotificationController createNotificationController
+    private Map<Subscriber, String> notificationPerSubscriber = new HashMap<Subscriber, String>()
 
     DependencyManager(NotificatorCommandLineOptions commandLineParameters){
         properties = getProperties(commandLineParameters.pathToConfig)
+        date = commandLineParameters.date
         initializeDependencies()
+
     }
 
     private void initializeDependencies(){
@@ -55,11 +62,13 @@ class DependencyManager {
 
     private void setupCreateNotification(){
         CreateNotificationDbConnector connector = new CreateNotificationDbConnector(DatabaseSession.getInstance())
-        CreateNotificationOutput someOutput = null //todo implement me
-        createNotification = new CreateNotification(connector,someOutput)
+        createNotificationPresenter = new CreateNotificationPresenter(notificationPerSubscriber)
+        createNotification = new CreateNotification(connector, createNotificationPresenter)
+        createNotificationController = new CreateNotificationController(createNotification)
     }
 
-    CreateNotification getCreateNotification() {
-        return createNotification
+    CreateNotificationController getCreateNotificationController() {
+        return createNotificationController
     }
+
 }
