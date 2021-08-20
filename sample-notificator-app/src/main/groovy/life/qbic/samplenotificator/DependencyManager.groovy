@@ -19,7 +19,6 @@ import life.qbic.samplenotificator.datasource.database.DatabaseSession
 class DependencyManager {
 
     private Properties properties
-    private String date
     private CreateNotificationPresenter createNotificationPresenter
     private CreateNotification createNotification
     private CreateNotificationController createNotificationController
@@ -27,9 +26,7 @@ class DependencyManager {
 
     DependencyManager(NotificatorCommandLineOptions commandLineParameters){
         properties = getProperties(commandLineParameters.pathToConfig)
-        date = commandLineParameters.date
         initializeDependencies()
-
     }
 
     private void initializeDependencies(){

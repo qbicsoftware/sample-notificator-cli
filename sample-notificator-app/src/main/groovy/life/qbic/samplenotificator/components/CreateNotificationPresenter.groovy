@@ -24,8 +24,7 @@ class CreateNotificationPresenter implements CreateNotificationOutput {
     void createdNotifications(Map<Subscriber, String> notificationPerSubscriber) {
         this.notificationPerSubscriber = notificationPerSubscriber
         this.notificationPerSubscriber.each {
-            println(it.key.email + "\n")
-            println(it.value + "\n")
+            println(it.value)
         }
     }
 }
