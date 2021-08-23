@@ -1,0 +1,78 @@
+package life.qbic.business.subscription
+
+import life.qbic.business.subscription.fetch.FetchSubscriber
+import life.qbic.business.subscription.fetch.FetchSubscriberDataSource
+import life.qbic.business.subscription.fetch.FetchSubscriberOutput
+import life.qbic.datamodel.samples.Status
+import spock.lang.Shared
+import spock.lang.Specification
+
+import java.time.LocalDate
+
+/**
+ * <b><short description></b>
+ *
+ * <p><detailed description></p>
+ *
+ * @since 1.0.0
+ */
+class FetchSubscriberSpec extends Specification {
+    @Shared
+    Subscriber subscriber1
+    @Shared
+    Subscriber subscriber2
+    @Shared
+    Subscriber subscriber3
+    @Shared
+    Subscriber subscriber1_without
+    @Shared
+    Subscriber subscriber2_without
+    @Shared
+    Subscriber subscriber3_without
+
+    @Shared
+    Map<String, Status> subscribedSamples
+    @Shared
+    Map<String, Status> subscribedSamples2
+
+    def setup(){
+
+        subscribedSamples = ["QMCDP007A3":Status.DATA_AVAILABLE,
+                                                 "QMCDP007A2":Status.DATA_AVAILABLE,
+                                                 "QMCDP007A1":Status.DATA_AVAILABLE,
+                                                 "QMAAP007A3":Status.SAMPLE_RECEIVED,
+                                                 "QMAAP018A2":Status.SAMPLE_RECEIVED,
+                                                 "QMAAP04525":Status.SAMPLE_RECEIVED]
+        subscribedSamples2 = ["QMCDP007A3":Status.DATA_AVAILABLE,
+                                                 "QMADP007A2":Status.DATA_AVAILABLE,
+                                                 "QMCCCP007A1":Status.DATA_AVAILABLE,
+                                                 "QMBBP007A3":Status.SAMPLE_RECEIVED,
+                                                 "QABCP018A2":Status.SAMPLE_RECEIVED,
+                                                 "QOABP04525":Status.SAMPLE_RECEIVED]
+        subscriber1 = new Subscriber("John","Doe","john.doe@gmail.de", subscribedSamples)
+        subscriber2 = new Subscriber("Janet","Doe","janet.doe@gmail.de",subscribedSamples)
+        subscriber3 = new Subscriber("Janet","Doe","janet.doe@gmail.de",subscribedSamples)
+        subscriber1_without = new Subscriber("John","Doe","john.doe@gmail.de")
+        subscriber2_without = new Subscriber("Janet","Doe","janet.doe@gmail.de")
+        subscriber3_without = new Subscriber("Janet","Doe","janet.doe@gmail.de")
+
+    }
+
+    def "FetchSubscriber fetches all subscribers for updated projects"(){
+        given:
+        FetchSubscriberOutput output = Mock()
+        FetchSubscriberDataSource ds = Stub(FetchSubscriberDataSource.class)
+        FetchSubscriber fetchSubscriber = new FetchSubscriber(ds,output)
+
+        ds.getUpdatedSamplesForDay(_ as LocalDate) >> subscribedSamples
+        ds.getSubscriberForProject("QMCD") >> [subscriber1_without,subscriber2_without,subscriber3_without]
+        ds.getSubscriberForProject("QMAA") >> [subscriber1_without,subscriber2_without,subscriber3_without]
+
+
+        when:
+        fetchSubscriber.fetchSubscriber("2021-08-17")
+
+        then:
+        1 * output.fetchedSubscribers([subscriber1,subscriber2])
+    }
+}

@@ -61,19 +61,18 @@ class FetchSubscriberDbConnector implements FetchSubscriberDataSource{
     }
 
     @Override
-    List<Subscriber> getSubscribersForSamples(Map<String,Status> sampleToStatus){
+    List<Subscriber> getSubscriberForProject(String projectCode){
 
         List<Subscriber> subscribers = []
         try{
             Connection connection = connectionProvider.connect()
 
             connection.withCloseable { Connection con ->
-                sampleToStatus.each {sampleEntry ->
                     //get all subscriptions for a person, id to list of project codes
-                    String sqlQuery = JOIN_SUBSCRIBERS_SUBSCRIPTIONS + " WHERE ? LIKE CONCAT(project_code ,'%') "
+                    String sqlQuery = JOIN_SUBSCRIBERS_SUBSCRIPTIONS + " WHERE ? = project_code"
 
                     PreparedStatement preparedStatement = con.prepareStatement(sqlQuery)
-                    preparedStatement.setString(1,sampleEntry.key)
+                    preparedStatement.setString(1,projectCode)
                     preparedStatement.execute()
                     def resultSet = preparedStatement.getResultSet()
 
@@ -82,13 +81,8 @@ class FetchSubscriberDbConnector implements FetchSubscriberDataSource{
                         String lastName = resultSet.getString("last_name")
                         String email = resultSet.getString("email")
 
-                        if(subscribers.find {it.email == email}){
-                            subscribers.find{it.email == email}.subscriptions.put(sampleEntry.key,sampleEntry.value)
-                        }else{
-                            subscribers << new Subscriber(firstName,lastName,email,sampleToStatus)
-                        }
+                        subscribers << new Subscriber(firstName,lastName,email)
                     }
-                }
             }
         }catch(Exception exception){
             throw new DatabaseQueryException(exception.message)
