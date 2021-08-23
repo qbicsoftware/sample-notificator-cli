@@ -1,7 +1,6 @@
 package life.qbic.samplenotificator
 
 import groovy.util.logging.Log4j2
-import life.qbic.business.notification.create.CreateNotification
 import life.qbic.business.subscription.Subscriber
 import life.qbic.business.subscription.fetch.FetchSubscriber
 import life.qbic.business.subscription.fetch.FetchSubscriberInput

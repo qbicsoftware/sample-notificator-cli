@@ -3,7 +3,7 @@ package life.qbic.business.subscription.fetch
 import life.qbic.business.subscription.Subscriber
 
 /**
- * <p>Interface to access and trigger the {@link FetchSubscriber} use case</p>
+ * <p>Defines what information is forwarded from the {@link FetchSubscriber} use case</p>
  *
  * @since 1.0.0
  *
@@ -11,8 +11,8 @@ import life.qbic.business.subscription.Subscriber
 interface FetchSubscriberOutput {
 
     /**
-     * Trigger sending notifications to a list of subscribers about changes in their subscriptions
-     * @param date A date in the format yyyy-mm-dd
+     * Transfers the generated list of subscribers to the implementing class
+     * @param subscribers the retrieved list of subscribers with modified subscriptions
      * @since 1.0.0
      */
     void fetchedSubscribers(List<Subscriber> subscribers)
