@@ -18,6 +18,7 @@ interface FetchSubscriberDataSource {
      * @param day The date of a day in yyyy-MM-dd
      * @return a mip with updated sample codes and new statuses
      * @throws DatabaseQueryException
+     * @since 1.0.0
      */
     Map<String, Status> getUpdatedSamplesForDay(LocalDate day) throws DatabaseQueryException
 
@@ -26,6 +27,7 @@ interface FetchSubscriberDataSource {
      * @param sampleToStatus The updated samples with their new status
      * @return A list of subscribers for the projects of the given samples
      * @throws DatabaseQueryException
+     * @since 1.0.0
      */
     List<Subscriber> getSubscribersForSamples(Map<String,Status> sampleToStatus) throws DatabaseQueryException
 

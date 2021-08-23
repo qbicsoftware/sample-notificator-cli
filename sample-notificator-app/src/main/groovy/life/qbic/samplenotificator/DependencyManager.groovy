@@ -71,4 +71,9 @@ class DependencyManager implements FetchSubscriberOutput{
         println "received the subscribers"
         println subscribers
     }
+
+    @Override
+    void failNotification(String notification) {
+        log.error(notification)
+    }
 }

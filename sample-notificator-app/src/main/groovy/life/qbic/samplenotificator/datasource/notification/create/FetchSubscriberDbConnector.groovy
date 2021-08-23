@@ -97,7 +97,7 @@ class FetchSubscriberDbConnector implements FetchSubscriberDataSource{
         return subscribers
     }
 
-    private String JOIN_SUBSCRIBERS_SUBSCRIPTIONS = "SELECT * FROM subscription LEFT JOIN subscriber ON subscription.subscriber_id = subscriber.id"
-    private String SELECT_NOTIFICATIONS = "SELECT sample_code, sample_status FROM notification"
+    private static String JOIN_SUBSCRIBERS_SUBSCRIPTIONS = "SELECT * FROM subscription LEFT JOIN subscriber ON subscription.subscriber_id = subscriber.id"
+    private static String SELECT_NOTIFICATIONS = "SELECT sample_code, sample_status FROM notification"
 
 }

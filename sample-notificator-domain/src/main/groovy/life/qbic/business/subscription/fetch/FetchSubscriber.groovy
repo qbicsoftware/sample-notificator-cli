@@ -26,16 +26,15 @@ class FetchSubscriber implements FetchSubscriberInput{
     @Override
     void fetchSubscriber(String date) {
         LocalDate localDate = LocalDate.parse(date)
-
         try{
             //1. get todays notifications
             Map<String, Status> sampleToStatus = ds.getUpdatedSamplesForDay(localDate)
             // retrieve the project code
             List<Subscriber> subscribers = ds.getSubscribersForSamples(sampleToStatus)
-            println subscribers
             output.fetchedSubscribers(subscribers)
         } catch(Exception e){
-            throw new Exception(e.message)
+            output.failNotification("An error occurred while fetching subscribers for updated projects")
+            output.failNotification(e.message)
         }
     }
 
