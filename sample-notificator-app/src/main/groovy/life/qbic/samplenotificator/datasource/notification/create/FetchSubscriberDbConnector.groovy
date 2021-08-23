@@ -61,7 +61,7 @@ class FetchSubscriberDbConnector implements FetchSubscriberDataSource{
     }
 
     @Override
-    List<Subscriber> getSubscriberIdForSamples(Map<String,Status> sampleToStatus){
+    List<Subscriber> getSubscribersForSamples(Map<String,Status> sampleToStatus){
 
         List<Subscriber> subscribers = []
         try{

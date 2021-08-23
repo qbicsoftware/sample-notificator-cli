@@ -31,7 +31,7 @@ class FetchSubscriber implements FetchSubscriberInput{
             //1. get todays notifications
             Map<String, Status> sampleToStatus = ds.getUpdatedSamplesForDay(localDate)
             // retrieve the project code
-            List<Subscriber> subscribers = ds.getSubscriberIdForSamples(sampleToStatus)
+            List<Subscriber> subscribers = ds.getSubscribersForSamples(sampleToStatus)
             println subscribers
             output.fetchedSubscribers(subscribers)
         } catch(Exception e){

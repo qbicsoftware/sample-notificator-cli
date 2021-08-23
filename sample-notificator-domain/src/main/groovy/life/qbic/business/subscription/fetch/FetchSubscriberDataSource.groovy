@@ -27,7 +27,7 @@ interface FetchSubscriberDataSource {
      * @return A list of subscribers for the projects of the given samples
      * @throws DatabaseQueryException
      */
-    List<Subscriber> getSubscriberIdForSamples(Map<String,Status> sampleToStatus) throws DatabaseQueryException
+    List<Subscriber> getSubscribersForSamples(Map<String,Status> sampleToStatus) throws DatabaseQueryException
 
 
 }
