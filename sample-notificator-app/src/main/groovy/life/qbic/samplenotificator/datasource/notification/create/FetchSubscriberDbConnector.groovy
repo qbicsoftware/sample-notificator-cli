@@ -32,7 +32,7 @@ class FetchSubscriberDbConnector implements FetchSubscriberDataSource{
     }
 
     @Override
-    Map<String, Status> getNotificationsForDay(LocalDate day){
+    Map<String, Status> getUpdatedSamplesForDay(LocalDate day){
         Instant startOfDay = day.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()
         Instant endOfDay = day.plusDays(1).atStartOfDay().minusNanos(1).atZone(ZoneId.systemDefault()).toInstant()
         String sqlQuery = SELECT_NOTIFICATIONS + " WHERE arrival_time BETWEEN ? AND ?"

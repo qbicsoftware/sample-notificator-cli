@@ -1,6 +1,6 @@
 package life.qbic.business.subscription.fetch
 
-import life.qbic.business.exception.DatabaseQueryException
+
 import life.qbic.business.subscription.Subscriber
 import life.qbic.datamodel.samples.Status
 
@@ -29,7 +29,7 @@ class FetchSubscriber implements FetchSubscriberInput{
 
         try{
             //1. get todays notifications
-            Map<String, Status> sampleToStatus = ds.getNotificationsForDay(localDate)
+            Map<String, Status> sampleToStatus = ds.getUpdatedSamplesForDay(localDate)
             // retrieve the project code
             List<Subscriber> subscribers = ds.getSubscriberIdForSamples(sampleToStatus)
             println subscribers

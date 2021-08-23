@@ -19,7 +19,7 @@ interface FetchSubscriberDataSource {
      * @return a mip with updated sample codes and new statuses
      * @throws DatabaseQueryException
      */
-    Map<String, Status> getNotificationsForDay(LocalDate day) throws DatabaseQueryException
+    Map<String, Status> getUpdatedSamplesForDay(LocalDate day) throws DatabaseQueryException
 
     /**
      * Returns a list of subscribers that subscribed to projects that contain updated samples
