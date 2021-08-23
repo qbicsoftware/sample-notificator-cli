@@ -23,7 +23,7 @@ interface FetchSubscriberDataSource {
     Map<String, Status> getUpdatedSamplesForDay(LocalDate day) throws DatabaseQueryException
 
     /**
-     * Returns a list of subscribers that subscribed to projects that contain updated samples
+     * Returns a list of subscribers that subscribed to projects with updated samples
      * @param sampleToStatus The updated samples with their new status
      * @return A list of subscribers for the projects of the given samples
      * @throws DatabaseQueryException
