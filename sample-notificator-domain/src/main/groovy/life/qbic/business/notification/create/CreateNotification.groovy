@@ -53,33 +53,36 @@ class CreateNotification implements CreateNotificationInput{
     private static List<String> getSampleCodesFromSubscriber(Subscriber subscriber) {
         List<String> failedQCCodes = []
         subscriber.subscriptions.each {
-            if(it.value.toString() == "FAILED_QC") {
+            if(it.value.toString() == "SAMPLE_QC_FAIL") {
                 failedQCCodes.add(it.key)
             }}
         return failedQCCodes
     }
 
     /**
-     * Method which assembles the email Template informing a subscriber about the projects containing FAILED_QC samples
+     * Method which assembles the email Template informing a subscriber about the projects containing SAMPLE_QC_FAIL samples
      * @param subscriber Subscriber for whom the template email is generated
-     * @param failedQCSampleCodes List of SampleCodes whose status were set to FAILED_QC
+     * @param failedQCSampleCodes List of SampleCodes whose status were set to SAMPLE_QC_FAIL.
      * @return String containing the assembled FAILED_QC template email message.
      */
     private static String failedQCMailMessage(Subscriber subscriber, List<String> failedQCSampleCodes) {
 
-        String notificationIntro = """
-                                   Dear ${subscriber.firstName} ${subscriber.lastName},
-                                   this is an automated email to inform you that samples in the following projects have failed the quality control step:
-                                   <a href="Link to some explanation">Click here to learn more.</a>
-                                   """
+        String notificationIntro =
+                """
+                Dear ${subscriber.firstName} ${subscriber.lastName},
+                this is an automated email to inform you that samples in the following projects have failed the quality control step:
+                <a href="Link to some explanation">Click here to learn more.</a>
+                """.stripIndent()
+
         String projectList = listProjects(failedQCSampleCodes)
 
-        String notificationOutro = """
-                                   If you would like to unsubscribe from this or other project updates, you can do so by clicking <a href="Link to subscription thingy">here</a>.
-                                   Best regards,
-                                   your QBiC team.
-                                   <signature>
-                                   """
+        String notificationOutro =
+                """
+                If you would like to unsubscribe from this or other project updates, you can do so by clicking <a href="Link to subscription thingy">here</a>.
+                Best regards,
+                your QBiC team.
+                <signature>
+                """.stripIndent()
 
         String completeMail = notificationIntro.concat(projectList).concat(notificationOutro)
 
@@ -87,9 +90,9 @@ class CreateNotification implements CreateNotificationInput{
     }
 
     /**
-     * Method which generates the enumeration of project sample codes for which the status was set to FAILED_QC
-     * @param failedQCSampleCodes List of SampleCodes whose status were set to FAILED_QC
-     * @return String enumerating the projectCode with its Samples for which the status was set to FAILED_QC
+     * Method which generates the enumeration of project sample codes for which the status was set to SAMPLE_QC_FAIL
+     * @param failedQCSampleCodes List of SampleCodes whose status were set to SAMPLE_QC_FAIL
+     * @return String enumerating the projectCode with its Samples for which the status was set to SAMPLE_QC_FAIL
      */
     private static String listProjects(List<String> failedQCSampleCodes){
 
