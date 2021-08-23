@@ -16,7 +16,7 @@ interface FetchSubscriberDataSource {
     /**
      * Retrieves a map of sample codes with statuses, which has been updated at a given day.
      * @param day The date of a day in yyyy-MM-dd
-     * @return a mip with updated sample codes and new statuses
+     * @return a map with updated sample codes and new statuses
      * @throws DatabaseQueryException
      * @since 1.0.0
      */
