@@ -58,8 +58,8 @@ class FetchSubscriberSpec extends Specification {
         FetchSubscriber fetchSubscriber = new FetchSubscriber(ds,output)
 
         ds.getUpdatedSamplesForDay(_ as LocalDate) >> updatedSamples
-        ds.getSubscriberForProject("QMCD") >> [subscriber1_without,subscriber2_without,subscriber3_without]
-        ds.getSubscriberForProject("QMAA") >> [subscriber1_without,subscriber2_without,subscriber3_without]
+        ds.getSubscriberForProject("QMCD") >> [subscriber1_without,subscriber2_without]
+        ds.getSubscriberForProject("QMAA") >> [subscriber1_without,subscriber3_without]
 
         when:
         fetchSubscriber.fetchSubscriber("2021-08-17")
