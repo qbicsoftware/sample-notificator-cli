@@ -33,10 +33,8 @@ class FetchSubscriberDbConnector implements FetchSubscriberDataSource{
     @Override
     Map<String, Status> getUpdatedSamplesForDay(LocalDate day){
         Instant startOfDay = day.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()
-        println startOfDay.toString()
         Instant endOfDay = day.plusDays(1).atStartOfDay().minusNanos(1).atZone(ZoneId.systemDefault()).toInstant()
-        println endOfDay.toString()
-        String sqlQuery = SELECT_NOTIFICATIONS + " WHERE arrival_time BETWEEN ? AND ?"
+        String sqlQuery = SELECT_NOTIFICATIONS + " WHERE arrival_time BETWEEN ? AND ? ORDER BY arrival_time DESC"
         Map<String, Status> foundNotifications = new HashMap<>()
 
         try{
@@ -52,7 +50,9 @@ class FetchSubscriberDbConnector implements FetchSubscriberDataSource{
                 while (resultSet.next()) {
                     String sampleCode = resultSet.getString("sample_code")
                     Status status = Status.valueOf(resultSet.getString("sample_status"))
-                    foundNotifications.put(sampleCode,status)
+
+                    //in case of multiple sample status updates only use the latest update (see the ordering in the SQL query)
+                    if(!foundNotifications.containsKey(sampleCode)) foundNotifications.put(sampleCode,status)
                 }
             }
         }catch(Exception exception){
@@ -60,6 +60,7 @@ class FetchSubscriberDbConnector implements FetchSubscriberDataSource{
         }
         return foundNotifications
     }
+
 
     @Override
     List<Subscriber> getSubscriberForProject(String projectCode){
