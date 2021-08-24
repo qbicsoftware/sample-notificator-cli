@@ -11,9 +11,7 @@ import spock.lang.Specification
 import java.time.LocalDate
 
 /**
- * <b><short description></b>
- *
- * <p><detailed description></p>
+ * <b>Tests the behaviour of the FetchSubscriber use case</b>
  *
  * @since 1.0.0
  */
