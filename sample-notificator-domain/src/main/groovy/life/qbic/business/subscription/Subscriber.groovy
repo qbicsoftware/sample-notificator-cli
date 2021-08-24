@@ -1,5 +1,6 @@
 package life.qbic.business.subscription
 
+import groovy.transform.EqualsAndHashCode
 import life.qbic.datamodel.samples.Status
 
 /**
@@ -10,6 +11,7 @@ import life.qbic.datamodel.samples.Status
  * @since 1.0.0
  *
 */
+@EqualsAndHashCode
 class Subscriber {
     final String firstName
     final String lastName
@@ -23,12 +25,18 @@ class Subscriber {
         this.firstName = Objects.requireNonNull(firstName, "First name must not be null")
         this.lastName = Objects.requireNonNull(lastName, "Last name must not be null")
         this.email = Objects.requireNonNull(email, "Email must not be null")
-        this.subscriptions = Objects.requireNonNull(subscriptions, "The list of subscriptions must not be null")
+        this.subscriptions = Objects.requireNonNull(Collections.unmodifiableMap(subscriptions), "The list of subscriptions must not be null")
     }
 
+    Subscriber(String firstName, String lastName, String email){
+        this.firstName = Objects.requireNonNull(firstName, "First name must not be null")
+        this.lastName = Objects.requireNonNull(lastName, "Last name must not be null")
+        this.email = Objects.requireNonNull(email, "Email must not be null")
+        this.subscriptions = Collections.unmodifiableMap(new HashMap<>())
+    }
 
     @Override
-    public String toString() {
+    String toString() {
         return  firstName + ' ' + lastName + ', ' + email + ', subscriptions: ' + subscriptions.toString()
     }
 }

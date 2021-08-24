@@ -1,11 +1,12 @@
 package life.qbic.samplenotificator
 
 import groovy.util.logging.Log4j2
-import life.qbic.business.notification.create.CreateNotification
-import life.qbic.business.notification.create.CreateNotificationInput
-import life.qbic.business.notification.create.CreateNotificationOutput
+import life.qbic.business.subscription.Subscriber
+import life.qbic.business.subscription.fetch.FetchSubscriber
+import life.qbic.business.subscription.fetch.FetchSubscriberInput
+import life.qbic.business.subscription.fetch.FetchSubscriberOutput
 import life.qbic.samplenotificator.cli.NotificatorCommandLineOptions
-import life.qbic.samplenotificator.datasource.notification.create.CreateNotificationDbConnector
+import life.qbic.samplenotificator.datasource.notification.create.FetchSubscriberDbConnector
 import life.qbic.samplenotificator.datasource.database.DatabaseSession
 
 /**
@@ -15,10 +16,10 @@ import life.qbic.samplenotificator.datasource.database.DatabaseSession
  *
 */
 @Log4j2
-class DependencyManager {
+class DependencyManager implements FetchSubscriberOutput{
 
     private Properties properties
-    private CreateNotificationInput createNotification
+    private FetchSubscriberInput fetchSubscriber
 
     DependencyManager(NotificatorCommandLineOptions commandLineParameters){
         properties = getProperties(commandLineParameters.pathToConfig)
@@ -27,7 +28,7 @@ class DependencyManager {
 
     private void initializeDependencies(){
         setupDatabase()
-        setupCreateNotification()
+        setupFetchSubscriber()
     }
 
     private void setupDatabase(){
@@ -53,13 +54,25 @@ class DependencyManager {
         return properties
     }
 
-    private void setupCreateNotification(){
-        CreateNotificationDbConnector connector = new CreateNotificationDbConnector(DatabaseSession.getInstance())
-        CreateNotificationOutput someOutput = null //todo implement me
-        createNotification = new CreateNotification(connector,someOutput)
+    private void setupFetchSubscriber(){
+        FetchSubscriberDbConnector connector = new FetchSubscriberDbConnector(DatabaseSession.getInstance())
+        FetchSubscriberOutput someOutput = this
+        fetchSubscriber = new FetchSubscriber(connector,someOutput)
     }
 
-    CreateNotification getCreateNotification() {
-        return createNotification
+    FetchSubscriberInput getFetchSubscriber() {
+        return fetchSubscriber
+    }
+
+    //todo we might not want to have the dependency manager implement the output interface
+    @Override
+    void fetchedSubscribers(List<Subscriber> subscribers) {
+        println "received the subscribers"
+        println subscribers
+    }
+
+    @Override
+    void failNotification(String notification) {
+        log.error(notification)
     }
 }

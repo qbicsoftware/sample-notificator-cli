@@ -1,6 +1,7 @@
 package life.qbic.business.notification.create
 
 import life.qbic.business.subscription.Subscriber
+import life.qbic.business.subscription.fetch.FetchSubscriberDataSource
 
 import java.time.LocalDate
 
@@ -13,9 +14,9 @@ import java.time.LocalDate
  *
 */
 class CreateNotification implements CreateNotificationInput{
-    private final CreateNotificationDataSource ds
+    private final FetchSubscriberDataSource ds
 
-    CreateNotification(CreateNotificationDataSource ds, CreateNotificationOutput output){
+    CreateNotification(FetchSubscriberDataSource ds, CreateNotificationOutput output){
         this.ds = ds
     }
 
