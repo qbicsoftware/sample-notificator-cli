@@ -66,7 +66,7 @@ class FetchSubscriberSpec extends Specification {
         1 * output.fetchedSubscribers([subscriber1,subscriber2])
     }
 
-    def "FetchSubscriber returns an empty list if now samples where updated"(){
+    def "FetchSubscriber returns an empty list if no samples were updated"(){
         given:
         FetchSubscriberOutput output = Mock()
         FetchSubscriberDataSource ds = Stub(FetchSubscriberDataSource.class)
@@ -83,7 +83,7 @@ class FetchSubscriberSpec extends Specification {
         1 * output.fetchedSubscribers([])
     }
 
-    def "FetchSubscriber returns an empty list if no subscribers where found"(){
+    def "FetchSubscriber returns an empty list if no subscribers were found"(){
         given:
         FetchSubscriberOutput output = Mock()
         FetchSubscriberDataSource ds = Stub(FetchSubscriberDataSource.class)

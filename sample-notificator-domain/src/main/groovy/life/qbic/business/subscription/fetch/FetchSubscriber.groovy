@@ -9,7 +9,7 @@ import java.time.LocalDate
 /**
  * <h1>Use case for fetching subscriber information from the database</h1>
  *
- * <p>Fetches the subscribers for whos subscriptions had updates on e.g a given date</p>
+ * <p>Fetches the subscribers for whose subscriptions had updates on a given date</p>
  *
  * @since 1.0.0*
  */

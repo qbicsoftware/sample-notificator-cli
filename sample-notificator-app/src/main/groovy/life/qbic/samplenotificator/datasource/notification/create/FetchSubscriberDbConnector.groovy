@@ -6,7 +6,6 @@ import life.qbic.business.subscription.fetch.FetchSubscriberDataSource
 import life.qbic.business.subscription.Subscriber
 import life.qbic.datamodel.samples.Status
 import life.qbic.samplenotificator.datasource.database.ConnectionProvider
-import life.qbic.samplenotificator.datasource.database.DatabaseSession
 
 import java.sql.Connection
 import java.sql.PreparedStatement
