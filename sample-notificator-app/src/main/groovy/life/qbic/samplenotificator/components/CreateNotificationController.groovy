@@ -2,8 +2,6 @@ package life.qbic.samplenotificator.components
 
 import life.qbic.business.notification.create.CreateNotificationInput
 
-import java.time.LocalDate
-
 /**
  * Controller class adapter from command line input into use case input interface
  *
@@ -27,8 +25,7 @@ class CreateNotificationController {
      * @param date A date in the format yyyy-mm-dd
      */
     void createNotification(String date) {
-        LocalDate localDate = LocalDate.parse(date)
-        this.createNotificationInput.createNotifications(localDate)
+        this.createNotificationInput.createNotifications(date)
     }
 
 }

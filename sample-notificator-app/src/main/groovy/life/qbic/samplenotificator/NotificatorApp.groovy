@@ -24,8 +24,6 @@ class NotificatorApp extends QBiCTool<NotificatorCommandLineOptions>{
         NotificatorCommandLineOptions commandLineParameters = super.command as NotificatorCommandLineOptions
 
         DependencyManager dependencyManager = new DependencyManager(commandLineParameters)
-        FetchSubscriberInput fetchSubscriberInput = dependencyManager.getFetchSubscriber()
-        fetchSubscriberInput.fetchSubscriber(commandLineParameters.date)
         CreateNotificationController createNotificationController = dependencyManager.getCreateNotificationController()
         createNotificationController.createNotification(commandLineParameters.date)
     }
