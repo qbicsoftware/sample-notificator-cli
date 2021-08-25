@@ -1,7 +1,10 @@
 package life.qbic.business.notification.create
 
 import life.qbic.business.subscription.Subscriber
-import java.time.LocalDate
+import life.qbic.business.subscription.fetch.FetchSubscriber
+import life.qbic.business.subscription.fetch.FetchSubscriberDataSource
+import life.qbic.business.subscription.fetch.FetchSubscriberInput
+import life.qbic.business.subscription.fetch.FetchSubscriberOutput
 
 /**
  * This class implements the logic to create template email messages.
@@ -12,19 +15,19 @@ import java.time.LocalDate
  * @since: 1.0.0
  */
 
-class CreateNotification implements CreateNotificationInput{
-    private final CreateNotificationDataSource ds
+class CreateNotification implements CreateNotificationInput, FetchSubscriberOutput{
     private final CreateNotificationOutput output
+    private final FetchSubscriberInput fetchSubscriberInput
+    Map<Subscriber, String> createdNotifications
 
-    CreateNotification(CreateNotificationDataSource ds, CreateNotificationOutput output){
-        this.ds = ds
+    CreateNotification(FetchSubscriberDataSource dataSource, CreateNotificationOutput output){
         this.output = output
+        this.fetchSubscriberInput = new FetchSubscriber(dataSource, this)
     }
 
     @Override
-    void createNotifications(LocalDate localDate) {
-        List<Subscriber> subscribers = ds.getSubscribersForNotificationsAt(localDate)
-        Map<Subscriber, String> createdNotifications = createNotificationPerSubscriber(subscribers)
+    void createNotifications(String date) {
+        fetchSubscriberInput.fetchSubscriber(date)
         output.createdNotifications(createdNotifications)
     }
 
@@ -135,5 +138,26 @@ class CreateNotification implements CreateNotificationInput{
     private static String getProjectCodeFromSample(String sampleCode) {
         String projectCode = sampleCode.substring(0, 5)
         return projectCode
+    }
+/**
+ * Transfers the generated list of subscribers to the implementing class
+ * @param subscribers the retrieved list of subscribers with modified subscriptions
+ * @since 1.0.0
+ */
+
+    @Override
+    void fetchedSubscribers(List<Subscriber> subscribers) {
+         createdNotifications = createNotificationPerSubscriber(subscribers)
+    }
+
+    /**
+     * Sends failure notifications that have been
+     * recorded during the use case.
+     * @param notification containing a failure message
+     * @since 1.0.0
+     */
+    @Override
+    void failNotification(String notification) {
+
     }
 }
