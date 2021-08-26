@@ -13,10 +13,10 @@ interface CreateNotificationOutput {
     /**
      * Returns a map containing the notification messages associated with their relevant subscriber for the provided Date
      *
-     * @param Map containing the created Notification Messages associated with the subscriber
+     * @param notificationPerSubscriber Map containing the created Notification Messages associated with the subscriber
      * @since 1.0.0
      */
 
-    void createdNotifications(Map<Subscriber, String> notificationsList)
+    void createdNotifications(Map<Subscriber, String> notificationPerSubscriber)
 
 }

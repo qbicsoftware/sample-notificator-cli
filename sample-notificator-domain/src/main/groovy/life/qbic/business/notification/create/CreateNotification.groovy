@@ -18,7 +18,7 @@ import life.qbic.business.subscription.fetch.FetchSubscriberOutput
 class CreateNotification implements CreateNotificationInput, FetchSubscriberOutput{
     private final CreateNotificationOutput output
     private final FetchSubscriberInput fetchSubscriberInput
-    Map<Subscriber, String> createdNotifications
+    private Map<Subscriber, String> notificationPerSubscriber
 
     CreateNotification(FetchSubscriberDataSource dataSource, CreateNotificationOutput output){
         this.output = output
@@ -28,11 +28,11 @@ class CreateNotification implements CreateNotificationInput, FetchSubscriberOutp
     @Override
     void createNotifications(String date) {
         fetchSubscriberInput.fetchSubscriber(date)
-        output.createdNotifications(createdNotifications)
+        output.createdNotifications(notificationPerSubscriber)
     }
 
     /**
-     * Method which returns a map containing the FailedQC notification for each subscriber
+     * Method which returns a map containing the SAMPLE_QC_FAIL notification for each subscriber
      * @param subscribers list of subscribers, which are to be informed about a change in SampleStatus
      * @return map associating the generated notification with the to be informed subscriber
      */
@@ -49,9 +49,9 @@ class CreateNotification implements CreateNotificationInput, FetchSubscriberOutp
     }
 
     /**
-     * Method which extracts the SampleCodes set to FAILED_QC for a given subscriber
-     * @param subscriber Subscriber which is to be notified about FAILED_QC Sample Codes
-     * @return List of SampleCodes whose status is set to FAILED_QC
+     * Method which extracts the SampleCodes set to SAMPLE_QC_FAIL for a given subscriber
+     * @param subscriber Subscriber which is to be notified about SAMPLE_QC_FAIL Sample Codes
+     * @return List of SampleCodes whose status is set to SAMPLE_QC_FAIL
      */
     private static List<String> getSampleCodesFromSubscriber(Subscriber subscriber) {
         List<String> failedQCCodes = []
@@ -66,7 +66,7 @@ class CreateNotification implements CreateNotificationInput, FetchSubscriberOutp
      * Method which assembles the email Template informing a subscriber about the projects containing SAMPLE_QC_FAIL samples
      * @param subscriber Subscriber for whom the template email is generated
      * @param failedQCSampleCodes List of SampleCodes whose status were set to SAMPLE_QC_FAIL.
-     * @return String containing the assembled FAILED_QC template email message.
+     * @return String containing the assembled SAMPLE_QC_FAIL template email message.
      */
     private static String failedQCMailMessage(Subscriber subscriber, List<String> failedQCSampleCodes) {
 
@@ -139,15 +139,15 @@ class CreateNotification implements CreateNotificationInput, FetchSubscriberOutp
         String projectCode = sampleCode.substring(0, 5)
         return projectCode
     }
-/**
- * Transfers the generated list of subscribers to the implementing class
- * @param subscribers the retrieved list of subscribers with modified subscriptions
- * @since 1.0.0
- */
+    /**
+     * Transfers the generated list of subscribers to the implementing class
+     * @param subscribers the retrieved list of subscribers with modified subscriptions
+     * @since 1.0.0
+     */
 
     @Override
     void fetchedSubscribers(List<Subscriber> subscribers) {
-         createdNotifications = createNotificationPerSubscriber(subscribers)
+        this.notificationPerSubscriber = createNotificationPerSubscriber(subscribers)
     }
 
     /**
