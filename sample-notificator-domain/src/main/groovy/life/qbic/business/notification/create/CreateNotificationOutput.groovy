@@ -19,4 +19,5 @@ interface CreateNotificationOutput {
 
     void createdNotifications(Map<Subscriber, String> notificationPerSubscriber)
 
+    void failNotification(String notification)
 }

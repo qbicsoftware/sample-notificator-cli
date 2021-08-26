@@ -147,7 +147,11 @@ class CreateNotification implements CreateNotificationInput, FetchSubscriberOutp
 
     @Override
     void fetchedSubscribers(List<Subscriber> subscribers) {
-        this.notificationPerSubscriber = createNotificationPerSubscriber(subscribers)
+        try {
+            this.notificationPerSubscriber = createNotificationPerSubscriber(subscribers)
+        } catch(Exception e) {
+            output.failNotification("An error occurred during notification creation")
+        }
     }
 
     /**
@@ -158,6 +162,6 @@ class CreateNotification implements CreateNotificationInput, FetchSubscriberOutp
      */
     @Override
     void failNotification(String notification) {
-
+        output.failNotification(notification)
     }
 }

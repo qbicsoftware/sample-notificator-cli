@@ -47,6 +47,7 @@ class CreateNotificationPresenter implements CreateNotificationOutput, FetchSubs
      */
     @Override
     void failNotification(String notification) {
-
+        //ToDo How should error logging be handled?
+        println(notification)
     }
 }
