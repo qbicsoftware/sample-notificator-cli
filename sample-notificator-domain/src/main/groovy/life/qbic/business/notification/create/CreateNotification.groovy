@@ -132,11 +132,12 @@ class CreateNotification implements CreateNotificationInput, FetchSubscriberOutp
 
     /**
      * Method extracting the ProjectCode from the SampleCode
-     * @param sampleCode SampleCode, which contains the ProjectCode in its first 5 characters
+     * @param sampleCode SampleCode, which contains the ProjectCode
      * @return projectCode of the provided SampleCode.
      */
     private static String getProjectCodeFromSample(String sampleCode) {
-        String projectCode = sampleCode.substring(0, 5)
+        Integer projectCodeStartIndex = sampleCode.findIndexOf {"Q"}
+        String projectCode = sampleCode.substring(projectCodeStartIndex, 5)
         return projectCode
     }
     /**
