@@ -1,4 +1,5 @@
 package life.qbic.business.notification.create
+
 /**
  * <h1>Interface to access and trigger the {@link CreateNotification} use case</h1>
  *
@@ -8,7 +9,7 @@ package life.qbic.business.notification.create
 interface CreateNotificationInput {
 
     /**
-     * Trigger sending notifications to a list of subscribers about changes in their subscriptions
+     * Trigger creating template notification messages for a list of subscribers about changes in their subscriptions
      * @param date A date in the format yyyy-mm-dd
      */
     void createNotifications(String date)
