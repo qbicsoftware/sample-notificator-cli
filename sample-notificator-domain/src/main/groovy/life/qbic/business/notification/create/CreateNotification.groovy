@@ -28,6 +28,7 @@ class CreateNotification implements CreateNotificationInput, FetchSubscriberOutp
     @Override
     void createNotifications(String date) {
         fetchSubscriberInput.fetchSubscriber(date)
+        //assume notificationPerSubscriber will be filled by the output method fetchedSubscribers of the FetchSubscriber use case
         output.createdNotifications(notificationPerSubscriber)
     }
 
@@ -132,11 +133,12 @@ class CreateNotification implements CreateNotificationInput, FetchSubscriberOutp
 
     /**
      * Method extracting the ProjectCode from the SampleCode
-     * @param sampleCode SampleCode, which contains the ProjectCode in its first 5 characters
+     * @param sampleCode SampleCode, which contains the ProjectCode
      * @return projectCode of the provided SampleCode.
      */
     private static String getProjectCodeFromSample(String sampleCode) {
-        String projectCode = sampleCode.substring(0, 5)
+        Integer projectCodeStartIndex = sampleCode.findIndexOf {"Q"}
+        String projectCode = sampleCode.substring(projectCodeStartIndex, 5)
         return projectCode
     }
     /**
@@ -148,6 +150,7 @@ class CreateNotification implements CreateNotificationInput, FetchSubscriberOutp
     @Override
     void fetchedSubscribers(List<Subscriber> subscribers) {
         try {
+            //The output of the fetchSubscriber Use case will be stored in the notificationPerSubscriber Map and used in the CreateNotification method
             this.notificationPerSubscriber = createNotificationPerSubscriber(subscribers)
         } catch(Exception e) {
             output.failNotification("An error occurred during notification creation")

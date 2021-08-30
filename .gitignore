@@ -22,4 +22,4 @@ buildNumber.properties
 /sample-notificator-app/src/main/resources/config.properties
 
 #mac
-*.DS_Store
+.DS_Store
