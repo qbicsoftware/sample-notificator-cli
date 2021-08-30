@@ -43,6 +43,7 @@ class EmailGenerator {
         process.waitFor(10, TimeUnit.SECONDS)
         //ToDo This has to be replaced with dedicated logging
         process.getInputStream().eachLine {println(it)}
+        //ToDo How should exit codes be handled with the cronjob? See https://mailutils.org/manual/html_section/mailutils.html
         tempNotificationFile.delete()
     }
 
