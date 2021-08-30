@@ -17,13 +17,15 @@ class CreateNotificationPresenter implements CreateNotificationOutput, FetchSubs
     Map<Subscriber, String> notificationPerSubscriber
 
     //ToDo adapt output for emailService
-    CreateNotificationPresenter(){
-
+    CreateNotificationPresenter(Map<Subscriber, String> notificationPerSubscriber){
+        this.notificationPerSubscriber = notificationPerSubscriber
     }
 
     @Override
     void createdNotifications(Map<Subscriber, String> notificationPerSubscriber) {
-        this.notificationPerSubscriber = notificationPerSubscriber
+        notificationPerSubscriber.each {
+            this.notificationPerSubscriber.put(it.key, it.value)
+        }
         this.notificationPerSubscriber.each {
             println(it.value)
         }
