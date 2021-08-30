@@ -18,4 +18,8 @@ buildNumber.properties
 **/.idea/
 *.iml
 
+#config
+/sample-notificator-app/src/main/resources/config.properties
 
+#mac
+*.DS_Store
