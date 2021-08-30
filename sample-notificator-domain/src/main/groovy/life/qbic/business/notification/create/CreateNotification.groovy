@@ -28,6 +28,7 @@ class CreateNotification implements CreateNotificationInput, FetchSubscriberOutp
     @Override
     void createNotifications(String date) {
         fetchSubscriberInput.fetchSubscriber(date)
+        //assume notificationPerSubscriber will be filled by the output method fetchedSubscribers of the FetchSubscriber use case
         output.createdNotifications(notificationPerSubscriber)
     }
 
@@ -149,6 +150,7 @@ class CreateNotification implements CreateNotificationInput, FetchSubscriberOutp
     @Override
     void fetchedSubscribers(List<Subscriber> subscribers) {
         try {
+            //The output of the fetchSubscriber Use case will be stored in the notificationPerSubscriber Map and used in the CreateNotification method
             this.notificationPerSubscriber = createNotificationPerSubscriber(subscribers)
         } catch(Exception e) {
             output.failNotification("An error occurred during notification creation")
