@@ -41,9 +41,10 @@ class EmailGenerator {
         builder.redirectErrorStream(true)
         Process process = builder.start()
         process.waitFor(10, TimeUnit.SECONDS)
-        //ToDo This has to be replaced with dedicated logging
+        //ToDo This has to be replaced with dedicated writing into a log on executing server
         process.getInputStream().eachLine {println(it)}
-        //ToDo How should exit codes be handled with the cronjob? See https://mailutils.org/manual/html_section/mailutils.html
+        //ToDo How should exit codes be handled with the cronjob? See https://mailutils.org/manual/html_section/mailutils.html for Exit Codes
+        println("ExitCode: " + process.exitValue())
         tempNotificationFile.delete()
     }
 

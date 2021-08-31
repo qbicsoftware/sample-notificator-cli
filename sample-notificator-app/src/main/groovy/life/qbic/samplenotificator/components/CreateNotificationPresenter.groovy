@@ -16,7 +16,6 @@ class CreateNotificationPresenter implements CreateNotificationOutput, FetchSubs
 
     Map<Subscriber, String> notificationPerSubscriber
 
-    //ToDo adapt output for emailService
     CreateNotificationPresenter(Map<Subscriber, String> notificationPerSubscriber){
         this.notificationPerSubscriber = notificationPerSubscriber
     }
@@ -25,9 +24,6 @@ class CreateNotificationPresenter implements CreateNotificationOutput, FetchSubs
     void createdNotifications(Map<Subscriber, String> notificationPerSubscriber) {
         notificationPerSubscriber.each {
             this.notificationPerSubscriber.put(it.key, it.value)
-        }
-        this.notificationPerSubscriber.each {
-            println(it.value)
         }
     }
 
@@ -49,7 +45,7 @@ class CreateNotificationPresenter implements CreateNotificationOutput, FetchSubs
      */
     @Override
     void failNotification(String notification) {
-        //ToDo How should error logging be handled?
+        //ToDo failNotification should be passed into dedicated logging file on executing server
         println(notification)
     }
 }
