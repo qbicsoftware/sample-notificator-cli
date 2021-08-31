@@ -78,7 +78,7 @@ class CreateNotification implements CreateNotificationInput, FetchSubscriberOutp
                 <a href="Link to some explanation">Click here to learn more.</a>
                 """.stripIndent()
 
-        String projectList = listProjects(failedQCSampleCodes)
+        String projectList = listProjects (failedQCSampleCodes)
 
         String notificationOutro =
                 """

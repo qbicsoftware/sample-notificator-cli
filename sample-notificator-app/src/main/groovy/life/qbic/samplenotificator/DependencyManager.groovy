@@ -4,6 +4,7 @@ import groovy.util.logging.Log4j2
 import life.qbic.business.notification.create.CreateNotification
 import life.qbic.business.subscription.Subscriber
 import life.qbic.samplenotificator.cli.NotificatorCommandLineOptions
+import life.qbic.samplenotificator.components.EmailGenerator
 import life.qbic.samplenotificator.datasource.notification.create.FetchSubscriberDbConnector
 import life.qbic.samplenotificator.components.CreateNotificationController
 import life.qbic.samplenotificator.components.CreateNotificationPresenter
@@ -23,6 +24,7 @@ class DependencyManager {
     private CreateNotification createNotification
     private CreateNotificationController createNotificationController
     private Map<Subscriber, String> notificationPerSubscriber = new HashMap<Subscriber, String>()
+    private EmailGenerator emailGenerator
 
     DependencyManager(NotificatorCommandLineOptions commandLineParameters){
         properties = getProperties(commandLineParameters.pathToConfig)
@@ -32,6 +34,7 @@ class DependencyManager {
     private void initializeDependencies(){
         setupDatabase()
         setupCreateNotification()
+        setupSendEmail()
     }
 
     private void setupDatabase(){
@@ -64,8 +67,16 @@ class DependencyManager {
         createNotificationController = new CreateNotificationController(createNotification)
     }
 
+    private void setupSendEmail(){
+        emailGenerator = new EmailGenerator(notificationPerSubscriber)
+    }
+
     CreateNotificationController getCreateNotificationController() {
         return createNotificationController
+    }
+
+    EmailGenerator getEmailGenerator(){
+        return emailGenerator
     }
 
 }
