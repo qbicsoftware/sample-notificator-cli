@@ -16,7 +16,6 @@ class NotificationContent {
     /*Customer Information */
     final String customerFirstName
     final String customerLastName
-    final String customerTitle
 
     /*Project Information*/
     final String projectTitle
@@ -28,7 +27,6 @@ class NotificationContent {
         /*Person Information */
         String customerFirstName
         String customerLastName
-        String customerTitle
 
         /*Project Information*/
         String projectTitle
@@ -36,12 +34,11 @@ class NotificationContent {
         int failedQCCount
         int availableDataCount
 
-        Builder(String customerFirstName, String customerLastName, String customerTitle, String projectTitle, String projectCode, int failedQCCount, int availableDataCount) {
+        Builder(String customerFirstName, String customerLastName, String projectTitle, String projectCode, int failedQCCount, int availableDataCount) {
 
             /*Customer Information */
             this.customerFirstName = Objects.requireNonNull(customerFirstName, "First name of customer must not be null")
             this.customerLastName = Objects.requireNonNull(customerLastName, "Last name of customer must not be null")
-            this.customerTitle = Objects.requireNonNull(customerTitle, "Title of customer must not be null")
 
             /*Project Information*/
             this.projectTitle = Objects.requireNonNull(projectTitle, "Project title must not be null")
@@ -60,7 +57,6 @@ class NotificationContent {
         /*Customer Information */
         this.customerFirstName = builder.customerFirstName
         this.customerLastName = builder.customerLastName
-        this.customerTitle = builder.customerTitle
 
         /*Project Information*/
         this.projectTitle = builder.projectTitle
