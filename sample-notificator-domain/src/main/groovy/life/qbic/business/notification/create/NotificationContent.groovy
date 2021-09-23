@@ -16,6 +16,7 @@ class NotificationContent {
     /*Customer Information */
     final String customerFirstName
     final String customerLastName
+    final String customerEmailAddress
 
     /*Project Information*/
     final String projectTitle
@@ -27,18 +28,19 @@ class NotificationContent {
         /*Person Information */
         String customerFirstName
         String customerLastName
-
+        String customerEmailAddress
         /*Project Information*/
         String projectTitle
         String projectCode
         int failedQCCount
         int availableDataCount
 
-        Builder(String customerFirstName, String customerLastName, String projectTitle, String projectCode, int failedQCCount, int availableDataCount) {
+        Builder(String customerFirstName, String customerLastName, String customerEmailAddress, String projectTitle, String projectCode, int failedQCCount, int availableDataCount) {
 
             /*Customer Information */
             this.customerFirstName = Objects.requireNonNull(customerFirstName, "First name of customer must not be null")
             this.customerLastName = Objects.requireNonNull(customerLastName, "Last name of customer must not be null")
+            this.customerEmailAddress = Objects.requireNonNull(customerEmailAddress, "Email address of customer must not be null")
 
             /*Project Information*/
             this.projectTitle = Objects.requireNonNull(projectTitle, "Project title must not be null")
@@ -57,7 +59,7 @@ class NotificationContent {
         /*Customer Information */
         this.customerFirstName = builder.customerFirstName
         this.customerLastName = builder.customerLastName
-
+        this.customerEmailAddress = builder.customerEmailAddress
         /*Project Information*/
         this.projectTitle = builder.projectTitle
         this.projectCode = builder.projectCode
