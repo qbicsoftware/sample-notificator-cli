@@ -2,7 +2,7 @@
 This CLI is intended to search the database for projects (samples of a project)
 that have received a new status. This is only done for the current day the tool is executed.
 
-People who are subscribed to be notified about their projects' changes
+People who are subscribed are notified about their projects' changes
 will be notified via email. This service creates the messages and sends them.
 
 ## Usage
