@@ -47,11 +47,21 @@ class EmailHTMLTemplate {
     }
 
     static void fillSampleStatusInformation(Document document, NotificationContent notificationContent) {
-        Element failedQCCount = document.getElementById("sample-status-failed-qc-count")
-        Element dataAvailableCount = document.getElementById("sample-status-available-data-count")
-        failedQCCount.empty()
-        dataAvailableCount.empty()
-        failedQCCount.text(notificationContent.getFailedQCCount().toString())
-        dataAvailableCount.text(notificationContent.getAvailableDataCount().toString())
+
+        if (notificationContent.availableDataCount == 0) {
+            document.getElementById("sample-status-available-data").remove()
+        } else {
+            Element dataAvailableCount = document.getElementById("sample-status-available-data-count")
+            dataAvailableCount.empty()
+            dataAvailableCount.text(notificationContent.getAvailableDataCount().toString())
+        }
+
+        if (notificationContent.failedQCCount == 0) {
+            document.getElementById("sample-status-failed-qc").remove()
+        } else {
+            Element failedQCCount = document.getElementById("sample-status-failed-qc-count")
+            failedQCCount.empty()
+            failedQCCount.text(notificationContent.getFailedQCCount().toString())
+        }
     }
 }
