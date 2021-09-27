@@ -1,8 +1,11 @@
 package life.qbic.samplenotificator.components
 
-import life.qbic.business.subscription.Subscriber
+import life.qbic.business.notification.create.NotificationContent
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 
 import java.util.concurrent.TimeUnit
+
 
 /**
  * Class responsible for generating an sending an email from the provided notification and subscriber information
@@ -17,26 +20,40 @@ import java.util.concurrent.TimeUnit
 class EmailGenerator {
 
     private String subject = "Project Update"
-    Map<Subscriber, String> notificationPerSubscriber
+    NotificationContent notificationContent
+    private InputStream EMAIL_HTML_TEMPLATE_STREAM
+    private EmailHTMLTemplate emailHTMLTemplate
+    private Document filledTemplate
 
-    EmailGenerator(Map<Subscriber, String> notificationPerSubscriber) {
-        this.notificationPerSubscriber = notificationPerSubscriber
+    EmailGenerator(NotificationContent notificationContent) {
+        this.notificationContent = notificationContent
     }
 
     /**
      * Triggers the creation and submission of each email
      * containing the provided notifications to the provided subscribers
      */
-    void initializeEmailSubmission(){
-        notificationPerSubscriber.each {
-            //ToDo Replace this with subscriber mail
-            sendEmail("Steffen.greiner@uni-tuebingen.de", it.value)
-        }
+    void initializeEmailSubmission() {
+        accessEmailTemplate()
+        prepareHTMLEmail()
+        println(filledTemplate)
+        //ToDo Replace this with subscriber mail
+        //sendEmail("Steffen.greiner@uni-tuebingen.de", filledTemplate.html())
+    }
+
+    private void accessEmailTemplate() {
+        this.EMAIL_HTML_TEMPLATE_STREAM = EmailHTMLTemplate.class.getClassLoader().getResourceAsStream("notification-template/email-update-template.html")
+    }
+
+    private void prepareHTMLEmail() {
+        this.emailHTMLTemplate = new EmailHTMLTemplate(Jsoup.parse(EMAIL_HTML_TEMPLATE_STREAM, "UTF-8", ""))
+        this.filledTemplate = emailHTMLTemplate.fillTemplate(notificationContent)
     }
 
     private void sendEmail(String emailRecipient, String notificationContent) {
-        def tempNotificationFile = new File('TempNotificationFile.txt')
+        def tempNotificationFile = new File('TempNotificationFile.html')
         tempNotificationFile.write(notificationContent)
+        //ToDo Replace this with Sendmail and add custom header
         ProcessBuilder builder = new ProcessBuilder("mail", "-s ${subject}", emailRecipient).redirectInput(tempNotificationFile)
         builder.redirectErrorStream(true)
         Process process = builder.start()
