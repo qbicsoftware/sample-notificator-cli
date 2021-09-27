@@ -37,18 +37,24 @@ class CreateNotification implements CreateNotificationInput {
       try {
           //1. get todays notifications
           Map<String, Status> sampleToStatus = dataSource.getUpdatedSamplesForDay(localDate)
-          //2. get subscribers for projects
+          //2. get projects
           Map<String,List<String>> projectsWithSamples = getProjectsWithSamples(sampleToStatus.keySet().asList())
           //3. get project names
           Map<String,String> projectsWithTitles = dataSource.fetchProjectsWithTitles()
           
           for(String projectCode : projectsWithSamples.keySet()) {
-            List<String> samples = projectsWithSamples.get(project)
+            List<String> samples = projectsWithSamples.get(projectCode)
             int failedQCCount = filterSamplesByStatus(samples, sampleToStatus, "SAMPLE_QC_FAIL").size()
             int availableDataCount = filterSamplesByStatus(samples, sampleToStatus, "DATA_AVAILABLE").size()
             String title = projectsWithTitles.get(projectCode)
-            notifications.add(new NotificationContent.Builder(customerFirstName, customerLastName, customerEmailAddress, 
+            
+            //4. get subscribers of this projects
+            List<Subscriber> subscribers = getSubscriberForProject(projectCode)
+            
+            for(Subscriber subscriber : subscribers) {
+              notifications.add(new NotificationContent.Builder(subscriber.firstName, subscriber.lastName, subscriber.email, 
               title, projectCode, failedQCCount, availableDataCount).build())
+            }
           }
           output.createdNotifications(notifications)    
       } catch (Exception e) {

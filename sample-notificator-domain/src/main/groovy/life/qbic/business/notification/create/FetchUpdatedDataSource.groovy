@@ -2,6 +2,7 @@ package life.qbic.business.notification.create
 
 import life.qbic.business.exception.DatabaseQueryException
 import life.qbic.datamodel.samples.Status
+import life.qbic.business.subscription.Subscriber
 
 import java.time.LocalDate
 
@@ -28,5 +29,15 @@ interface FetchUpdatedDataSource {
      * @since 1.0.0
      */
     Map<String, String> fetchProjectsWithTitles() throws DatabaseQueryException
+    
+    
+    /**
+     * Returns the subscribers of a project
+     * @param projectCode The code of a project
+     * @return A list of subscribers for the project
+     * @throws DatabaseQueryException
+     * @since 1.0.0
+     */
+    List<Subscriber> getSubscriberForProject(String projectCode) throws DatabaseQueryException
 
 }
