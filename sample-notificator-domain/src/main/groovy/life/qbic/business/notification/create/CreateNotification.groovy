@@ -80,7 +80,7 @@ class CreateNotification implements CreateNotificationInput {
         samples.each { sample ->
             String project = sample.substring(0, 5)
             if(projectToSamples.containsKey(project)) {
-              def list = [sample]
+              def samples = [sample]
               projectToSamples.put(project, list)
             } else {
               projectToSamples.get(project).add(sample)
