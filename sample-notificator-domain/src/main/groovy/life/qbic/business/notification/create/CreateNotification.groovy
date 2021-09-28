@@ -52,8 +52,8 @@ class CreateNotification implements CreateNotificationInput {
         //3. get project names
         Map<String,String> projectsWithTitles = dataSource.fetchProjectsWithTitles()
 
-        int failedQCCount = filterSamplesByStatus(samples, updatedSamplesWithStatus, "SAMPLE_QC_FAIL").size()
-        int availableDataCount = filterSamplesByStatus(samples, updatedSamplesWithStatus, "DATA_AVAILABLE").size()
+        int failedQCCount = filterSamplesByStatus(samples, "SAMPLE_QC_FAIL").size()
+        int availableDataCount = filterSamplesByStatus(samples, "DATA_AVAILABLE").size()
         String title = projectsWithTitles.get(projectCode)
 
         //4. get subscribers of this projects
@@ -67,9 +67,9 @@ class CreateNotification implements CreateNotificationInput {
         return notifications
     }
     
-    private List<String> filterSamplesByStatus(List<String> samples, Map<String, Status> sampleToStatus, String statusName) {
+    private List<String> filterSamplesByStatus(List<String> samples, String statusName) {
 
-        Predicate isOfStatus = code -> sampleToStatus.get(code).toString() == statusName
+        Predicate isOfStatus = code -> updatedSamplesWithStatus.get(code).toString() == statusName
         List<String> filteredCodes = samples.stream().filter(isOfStatus).collect().toList()
 
         return filteredCodes
@@ -77,15 +77,22 @@ class CreateNotification implements CreateNotificationInput {
     
     private Map<String, List<String>> getProjectsWithSamples(List<String> samples) {
         Map<String, List<String>> projectToSamples = new HashMap<>()
-        samples.each { sample ->
-            String project = sample.substring(0, 5)
-            if(!projectToSamples.containsKey(project)) {
-              def samplesForProject = [sample]
-              projectToSamples.put(project, samplesForProject)
-            } else {
-              projectToSamples.get(project).add(sample)
-            }
+
+        getProjects().each { project ->
+            Predicate isProjectSample = sample -> sample.contains(project)
+            List<String> projectSamples = samples.stream().filter(isProjectSample).collect().toList()
+
+            projectToSamples.put(project,projectSamples)
         }
+
         return projectToSamples
+    }
+
+    private Set<String> getProjects(){
+        Set<String> projects = new HashSet<>()
+        updatedSamplesWithStatus.keySet().each {sample ->
+            projects.add(sample.substring(0,5))
+        }
+        return projects
     }
 }
