@@ -71,7 +71,7 @@ class DependencyManager {
 
     private void setupSendEmail(){
         //ToDo Remove after testing since this will be provided by the use case
-        NotificationContent notificationContent = new NotificationContent.Builder("Jo", "My_Dude", "Jo.mydude@coolguy.de", "coolProject", "NICE1", 2, 1000).build()
+        NotificationContent notificationContent = new NotificationContent.Builder("Jo", "My_Dude", "steffen.greiner@uni-tuebingen.de", "coolProject", "NICE1", 2, 1000).build()
         emailGenerator = new EmailGenerator(notificationContent)
     }
 
