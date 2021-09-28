@@ -1,12 +1,10 @@
 package life.qbic.business.notification.create
 
-
 import life.qbic.business.subscription.Subscriber
-
 import life.qbic.datamodel.samples.Status
+
 import java.time.LocalDate
 import java.util.function.Predicate
-
 
 /**
  * This class implements the logic to create template email messages.
@@ -18,7 +16,7 @@ import java.util.function.Predicate
  */
 
 class CreateNotification implements CreateNotificationInput {
-  
+
     private final CreateNotificationOutput output
     private final FetchUpdatedSamplesDataSource dataSource
     private Map<String, Status> updatedSamplesWithStatus
@@ -33,40 +31,44 @@ class CreateNotification implements CreateNotificationInput {
         LocalDate localDate = LocalDate.parse(date)
         List<NotificationContent> notifications = []
 
-      try {
-          updatedSamplesWithStatus = dataSource.getUpdatedSamplesForDay(localDate)
+        try {
+            updatedSamplesWithStatus = dataSource.getUpdatedSamplesForDay(localDate)
 
-          Map<String,List<String>> projectsWithSamples = getProjectsWithSamples(updatedSamplesWithStatus.keySet().asList())
+            List<Project> projectsWithSamples = getProjectsWithSamples(updatedSamplesWithStatus.keySet().asList())
 
-          projectsWithSamples.each {projectCode, samples -> notifications.addAll(createNotificationForProject(projectCode,samples))}
+            Map<String, String> projectsWithTitles = dataSource.fetchProjectsWithTitles()
 
-          output.createdNotifications(notifications)    
-      } catch (Exception e) {
-          output.failNotification("An error occurred while fetching updates for projects")
-          output.failNotification(e.message)
-      }
+            projectsWithSamples.each { project ->
+                //todo refactor me
+                project.title = projectsWithTitles.get(project.code)
+                List notificationContent = createNotificationForProject(project)
+                notifications.addAll(notificationContent)
+            }
+
+            output.createdNotifications(notifications)
+        } catch (Exception e) {
+            output.failNotification("An error occurred while fetching updates for projects")
+            output.failNotification(e.message)
+        }
     }
 
-    private List<NotificationContent> createNotificationForProject(String projectCode, List samples){
+    private List<NotificationContent> createNotificationForProject(Project project) {
         List<NotificationContent> notifications = []
-        //3. get project names
-        Map<String,String> projectsWithTitles = dataSource.fetchProjectsWithTitles()
 
-        int failedQCCount = filterSamplesByStatus(samples, "SAMPLE_QC_FAIL").size()
-        int availableDataCount = filterSamplesByStatus(samples, "DATA_AVAILABLE").size()
-        String title = projectsWithTitles.get(projectCode)
+        int failedQCCount = filterSamplesByStatus(project.sampleCodes, "SAMPLE_QC_FAIL").size()
+        int availableDataCount = filterSamplesByStatus(project.sampleCodes, "DATA_AVAILABLE").size()
 
         //4. get subscribers of this projects
-        List<Subscriber> subscribers = dataSource.getSubscriberForProject(projectCode)
+        List<Subscriber> subscribers = dataSource.getSubscriberForProject(project.code)
 
-        for(Subscriber subscriber : subscribers) {
+        for (Subscriber subscriber : subscribers) {
             notifications << new NotificationContent.Builder(subscriber.firstName, subscriber.lastName, subscriber.email,
-                    title, projectCode, failedQCCount, availableDataCount).build()
+                    project.title, project.code, failedQCCount, availableDataCount).build()
         }
 
         return notifications
     }
-    
+
     private List<String> filterSamplesByStatus(List<String> samples, String statusName) {
 
         Predicate isOfStatus = code -> updatedSamplesWithStatus.get(code).toString() == statusName
@@ -74,25 +76,39 @@ class CreateNotification implements CreateNotificationInput {
 
         return filteredCodes
     }
-    
-    private Map<String, List<String>> getProjectsWithSamples(List<String> samples) {
-        Map<String, List<String>> projectToSamples = new HashMap<>()
+
+    private List<Project> getProjectsWithSamples(List<String> samples) {
+        List projects = []
 
         getProjects().each { project ->
-            Predicate isProjectSample = sample -> sample.contains(project)
-            List<String> projectSamples = samples.stream().filter(isProjectSample).collect().toList()
+            Predicate<String> isProjectSample = {sample -> sample.startsWith(project.code)}
+            project.sampleCodes = samples.stream().filter(isProjectSample).collect().toList()
 
-            projectToSamples.put(project,projectSamples)
+
+            projects << project
         }
 
-        return projectToSamples
+        return projects
     }
 
-    private Set<String> getProjects(){
-        Set<String> projects = new HashSet<>()
-        updatedSamplesWithStatus.keySet().each {sample ->
-            projects.add(sample.substring(0,5))
+    private Set<Project> getProjects() {
+        Set<Project> projects = new HashSet<>()
+
+        updatedSamplesWithStatus.keySet().each { sample ->
+            Project project = new Project()
+            project.code = sample.substring(0, 5)
+
+            Optional<Project> found = projects.stream().filter({it.code == project.code}).findFirst()
+
+            if(found.isPresent()){
+                //todo does that work here, is it the same object that will be altered?
+                found.get().sampleCodes.add(sample)
+            }else{
+                project.sampleCodes = [sample]
+                projects.add(project)
+            }
         }
+
         return projects
     }
 }
