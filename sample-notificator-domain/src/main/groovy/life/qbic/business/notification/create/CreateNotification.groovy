@@ -23,7 +23,6 @@ class CreateNotification implements CreateNotificationInput {
   
     private final CreateNotificationOutput output
     private final FetchUpdatedDataSource dataSource
-    private List<NotificationContent> notifications
 
     CreateNotification(FetchUpdatedDataSource dataSource, CreateNotificationOutput output) {
         this.output = output
@@ -33,6 +32,7 @@ class CreateNotification implements CreateNotificationInput {
     @Override
     void createNotifications(String date) {
       LocalDate localDate = LocalDate.parse(date)
+      List<NotificationContent> notifications = []
       
       try {
           //1. get todays notifications
@@ -49,7 +49,7 @@ class CreateNotification implements CreateNotificationInput {
             String title = projectsWithTitles.get(projectCode)
             
             //4. get subscribers of this projects
-            List<Subscriber> subscribers = getSubscriberForProject(projectCode)
+            List<Subscriber> subscribers = dataSource.getSubscriberForProject(projectCode)
             
             for(Subscriber subscriber : subscribers) {
               notifications.add(new NotificationContent.Builder(subscriber.firstName, subscriber.lastName, subscriber.email, 
@@ -79,14 +79,14 @@ class CreateNotification implements CreateNotificationInput {
         Map<String, List<String>> projectToSamples = new HashMap<>()
         samples.each { sample ->
             String project = sample.substring(0, 5)
-            if(projectToSamples.containsKey(project)) {
-              def samples = [sample]
-              projectToSamples.put(project, list)
+            if(!projectToSamples.containsKey(project)) {
+              def samplesForProject = [sample]
+              projectToSamples.put(project, samplesForProject)
             } else {
               projectToSamples.get(project).add(sample)
             }
         }
-        return projects
+        return projectToSamples
     }
 //
 //    /**
