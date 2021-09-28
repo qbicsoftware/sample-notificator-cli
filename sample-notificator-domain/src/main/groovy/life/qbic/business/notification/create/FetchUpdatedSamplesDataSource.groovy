@@ -11,7 +11,7 @@ import java.time.LocalDate
  *
  * @since 1.0.0
  */
-interface FetchUpdatedDataSource {
+interface FetchUpdatedSamplesDataSource {
 
     /**
      * Retrieves a map of sample codes with statuses, which has been updated at a given day.

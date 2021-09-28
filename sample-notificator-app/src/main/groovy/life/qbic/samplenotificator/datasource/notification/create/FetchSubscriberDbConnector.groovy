@@ -3,7 +3,7 @@ package life.qbic.samplenotificator.datasource.notification.create
 import groovy.util.logging.Log4j2
 import life.qbic.business.exception.DatabaseQueryException
 import life.qbic.business.subscription.fetch.FetchSubscriberDataSource
-import life.qbic.business.notification.create.FetchUpdatedDataSource
+import life.qbic.business.notification.create.FetchUpdatedSamplesDataSource
 import life.qbic.business.subscription.Subscriber
 import life.qbic.datamodel.samples.Status
 import life.qbic.samplenotificator.datasource.database.ConnectionProvider
@@ -24,7 +24,7 @@ import java.time.ZoneId
  *
 */
 @Log4j2
-class FetchSubscriberDbConnector implements FetchSubscriberDataSource, FetchUpdatedDataSource {
+class FetchSubscriberDbConnector implements FetchSubscriberDataSource, FetchUpdatedSamplesDataSource{
     private ConnectionProvider connectionProvider
 
     FetchSubscriberDbConnector(ConnectionProvider connectionProvider){

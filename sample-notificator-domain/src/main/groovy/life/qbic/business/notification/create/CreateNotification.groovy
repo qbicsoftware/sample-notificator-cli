@@ -1,13 +1,11 @@
 package life.qbic.business.notification.create
 
+
 import life.qbic.business.subscription.Subscriber
-import life.qbic.business.subscription.fetch.FetchSubscriber
-import life.qbic.business.subscription.fetch.FetchSubscriberDataSource
-import life.qbic.business.subscription.fetch.FetchSubscriberInput
-import life.qbic.business.subscription.fetch.FetchSubscriberOutput
 
 import life.qbic.datamodel.samples.Status
 import java.time.LocalDate
+import java.util.function.Predicate
 
 
 /**
@@ -22,56 +20,58 @@ import java.time.LocalDate
 class CreateNotification implements CreateNotificationInput {
   
     private final CreateNotificationOutput output
-    private final FetchUpdatedDataSource dataSource
+    private final FetchUpdatedSamplesDataSource dataSource
+    private Map<String, Status> updatedSamplesWithStatus
 
-    CreateNotification(FetchUpdatedDataSource dataSource, CreateNotificationOutput output) {
+    CreateNotification(FetchUpdatedSamplesDataSource dataSource, CreateNotificationOutput output) {
         this.output = output
         this.dataSource = dataSource
     }
 
     @Override
     void createNotifications(String date) {
-      LocalDate localDate = LocalDate.parse(date)
-      List<NotificationContent> notifications = []
-      
+        LocalDate localDate = LocalDate.parse(date)
+        List<NotificationContent> notifications = []
+
       try {
-          //1. get todays notifications
-          Map<String, Status> sampleToStatus = dataSource.getUpdatedSamplesForDay(localDate)
-          //2. get projects
-          Map<String,List<String>> projectsWithSamples = getProjectsWithSamples(sampleToStatus.keySet().asList())
-          //3. get project names
-          Map<String,String> projectsWithTitles = dataSource.fetchProjectsWithTitles()
-          
-          for(String projectCode : projectsWithSamples.keySet()) {
-            List<String> samples = projectsWithSamples.get(projectCode)
-            int failedQCCount = filterSamplesByStatus(samples, sampleToStatus, "SAMPLE_QC_FAIL").size()
-            int availableDataCount = filterSamplesByStatus(samples, sampleToStatus, "DATA_AVAILABLE").size()
-            String title = projectsWithTitles.get(projectCode)
-            
-            //4. get subscribers of this projects
-            List<Subscriber> subscribers = dataSource.getSubscriberForProject(projectCode)
-            
-            for(Subscriber subscriber : subscribers) {
-              notifications.add(new NotificationContent.Builder(subscriber.firstName, subscriber.lastName, subscriber.email, 
-              title, projectCode, failedQCCount, availableDataCount).build())
-            }
-          }
+          updatedSamplesWithStatus = dataSource.getUpdatedSamplesForDay(localDate)
+
+          Map<String,List<String>> projectsWithSamples = getProjectsWithSamples(updatedSamplesWithStatus.keySet().asList())
+
+          projectsWithSamples.each {projectCode, samples -> notifications.addAll(createNotificationForProject(projectCode,samples))}
+
           output.createdNotifications(notifications)    
       } catch (Exception e) {
           output.failNotification("An error occurred while fetching updates for projects")
           output.failNotification(e.message)
       }
     }
+
+    private List<NotificationContent> createNotificationForProject(String projectCode, List samples){
+        List<NotificationContent> notifications = []
+        //3. get project names
+        Map<String,String> projectsWithTitles = dataSource.fetchProjectsWithTitles()
+
+        int failedQCCount = filterSamplesByStatus(samples, updatedSamplesWithStatus, "SAMPLE_QC_FAIL").size()
+        int availableDataCount = filterSamplesByStatus(samples, updatedSamplesWithStatus, "DATA_AVAILABLE").size()
+        String title = projectsWithTitles.get(projectCode)
+
+        //4. get subscribers of this projects
+        List<Subscriber> subscribers = dataSource.getSubscriberForProject(projectCode)
+
+        for(Subscriber subscriber : subscribers) {
+            notifications << new NotificationContent.Builder(subscriber.firstName, subscriber.lastName, subscriber.email,
+                    title, projectCode, failedQCCount, availableDataCount).build()
+        }
+
+        return notifications
+    }
     
     private List<String> filterSamplesByStatus(List<String> samples, Map<String, Status> sampleToStatus, String statusName) {
-        List<String> filteredCodes = []
-        for(String code : samples) {
-          Status status = sampleToStatus.get(code)
-          // this way of comparing Strings hurts my java heart
-          if(status.toString() == statusName) {
-            filteredCodes.add(code)
-          }
-        }
+
+        Predicate isOfStatus = code -> sampleToStatus.get(code).toString() == statusName
+        List<String> filteredCodes = samples.stream().filter(isOfStatus).collect().toList()
+
         return filteredCodes
     }
     
@@ -88,31 +88,4 @@ class CreateNotification implements CreateNotificationInput {
         }
         return projectToSamples
     }
-//
-//    /**
-//     * Transfers the generated list of subscribers to the implementing class
-//     * @param subscribers the retrieved list of subscribers with modified subscriptions
-//     * @since 1.0.0
-//     */
-//
-//    @Override
-//    void fetchedSubscribers(List<Subscriber> subscribers) {
-//        try {
-//            //The output of the fetchSubscriber Use case will be stored in the notificationPerSubscriber Map and used in the CreateNotification method
-//            this.notificationPerSubscriber = createNotificationPerSubscriber(subscribers)
-//        } catch(Exception e) {
-//            output.failNotification("An error occurred during notification creation")
-//        }
-//    }
-//
-//    /**
-//     * Sends failure notifications that have been
-//     * recorded during the use case.
-//     * @param notification containing a failure message
-//     * @since 1.0.0
-//     */
-//    @Override
-//    void failNotification(String notification) {
-//        output.failNotification(notification)
-//    }
 }
