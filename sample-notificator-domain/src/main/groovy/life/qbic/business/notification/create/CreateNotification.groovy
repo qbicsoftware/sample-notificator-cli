@@ -90,7 +90,6 @@ class CreateNotification implements CreateNotificationInput {
             Optional<Project> found = projects.stream().filter({it.code == project.code}).findFirst()
 
             if(found.isPresent()){
-                //todo does that work here, is it the same object that will be altered?
                 found.get().sampleCodes.add(sample)
             }else{
                 project.sampleCodes = [sample]
