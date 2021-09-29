@@ -22,7 +22,7 @@ class EmailGenerator {
     List<NotificationContent> notificationContentList
     private InputStream EMAIL_HTML_TEMPLATE_STREAM
     private EmailHTMLTemplate emailHTMLTemplate
-    private List<Document> filledTemplates = []
+    private List<Document> emails = []
 
     EmailGenerator(List<NotificationContent> notificationContentList) {
         this.notificationContentList = notificationContentList
