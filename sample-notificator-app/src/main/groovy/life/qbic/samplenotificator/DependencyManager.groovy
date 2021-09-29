@@ -68,7 +68,8 @@ class DependencyManager {
     }
 
     private void setupSendEmail(){
-        emailGenerator = new EmailGenerator(notifications)
+        emailGenerator = new EmailGenerator()
+        emailGenerator.fillTemplate(notifications)
     }
 
     CreateNotificationController getCreateNotificationController() {

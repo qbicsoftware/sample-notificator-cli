@@ -22,9 +22,11 @@ class EmailGenerator {
     List<NotificationContent> notificationContentList
     private InputStream EMAIL_HTML_TEMPLATE_STREAM
     private EmailHTMLTemplate emailHTMLTemplate
-    private List<Document> emails = []
+    private Map<Document, String> emails = [:]
 
-    EmailGenerator(List<NotificationContent> notificationContentList) {
+    EmailGenerator() {}
+
+    void fillTemplate(List<NotificationContent> notificationContentList) {
         this.notificationContentList = notificationContentList
     }
 
@@ -36,9 +38,8 @@ class EmailGenerator {
         notificationContentList.each { NotificationContent notificationContent ->
             accessEmailTemplate()
             prepareHTMLEmail(notificationContent)
-            //ToDo sendEmail will be handled by a different PR
-            //sendEmail("Steffen.greiner@uni-tuebingen.de", filledTemplate.html())
         }
+        sendEmail()
     }
 
     private void accessEmailTemplate() {
@@ -48,23 +49,23 @@ class EmailGenerator {
     private void prepareHTMLEmail(NotificationContent notificationContent) {
         this.emailHTMLTemplate = new EmailHTMLTemplate(Jsoup.parse(EMAIL_HTML_TEMPLATE_STREAM, "UTF-8", ""))
         Document filledEmail = emailHTMLTemplate.fillTemplate(notificationContent)
-        emails.add(filledEmail)
+        emails.put(filledEmail, notificationContent.customerEmailAddress)
     }
 
-    private void sendEmail(String emailRecipient, String notificationContent) {
-        def tempNotificationFile = new File('TempNotificationFile.html')
-        tempNotificationFile.write(notificationContent)
-        //ToDo Replace this with Sendmail and add custom header
-        ProcessBuilder builder = new ProcessBuilder("mail", "-s ${subject}", emailRecipient).redirectInput(tempNotificationFile)
-        builder.redirectErrorStream(true)
-        Process process = builder.start()
-        process.waitFor(10, TimeUnit.SECONDS)
-        //ToDo This has to be replaced with dedicated writing into a log on executing server
-        process.getInputStream().eachLine { println(it) }
-        //ToDo How should exit codes be handled with the cronjob? See https://mailutils.org/manual/html_section/mailutils.html for Exit Codes
-        println("ExitCode: " + process.exitValue())
-        tempNotificationFile.delete()
+    private void sendEmail() {
+        emails.each { Document emailContent, String emailRecipient ->
+            def tempNotificationFile = new File('TempNotificationFile.html')
+            tempNotificationFile.write(emailContent.html())
+            ProcessBuilder builder = new ProcessBuilder("mail", "-s ${subject}", emailRecipient).redirectInput(tempNotificationFile)
+            builder.redirectErrorStream(true)
+            Process process = builder.start()
+            process.waitFor(10, TimeUnit.SECONDS)
+            //ToDo This has to be replaced with dedicated writing into a log on executing server
+            process.getInputStream().eachLine { println(it) }
+            //ToDo How should exit codes be handled with the cronjob? See https://mailutils.org/manual/html_section/mailutils.html for Exit Codes
+            println("ExitCode: " + process.exitValue())
+            tempNotificationFile.delete()
+        }
     }
-
 }
 

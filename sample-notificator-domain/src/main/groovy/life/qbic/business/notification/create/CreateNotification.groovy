@@ -30,8 +30,8 @@ class CreateNotification implements CreateNotificationInput, FetchSubscriberOutp
         fetchSubscriberInput.fetchSubscriber(date)
         //ToDo Remove this dummy data after testing since this will be provided by the use case
         List<NotificationContent> notificationContentList = []
-        NotificationContent notificationContent1 = new NotificationContent.Builder("Jo", "My_Dude", "Jo.mydude@coolguy.de", "coolProject", "NICE1", 2, 1000).build()
-        NotificationContent notificationContent2 = new NotificationContent.Builder("Yas", "Queen", "Yas.queen@slaythem.de", "sweetProject", "COLD1", 1, 12).build()
+        NotificationContent notificationContent1 = new NotificationContent.Builder("Jo", "My_Dude", "steffen.greiner@uni-tuebingen.de", "coolProject", "NICE1", 2, 1000).build()
+        NotificationContent notificationContent2 = new NotificationContent.Builder("Yas", "Queen", "steffen.greiner@uni-tuebingen.de", "sweetProject", "COLD1", 1, 12).build()
         notificationContentList.add(notificationContent1)
         notificationContentList.add(notificationContent2)
         output.createdNotifications(notificationContentList)
