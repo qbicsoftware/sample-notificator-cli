@@ -47,7 +47,8 @@ class EmailGenerator {
 
     private void prepareHTMLEmail(NotificationContent notificationContent) {
         this.emailHTMLTemplate = new EmailHTMLTemplate(Jsoup.parse(EMAIL_HTML_TEMPLATE_STREAM, "UTF-8", ""))
-        filledTemplates.add(emailHTMLTemplate.fillTemplate(notificationContent))
+        Document filledEmail = emailHTMLTemplate.fillTemplate(notificationContent)
+        emails.add(filledEmail)
     }
 
     private void sendEmail(String emailRecipient, String notificationContent) {
