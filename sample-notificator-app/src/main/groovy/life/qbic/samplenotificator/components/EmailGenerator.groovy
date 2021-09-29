@@ -11,11 +11,10 @@ import java.util.concurrent.TimeUnit
 
 
 /**
- * Class responsible for generating an sending an email from the provided notification and subscriber information
- * //ToDo Adapt documentation
- * EmailGenerator converts the notification created in the CreateNotification Use case into an emailBody
- * The contactInformation such as e.g. the emailAddress of the recipient is retrieved from the associated provided Subscriber
- * The email is then send via a commandline call to the mailutils tool(@link <a href=https://mailutils.org/>mailutils</a> via a ProcessBuilder
+ * Class responsible for generating an sending an email from the provided project and subscriber information
+ *
+ * EmailGenerator extracts the information provided in the NotificationContent DTO and fills it into a prepared template structure.
+ * Afterwards it sends the prepared email via a commandline call to the mailutils sendmail tool(@link <a href=https://mailutils.org/>mailutils</a> via a ProcessBuilder
  *
  * @since: 1.0.0
  *
@@ -80,8 +79,10 @@ class EmailGenerator {
     /**
      * Concatenates email header information and the actual email content into a singular file
      *
-     * Method to create a file containing the email header information and the dynamically adapted email message.
+     * Method to create a file containing the email header information{@see notification-template/header.txt} and the dynamically adapted email message.
      * This is necessary since sendmail doesn't provide a dedicated command line switch to set the content-type of the message
+     * @param notificationContent String representation of the filled in HTML Email Template {@see notification-template/email-update-template.html}
+     * @return concatenatedHTMLFile of the mailutils sendmail tool for detailed information see(@link <a href=https://www.cs.ait.ac.th/~on/O/oreilly/tcpip/sendmail/ch36_05.htm/>here</a>)
      */
     private File writeHTMLContentToFile(String notificationContent){
         File concatenatedHTMLFile = new File(EMAIL_HTML_CREATED_PATH.toString())
@@ -94,8 +95,12 @@ class EmailGenerator {
     /**
      * Sends the prepared html file to the email address provided in the notificationContent via sendmail
      *
-     * The email is send via a commandline call to the mailutils sendmail tool(@link <a href=https://mailutils.org/>mailutils</a> via a ProcessBuilder
-     * //ToDo Finish documentation
+     * The email is send via a commandline call to the mailutils sendmail tool(@link <a href=https://mailutils.org/>mailutils</a>) via a ProcessBuilder
+     * The "-t" switch allows sendmail to extract information about the email sender, subject and content-type from the email header.
+     *
+     * @param emailHTMLFile Prepared HTMLFile containing a dedicated emailHeader and the filled in emailTemplate
+     * @param emailRecipient String representation of the subscribers email address to which the email should be send
+     * @return ExitCode of the mailutils sendmail tool for detailed information see(@link <a href=https://www.cs.ait.ac.th/~on/O/oreilly/tcpip/sendmail/ch36_05.htm/>here</a>)
      *
      */
     //ToDo Move this into separate class
