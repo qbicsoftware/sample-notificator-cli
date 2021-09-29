@@ -14,8 +14,7 @@ import java.util.concurrent.TimeUnit
  * The contactInformation such as e.g. the emailAddress of the recipient is retrieved from the associated provided Subscriber
  * The email is then send via a commandline call to the mailutils tool(@link <a href=https://mailutils.org/>mailutils</a> via a ProcessBuilder
  *
- * @since: 1.0.0
- *
+ * @since: 1.0.0*
  */
 class EmailGenerator {
 
@@ -60,7 +59,7 @@ class EmailGenerator {
         Process process = builder.start()
         process.waitFor(10, TimeUnit.SECONDS)
         //ToDo This has to be replaced with dedicated writing into a log on executing server
-        process.getInputStream().eachLine {println(it)}
+        process.getInputStream().eachLine { println(it) }
         //ToDo How should exit codes be handled with the cronjob? See https://mailutils.org/manual/html_section/mailutils.html for Exit Codes
         println("ExitCode: " + process.exitValue())
         tempNotificationFile.delete()
