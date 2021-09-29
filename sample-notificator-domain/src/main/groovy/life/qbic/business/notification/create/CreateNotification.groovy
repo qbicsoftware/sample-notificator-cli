@@ -1,6 +1,7 @@
 package life.qbic.business.notification.create
 
 import life.qbic.business.subscription.Subscriber
+import life.qbic.business.subscription.fetch.FetchSubscriberDataSource
 import life.qbic.datamodel.samples.Status
 
 import java.time.LocalDate
@@ -18,15 +19,17 @@ import java.util.function.Predicate
 class CreateNotification implements CreateNotificationInput {
 
     private final CreateNotificationOutput output
-    private final FetchUpdatedSamplesDataSource dataSource
+    private final FetchProjectDataSource projectDataSource
+    private final FetchSubscriberDataSource fetchSubscriberDataSource
 
     private Map<String, Status> updatedSamplesWithStatus
     private List<NotificationContent> notifications = []
 
 
-    CreateNotification(FetchUpdatedSamplesDataSource dataSource, CreateNotificationOutput output) {
+    CreateNotification(FetchProjectDataSource projectDataSource, FetchSubscriberDataSource fetchSubscriberDataSource, CreateNotificationOutput output) {
         this.output = output
-        this.dataSource = dataSource
+        this.projectDataSource = projectDataSource
+        this.fetchSubscriberDataSource = fetchSubscriberDataSource
     }
 
     @Override
@@ -34,10 +37,10 @@ class CreateNotification implements CreateNotificationInput {
         LocalDate localDate = LocalDate.parse(date)
 
         try {
-            updatedSamplesWithStatus = dataSource.getUpdatedSamplesForDay(localDate)
+            updatedSamplesWithStatus = fetchSubscriberDataSource.getUpdatedSamplesForDay(localDate)
 
             List<Project> projectsWithSamples = getProjects().toList()
-            Map<String, String> projectsWithTitles = dataSource.fetchProjectsWithTitles()
+            Map<String, String> projectsWithTitles = projectDataSource.fetchProjectsWithTitles()
 
             //take out the assignment of the project title (another method?)
             projectsWithSamples.each { project ->
@@ -62,7 +65,7 @@ class CreateNotification implements CreateNotificationInput {
         int availableDataCount = filterSamplesByStatus(project.sampleCodes, "DATA_AVAILABLE").size()
 
         //4. get subscribers of this projects
-        List<Subscriber> subscribers = dataSource.getSubscriberForProject(project.code)
+        List<Subscriber> subscribers = fetchSubscriberDataSource.getSubscriberForProject(project.code)
 
         for (Subscriber subscriber : subscribers) {
             notifications << new NotificationContent.Builder(subscriber.firstName, subscriber.lastName, subscriber.email,

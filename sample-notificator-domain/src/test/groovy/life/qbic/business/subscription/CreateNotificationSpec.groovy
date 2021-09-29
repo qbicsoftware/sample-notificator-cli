@@ -3,7 +3,8 @@ package life.qbic.business.subscription
 import life.qbic.business.notification.create.CreateNotification
 import life.qbic.business.notification.create.NotificationContent
 import life.qbic.business.notification.create.CreateNotificationOutput
-import life.qbic.business.notification.create.FetchUpdatedSamplesDataSource
+import life.qbic.business.notification.create.FetchProjectDataSource
+import life.qbic.business.subscription.fetch.FetchSubscriberDataSource
 import life.qbic.datamodel.samples.Status
 import spock.lang.Specification
 import java.time.LocalDate
@@ -17,9 +18,10 @@ class CreateNotificationSpec extends Specification{
 
     def "If an exception is thrown in the notification creation process because no subscribers are found, a fail notification is returned"(){
         given: "The CreateNotification use case"
-        FetchUpdatedSamplesDataSource ds = Stub(FetchUpdatedSamplesDataSource.class)
+        FetchProjectDataSource projectDataSource = Stub()
+        FetchSubscriberDataSource fetchSubscriberDataSource = Stub()
         CreateNotificationOutput output = Mock()
-        CreateNotification createNotification = new CreateNotification(ds, output)
+        CreateNotification createNotification = new CreateNotification(projectDataSource,fetchSubscriberDataSource, output)
 
         and: "a dummy Subscriber list and a map containing Samples with their updated Sample status"
         Map<String, Status> updatedSamples = ["QMCDP007A3":Status.DATA_AVAILABLE,
@@ -33,9 +35,9 @@ class CreateNotificationSpec extends Specification{
                                                  "QMAAP": ""]
 
         and: "Datasource that returns various information needed, but throws an exception when getting subscribers"
-        ds.getUpdatedSamplesForDay(_ as LocalDate) >> updatedSamples
-        ds.getSubscriberForProject(_ as String) >> {throw new Exception("An error when fetching subscribers")}
-        ds.fetchProjectsWithTitles() >> projectsWithTitles
+        fetchSubscriberDataSource.getUpdatedSamplesForDay(_ as LocalDate) >> updatedSamples
+        fetchSubscriberDataSource.getSubscriberForProject(_ as String) >> {throw new Exception("An error when fetching subscribers")}
+        projectDataSource.fetchProjectsWithTitles() >> projectsWithTitles
 
         when: "The CreateNotification use case is triggered"
         createNotification.createNotifications("2020-08-17")
@@ -47,9 +49,10 @@ class CreateNotificationSpec extends Specification{
 
     def "If no subscribers are found no notifications are returned"(){
         given: "The CreateNotification use case"
-        FetchUpdatedSamplesDataSource ds = Stub(FetchUpdatedSamplesDataSource.class)
+        FetchProjectDataSource projectDataSource = Stub()
+        FetchSubscriberDataSource fetchSubscriberDataSource = Stub()
         CreateNotificationOutput output = Mock()
-        CreateNotification createNotification = new CreateNotification(ds, output)
+        CreateNotification createNotification = new CreateNotification(projectDataSource,fetchSubscriberDataSource, output)
 
         and: "a dummy Subscriber list and a map containing Samples with their updated Sample status"
         Map<String, Status> updatedSamples = ["QMCDP007A3":Status.DATA_AVAILABLE,
@@ -63,9 +66,9 @@ class CreateNotificationSpec extends Specification{
                                                  "QMAAP": ""]
 
         and: "Datasource that returns various information needed, but throws an exception when getting subscribers"
-        ds.getUpdatedSamplesForDay(_ as LocalDate) >> updatedSamples
-        ds.getSubscriberForProject(_ as String) >> {[]}
-        ds.fetchProjectsWithTitles() >> projectsWithTitles
+        fetchSubscriberDataSource.getUpdatedSamplesForDay(_ as LocalDate) >> updatedSamples
+        fetchSubscriberDataSource.getSubscriberForProject(_ as String) >> {[]}
+        projectDataSource.fetchProjectsWithTitles() >> projectsWithTitles
 
         when: "The CreateNotification use case is triggered"
         createNotification.createNotifications("2020-08-17")
@@ -77,9 +80,10 @@ class CreateNotificationSpec extends Specification{
 
     def "Providing a valid Date will return notifications stored for that date"(){
         given: "The CreateNotification use case"
-        FetchUpdatedSamplesDataSource ds = Stub(FetchUpdatedSamplesDataSource.class)
+        FetchProjectDataSource projectDataSource = Stub()
+        FetchSubscriberDataSource fetchSubscriberDataSource = Stub()
         CreateNotificationOutput output = Mock()
-        CreateNotification createNotification = new CreateNotification(ds, output)
+        CreateNotification createNotification = new CreateNotification(projectDataSource,fetchSubscriberDataSource, output)
 
         and: "a dummy Subscriber list and a map containing Samples with their updated Sample status"
         Map<String, Status> updatedSamples = ["QMCDP007A3":Status.DATA_AVAILABLE,
@@ -96,9 +100,9 @@ class CreateNotificationSpec extends Specification{
                                                  "QMAAP": ""]
 
         and: "Datasource that returns various information needed"
-        ds.getUpdatedSamplesForDay(_ as LocalDate) >> updatedSamples
-        ds.getSubscriberForProject(_ as String) >> subscribers
-        ds.fetchProjectsWithTitles() >> projectsWithTitles
+        fetchSubscriberDataSource.getUpdatedSamplesForDay(_ as LocalDate) >> updatedSamples
+        fetchSubscriberDataSource.getSubscriberForProject(_ as String) >> subscribers
+        projectDataSource.fetchProjectsWithTitles() >> projectsWithTitles
 
         when: "The CreateNotification use case is triggered"
         createNotification.createNotifications("2020-08-17")
@@ -109,9 +113,10 @@ class CreateNotificationSpec extends Specification{
 
     def "2 projects result in 2 email for the same subscriber"(){
         given: "The CreateNotification use case"
-        FetchUpdatedSamplesDataSource ds = Stub(FetchUpdatedSamplesDataSource.class)
+        FetchProjectDataSource projectDataSource = Stub()
+        FetchSubscriberDataSource fetchSubscriberDataSource = Stub()
         CreateNotificationOutput output = Mock()
-        CreateNotification createNotification = new CreateNotification(ds, output)
+        CreateNotification createNotification = new CreateNotification(projectDataSource,fetchSubscriberDataSource, output)
 
         and: "a dummy Subscriber list and a map containing Samples with their updated Sample status"
         Map<String, Status> updatedSamples = ["QMCDP007A3":Status.DATA_AVAILABLE,
@@ -127,9 +132,9 @@ class CreateNotificationSpec extends Specification{
                                                  "QMAAP": ""]
 
         and: "Datasource that returns various information needed"
-        ds.getUpdatedSamplesForDay(_ as LocalDate) >> updatedSamples
-        ds.getSubscriberForProject(_ as String) >> subscribers
-        ds.fetchProjectsWithTitles() >> projectsWithTitles
+        fetchSubscriberDataSource.getUpdatedSamplesForDay(_ as LocalDate) >> updatedSamples
+        fetchSubscriberDataSource.getSubscriberForProject(_ as String) >> subscribers
+        projectDataSource.fetchProjectsWithTitles() >> projectsWithTitles
 
         when: "The CreateNotification use case is triggered"
         createNotification.createNotifications("2020-08-17")
@@ -143,9 +148,10 @@ class CreateNotificationSpec extends Specification{
 
     def "The message contains the correct number of failing samples and available datasets"(){
         given: "The CreateNotification use case"
-        FetchUpdatedSamplesDataSource ds = Stub(FetchUpdatedSamplesDataSource.class)
+        FetchProjectDataSource projectDataSource = Stub()
+        FetchSubscriberDataSource fetchSubscriberDataSource = Stub()
         CreateNotificationOutput output = Mock()
-        CreateNotification createNotification = new CreateNotification(ds, output)
+        CreateNotification createNotification = new CreateNotification(projectDataSource,fetchSubscriberDataSource, output)
 
         and: "a dummy Subscriber list and a map containing Samples with their updated Sample status"
         Map<String, Status> updatedSamples = ["QMCDP007A3":Status.DATA_AVAILABLE,
@@ -161,9 +167,9 @@ class CreateNotificationSpec extends Specification{
                                                  "QMAAP": ""]
 
         and: "Datasource that returns various information needed"
-        ds.getUpdatedSamplesForDay(_ as LocalDate) >> updatedSamples
-        ds.getSubscriberForProject(_ as String) >> subscribers
-        ds.fetchProjectsWithTitles() >> projectsWithTitles
+        fetchSubscriberDataSource.getUpdatedSamplesForDay(_ as LocalDate) >> updatedSamples
+        fetchSubscriberDataSource.getSubscriberForProject(_ as String) >> subscribers
+        projectDataSource.fetchProjectsWithTitles() >> projectsWithTitles
 
         when: "The CreateNotification use case is triggered"
         createNotification.createNotifications("2020-08-17")
@@ -181,9 +187,10 @@ class CreateNotificationSpec extends Specification{
 
     def "The message is created multiple times if there is more then one subscriber"(){
         given: "The CreateNotification use case"
-        FetchUpdatedSamplesDataSource ds = Stub(FetchUpdatedSamplesDataSource.class)
+        FetchProjectDataSource projectDataSource = Stub()
+        FetchSubscriberDataSource fetchSubscriberDataSource = Stub()
         CreateNotificationOutput output = Mock()
-        CreateNotification createNotification = new CreateNotification(ds, output)
+        CreateNotification createNotification = new CreateNotification(projectDataSource,fetchSubscriberDataSource, output)
 
         and: "a dummy Subscriber list and a map containing Samples with their updated Sample status"
         Map<String, Status> updatedSamples = ["QMCDP007A3":Status.DATA_AVAILABLE,
@@ -196,9 +203,9 @@ class CreateNotificationSpec extends Specification{
         Map<String,String> projectsWithTitles = ["QMCDP": "first project"]
 
         and: "Datasource that returns various information needed"
-        ds.getUpdatedSamplesForDay(_ as LocalDate) >> updatedSamples
-        ds.getSubscriberForProject(_ as String) >> subscribers
-        ds.fetchProjectsWithTitles() >> projectsWithTitles
+        fetchSubscriberDataSource.getUpdatedSamplesForDay(_ as LocalDate) >> updatedSamples
+        fetchSubscriberDataSource.getSubscriberForProject(_ as String) >> subscribers
+        projectDataSource.fetchProjectsWithTitles() >> projectsWithTitles
 
         when: "The CreateNotification use case is triggered"
         createNotification.createNotifications("2020-08-17")

@@ -3,7 +3,6 @@ package life.qbic.samplenotificator.datasource.notification.create
 import groovy.util.logging.Log4j2
 import life.qbic.business.exception.DatabaseQueryException
 import life.qbic.business.subscription.fetch.FetchSubscriberDataSource
-import life.qbic.business.notification.create.FetchUpdatedSamplesDataSource
 import life.qbic.business.subscription.Subscriber
 import life.qbic.datamodel.samples.Status
 import life.qbic.samplenotificator.datasource.database.ConnectionProvider
@@ -24,7 +23,7 @@ import java.time.ZoneId
  *
 */
 @Log4j2
-class FetchSubscriberDbConnector implements FetchSubscriberDataSource, FetchUpdatedSamplesDataSource{
+class FetchSubscriberDbConnector implements FetchSubscriberDataSource{
     private ConnectionProvider connectionProvider
 
     FetchSubscriberDbConnector(ConnectionProvider connectionProvider){
@@ -60,35 +59,6 @@ class FetchSubscriberDbConnector implements FetchSubscriberDataSource, FetchUpda
             throw new DatabaseQueryException(exception.message)
         }
         return foundNotifications
-    }
-    
-    @Override
-    Map<String, String> fetchProjectsWithTitles() {
-
-      Map<String, String> projectsWithTitles = new HashMap<>()
-        try{
-            Connection connection = connectionProvider.connect()
-
-            connection.withCloseable { Connection con ->
-                    String sqlQuery = "select openbis_project_identifier, short_title from projects"
-
-                    PreparedStatement preparedStatement = con.prepareStatement(sqlQuery)
-                    preparedStatement.execute()
-                    def resultSet = preparedStatement.getResultSet()
-
-                    while(resultSet.next()){
-                        String identifier = resultSet.getString("openbis_project_identifier")
-                        String code = identifier.substring(identifier.length() - 5)
-                        String title = resultSet.getString("short_title")
-
-                        projectsWithTitles.put(code, title)
-                    }
-            }
-        }catch(Exception exception){
-            throw new DatabaseQueryException(exception.message)
-        }
-
-        return projectsWithTitles
     }
 
     @Override
