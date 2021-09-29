@@ -20,13 +20,13 @@ import java.util.concurrent.TimeUnit
 class EmailGenerator {
 
     private String subject = "Project Update"
-    NotificationContent notificationContent
+    List<NotificationContent> notificationContentList
     private InputStream EMAIL_HTML_TEMPLATE_STREAM
     private EmailHTMLTemplate emailHTMLTemplate
-    private Document filledTemplate
+    private List<Document> filledTemplates = []
 
-    EmailGenerator(NotificationContent notificationContent) {
-        this.notificationContent = notificationContent
+    EmailGenerator(List<NotificationContent> notificationContentList) {
+        this.notificationContentList = notificationContentList
     }
 
     /**
@@ -34,20 +34,21 @@ class EmailGenerator {
      * containing the provided notifications to the provided subscribers
      */
     void initializeEmailSubmission() {
-        accessEmailTemplate()
-        prepareHTMLEmail()
-        println(filledTemplate)
-        //ToDo Replace this with subscriber mail
-        //sendEmail("Steffen.greiner@uni-tuebingen.de", filledTemplate.html())
+        notificationContentList.each { NotificationContent notificationContent ->
+            accessEmailTemplate()
+            prepareHTMLEmail(notificationContent)
+            //ToDo sendEmail will be handled by a different PR
+            //sendEmail("Steffen.greiner@uni-tuebingen.de", filledTemplate.html())
+        }
     }
 
     private void accessEmailTemplate() {
         this.EMAIL_HTML_TEMPLATE_STREAM = EmailHTMLTemplate.class.getClassLoader().getResourceAsStream("notification-template/email-update-template.html")
     }
 
-    private void prepareHTMLEmail() {
+    private void prepareHTMLEmail(NotificationContent notificationContent) {
         this.emailHTMLTemplate = new EmailHTMLTemplate(Jsoup.parse(EMAIL_HTML_TEMPLATE_STREAM, "UTF-8", ""))
-        this.filledTemplate = emailHTMLTemplate.fillTemplate(notificationContent)
+        filledTemplates.add(emailHTMLTemplate.fillTemplate(notificationContent))
     }
 
     private void sendEmail(String emailRecipient, String notificationContent) {
