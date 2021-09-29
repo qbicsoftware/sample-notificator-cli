@@ -19,7 +19,10 @@ class CreateNotification implements CreateNotificationInput {
 
     private final CreateNotificationOutput output
     private final FetchUpdatedSamplesDataSource dataSource
+
     private Map<String, Status> updatedSamplesWithStatus
+    private List<NotificationContent> notifications = []
+
 
     CreateNotification(FetchUpdatedSamplesDataSource dataSource, CreateNotificationOutput output) {
         this.output = output
@@ -29,20 +32,21 @@ class CreateNotification implements CreateNotificationInput {
     @Override
     void createNotifications(String date) {
         LocalDate localDate = LocalDate.parse(date)
-        List<NotificationContent> notifications = []
 
         try {
             updatedSamplesWithStatus = dataSource.getUpdatedSamplesForDay(localDate)
 
-            List<Project> projectsWithSamples = getProjectsWithSamples(updatedSamplesWithStatus.keySet().asList())
-
+            List<Project> projectsWithSamples = getProjects().toList()
             Map<String, String> projectsWithTitles = dataSource.fetchProjectsWithTitles()
 
+            //take out the assignment of the project title (another method?)
             projectsWithSamples.each { project ->
-                //todo refactor me
                 project.title = projectsWithTitles.get(project.code)
-                List notificationContent = createNotificationForProject(project)
-                notifications.addAll(notificationContent)
+            }
+
+            //add notifications with create notification method (directly adds notifications to list)
+            projectsWithSamples.each { project ->
+                addNotificationForProject(project)
             }
 
             output.createdNotifications(notifications)
@@ -52,8 +56,7 @@ class CreateNotification implements CreateNotificationInput {
         }
     }
 
-    private List<NotificationContent> createNotificationForProject(Project project) {
-        List<NotificationContent> notifications = []
+    private void addNotificationForProject(Project project) {
 
         int failedQCCount = filterSamplesByStatus(project.sampleCodes, "SAMPLE_QC_FAIL").size()
         int availableDataCount = filterSamplesByStatus(project.sampleCodes, "DATA_AVAILABLE").size()
@@ -66,7 +69,6 @@ class CreateNotification implements CreateNotificationInput {
                     project.title, project.code, failedQCCount, availableDataCount).build()
         }
 
-        return notifications
     }
 
     private List<String> filterSamplesByStatus(List<String> samples, String statusName) {
@@ -77,19 +79,6 @@ class CreateNotification implements CreateNotificationInput {
         return filteredCodes
     }
 
-    private List<Project> getProjectsWithSamples(List<String> samples) {
-        List projects = []
-
-        getProjects().each { project ->
-            Predicate<String> isProjectSample = {sample -> sample.startsWith(project.code)}
-            project.sampleCodes = samples.stream().filter(isProjectSample).collect().toList()
-
-
-            projects << project
-        }
-
-        return projects
-    }
 
     private Set<Project> getProjects() {
         Set<Project> projects = new HashSet<>()
@@ -108,7 +97,6 @@ class CreateNotification implements CreateNotificationInput {
                 projects.add(project)
             }
         }
-
         return projects
     }
 }

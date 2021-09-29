@@ -171,10 +171,11 @@ class CreateNotificationSpec extends Specification{
         then: "A map associating the notifications with the subscriber for the provided date is returned"
         1* output.createdNotifications(_ as List<NotificationContent>) >> {arguments ->
             List<NotificationContent> notifications = arguments.get(0)
-            assert notifications.get(0).availableDataCount == 2
-            assert notifications.get(0).failedQCCount == 1
-            assert notifications.get(1).failedQCCount == 2
-            assert notifications.get(1).availableDataCount == 0
+
+            assert notifications.get(1).availableDataCount == 2
+            assert notifications.get(1).failedQCCount == 1
+            assert notifications.get(0).failedQCCount == 2
+            assert notifications.get(0).availableDataCount == 0
         }
     }
 
