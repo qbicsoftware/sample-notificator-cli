@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit
  * The contactInformation such as e.g. the emailAddress of the recipient is retrieved from the associated provided Subscriber
  * The email is then send via a commandline call to the mailutils tool(@link <a href=https://mailutils.org/>mailutils</a> via a ProcessBuilder
  *
- * @since: 1.0.0*
+ * @since: 1.0.0
  */
 class EmailGenerator {
 
