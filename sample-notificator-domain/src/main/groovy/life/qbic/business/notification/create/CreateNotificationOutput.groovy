@@ -1,7 +1,5 @@
 package life.qbic.business.notification.create
 
-import life.qbic.business.subscription.Subscriber
-
 /**
  * <p>Defines what information is forwarded from the {@link CreateNotification} use case</p>
  *
@@ -11,13 +9,12 @@ import life.qbic.business.subscription.Subscriber
 interface CreateNotificationOutput {
 
     /**
-     * Returns a map containing the notification messages associated with their relevant subscriber for the provided Date
+     * Returns a NoticiationContent DTO per project containing the information for updated projects for the provided Date
      *
-     * @param notificationPerSubscriber Map containing the created Notification Messages associated with the subscriber
+     * @param notifications List of DTOs containing the update information for one project each to send out
      * @since 1.0.0
      */
-
-    void createdNotifications(Map<Subscriber, String> notificationPerSubscriber)
+    void createdNotifications(List<NotificationContent> notifications)
 
     void failNotification(String notification)
 }
