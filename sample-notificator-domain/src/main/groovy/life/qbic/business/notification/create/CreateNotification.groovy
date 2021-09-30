@@ -86,11 +86,11 @@ class CreateNotification implements CreateNotificationInput {
     private Set<Project> getProjects() {
         Set<Project> projects = new HashSet<>()
 
-        updatedSamplesWithStatus.keySet().each { sample ->
+        updatedSamplesWithStatus.keySet().each { sampleCode ->
             Project project = new Project()
             project.code = sample.substring(0, 5)
 
-            Optional<Project> found = projects.stream().filter({it.code == project.code}).findFirst()
+            Optional<Project> foundProject = projects.stream().filter({it.code == project.code}).findFirst()
 
             if(found.isPresent()){
                 found.get().sampleCodes.add(sample)

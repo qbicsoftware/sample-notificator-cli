@@ -53,7 +53,7 @@ class FetchSubscriber implements FetchSubscriberInput {
 
     /**
      * Collects all updated samples (from all projects) for the projects a user has subscribed to.
-     * @return A map with the user id (email address) and the updated samples of their subscribed projects
+     * @return a list of subscribers with subscriptions included
      */
     private List<Subscriber> getSubscribersWithSubscriptions() {
         List<Subscriber> subscribers = []
