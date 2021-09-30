@@ -19,40 +19,36 @@ import java.util.concurrent.TimeUnit
 class EmailGenerator {
 
     private String subject = "Project Update"
-    List<NotificationContent> notificationContentList
-    private InputStream EMAIL_HTML_TEMPLATE_STREAM
     private EmailHTMLTemplate emailHTMLTemplate
     private Map<Document, String> emails = [:]
 
-    EmailGenerator() {}
+    EmailGenerator(String templatePath, List<NotificationContent> notificationContents) {
+        notificationContents.each { NotificationContent notificationContent ->
+            prepareEmailTemplate(templatePath)
+            prepareEmails(notificationContent)
+        }
+    }
 
-    void fillTemplate(List<NotificationContent> notificationContentList) {
-        this.notificationContentList = notificationContentList
+    /**
+     * Reads in the HTML Template provided TemplatePath
+     * containing the provided notifications to the provided subscribers
+     */
+    private void prepareEmailTemplate(String templatePath) {
+        //Template Content is stored in Jar and can only be accessed via InputStream which is consumed for each Jsoup Parsing
+        InputStream EMAIL_HTML_TEMPLATE_STREAM = EmailHTMLTemplate.class.getClassLoader().getResourceAsStream(templatePath)
+        this.emailHTMLTemplate = new EmailHTMLTemplate(Jsoup.parse(EMAIL_HTML_TEMPLATE_STREAM, "UTF-8",""))
     }
 
     /**
      * Triggers the creation and submission of each email
      * containing the provided notifications to the provided subscribers
      */
-    void initializeEmailSubmission() {
-        notificationContentList.each { NotificationContent notificationContent ->
-            accessEmailTemplate()
-            prepareHTMLEmail(notificationContent)
-        }
-        sendEmail()
-    }
-
-    private void accessEmailTemplate() {
-        this.EMAIL_HTML_TEMPLATE_STREAM = EmailHTMLTemplate.class.getClassLoader().getResourceAsStream("notification-template/email-update-template.html")
-    }
-
-    private void prepareHTMLEmail(NotificationContent notificationContent) {
-        this.emailHTMLTemplate = new EmailHTMLTemplate(Jsoup.parse(EMAIL_HTML_TEMPLATE_STREAM, "UTF-8", ""))
+    private void prepareEmails(NotificationContent notificationContent) {
         Document filledEmail = emailHTMLTemplate.fillTemplate(notificationContent)
         emails.put(filledEmail, notificationContent.customerEmailAddress)
     }
 
-    private void sendEmail() {
+    void sendEmails() {
         emails.each { Document emailContent, String emailRecipient ->
             def tempNotificationFile = new File('TempNotificationFile.html')
             tempNotificationFile.write(emailContent.html())

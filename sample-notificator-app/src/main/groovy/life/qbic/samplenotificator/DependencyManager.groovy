@@ -34,7 +34,6 @@ class DependencyManager {
     private void initializeDependencies(){
         setupDatabase()
         setupCreateNotification()
-        setupSendEmail()
     }
 
     private void setupDatabase(){
@@ -67,16 +66,13 @@ class DependencyManager {
         createNotificationController = new CreateNotificationController(createNotification)
     }
 
-    private void setupSendEmail(){
-        emailGenerator = new EmailGenerator()
-        emailGenerator.fillTemplate(notifications)
-    }
-
     CreateNotificationController getCreateNotificationController() {
         return createNotificationController
     }
 
     EmailGenerator getEmailGenerator(){
+        String HTMLTemplatePath = "notification-template/email-update-template.html"
+        emailGenerator = new EmailGenerator(HTMLTemplatePath, notifications)
         return emailGenerator
     }
 
