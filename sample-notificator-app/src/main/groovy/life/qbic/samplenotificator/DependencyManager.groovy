@@ -8,6 +8,7 @@ import life.qbic.samplenotificator.components.CreateNotificationController
 import life.qbic.samplenotificator.components.CreateNotificationPresenter
 import life.qbic.samplenotificator.components.EmailGenerator
 import life.qbic.samplenotificator.datasource.database.DatabaseSession
+import life.qbic.samplenotificator.datasource.notification.create.FetchProjectDbConnector
 import life.qbic.samplenotificator.datasource.notification.create.FetchSubscriberDbConnector
 
 /**
@@ -60,9 +61,10 @@ class DependencyManager {
     }
 
     private void setupCreateNotification(){
-        FetchSubscriberDbConnector connector = new FetchSubscriberDbConnector(DatabaseSession.getInstance())
+        FetchSubscriberDbConnector subscriberDbConnector = new FetchSubscriberDbConnector(DatabaseSession.getInstance())
+        FetchProjectDbConnector projectDbConnector = new FetchProjectDbConnector(DatabaseSession.getInstance())
         createNotificationPresenter = new CreateNotificationPresenter(notifications)
-        createNotification = new CreateNotification(connector, createNotificationPresenter)
+        createNotification = new CreateNotification(projectDbConnector, subscriberDbConnector, createNotificationPresenter)
         createNotificationController = new CreateNotificationController(createNotification)
     }
 
