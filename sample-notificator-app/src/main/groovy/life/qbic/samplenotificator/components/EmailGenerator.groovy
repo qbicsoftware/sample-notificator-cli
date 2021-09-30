@@ -44,7 +44,7 @@ class EmailGenerator {
      * containing the provided notifications to the provided subscribers
      */
     private void prepareEmails(NotificationContent notificationContent) {
-        Document filledEmail = emailHTMLTemplate.fillTemplate(notificationContent)
+        Document filledEmailTemplate = emailHTMLTemplate.fillTemplate(notificationContent)
         emails.put(filledEmail, notificationContent.customerEmailAddress)
     }
 
