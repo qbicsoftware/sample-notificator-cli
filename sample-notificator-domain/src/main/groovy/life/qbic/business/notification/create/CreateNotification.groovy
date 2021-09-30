@@ -88,14 +88,14 @@ class CreateNotification implements CreateNotificationInput {
 
         updatedSamplesWithStatus.keySet().each { sampleCode ->
             Project project = new Project()
-            project.code = sample.substring(0, 5)
+            project.code = sampleCode.substring(0, 5)
 
             Optional<Project> foundProject = projects.stream().filter({it.code == project.code}).findFirst()
 
-            if(found.isPresent()){
-                found.get().sampleCodes.add(sample)
+            if(foundProject.isPresent()){
+                foundProject.get().sampleCodes.add(sampleCode)
             }else{
-                project.sampleCodes = [sample]
+                project.sampleCodes = [sampleCode]
                 projects.add(project)
             }
         }
