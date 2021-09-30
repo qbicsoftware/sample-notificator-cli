@@ -2,8 +2,6 @@ package life.qbic.samplenotificator.components
 
 import life.qbic.business.notification.create.CreateNotificationOutput
 import life.qbic.business.notification.create.NotificationContent
-import life.qbic.business.subscription.Subscriber
-import life.qbic.business.subscription.fetch.FetchSubscriberOutput
 
 /**
  * Presenter for the CreateNotification Use Case
@@ -13,30 +11,25 @@ import life.qbic.business.subscription.fetch.FetchSubscriberOutput
  * @since: 1.0.0
  *
  */
-class CreateNotificationPresenter implements CreateNotificationOutput, FetchSubscriberOutput {
+class CreateNotificationPresenter implements CreateNotificationOutput {
 
-    Map<Subscriber, String> notificationPerSubscriber
+    List<NotificationContent> notifications
 
-    CreateNotificationPresenter(Map<Subscriber, String> notificationPerSubscriber){
-        this.notificationPerSubscriber = notificationPerSubscriber
-    }
-
-    @Override
-    void createdNotifications(List<NotificationContent> notifications) {
-      //TODO
-//        notificationPerSubscriber.each {
-//            this.notificationPerSubscriber.put(it.key, it.value)
-//        }
+    CreateNotificationPresenter(List<NotificationContent> notifications){
+        this.notifications = notifications
     }
 
     /**
-    * Transfers the generated list of subscribers to the implementing class
-    * @param subscribers the retrieved list of subscribers with modified subscriptions
-    * @since 1.0.0
-    */
+     * Returns a NoticiationContent DTO per project containing the information for updated projects for the provided Date
+     *
+     * @param notifications List of DTOs containing the update information for one project each to send out
+     * @since 1.0.0
+     */
     @Override
-    void fetchedSubscribers(List<Subscriber> subscribers) {
-
+    void createdNotifications(List<NotificationContent> notifications) {
+        notifications.each {
+            this.notifications.add(it)
+        }
     }
 
     /**

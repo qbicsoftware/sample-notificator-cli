@@ -26,6 +26,6 @@ class NotificatorApp extends QBiCTool<NotificatorCommandLineOptions>{
         CreateNotificationController createNotificationController = dependencyManager.getCreateNotificationController()
         createNotificationController.createNotification(commandLineParameters.date)
         EmailGenerator emailGenerator = dependencyManager.getEmailGenerator()
-        emailGenerator.initializeEmailSubmission()
+        emailGenerator.sendEmails()
     }
 }
