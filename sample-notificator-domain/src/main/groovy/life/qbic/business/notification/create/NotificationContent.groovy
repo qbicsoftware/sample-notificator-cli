@@ -67,4 +67,15 @@ class NotificationContent {
         this.availableDataCount = builder.availableDataCount
     }
 
+    @Override
+    String toString() {
+        return "NotificationContent:" +
+                "customerFirstName='" + customerFirstName + '\'' +
+                ", customerLastName='" + customerLastName + '\'' +
+                ", customerEmailAddress='" + customerEmailAddress + '\'' +
+                ", projectTitle='" + projectTitle + '\'' +
+                ", projectCode='" + projectCode + '\'' +
+                ", failedQCCount=" + failedQCCount +
+                ", availableDataCount=" + availableDataCount}
+
 }

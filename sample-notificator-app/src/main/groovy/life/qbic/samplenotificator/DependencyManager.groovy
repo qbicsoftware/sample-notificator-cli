@@ -3,14 +3,13 @@ package life.qbic.samplenotificator
 import groovy.util.logging.Log4j2
 import life.qbic.business.notification.create.CreateNotification
 import life.qbic.business.notification.create.NotificationContent
-import life.qbic.business.subscription.Subscriber
 import life.qbic.samplenotificator.cli.NotificatorCommandLineOptions
-import life.qbic.samplenotificator.components.EmailGenerator
-import life.qbic.samplenotificator.datasource.notification.create.FetchSubscriberDbConnector
 import life.qbic.samplenotificator.components.CreateNotificationController
 import life.qbic.samplenotificator.components.CreateNotificationPresenter
+import life.qbic.samplenotificator.components.EmailGenerator
 import life.qbic.samplenotificator.datasource.database.DatabaseSession
-
+import life.qbic.samplenotificator.datasource.notification.create.FetchProjectDbConnector
+import life.qbic.samplenotificator.datasource.notification.create.FetchSubscriberDbConnector
 
 /**
  * <h1>Sets up the use cases</h1>
@@ -25,7 +24,7 @@ class DependencyManager {
     private CreateNotificationPresenter createNotificationPresenter
     private CreateNotification createNotification
     private CreateNotificationController createNotificationController
-    private Map<Subscriber, String> notificationPerSubscriber = new HashMap<Subscriber, String>()
+    private List<NotificationContent> notifications = []
     private EmailGenerator emailGenerator
 
     DependencyManager(NotificatorCommandLineOptions commandLineParameters){
@@ -36,7 +35,6 @@ class DependencyManager {
     private void initializeDependencies(){
         setupDatabase()
         setupCreateNotification()
-        setupSendEmail()
     }
 
     private void setupDatabase(){
@@ -63,16 +61,11 @@ class DependencyManager {
     }
 
     private void setupCreateNotification(){
-        FetchSubscriberDbConnector connector = new FetchSubscriberDbConnector(DatabaseSession.getInstance())
-        createNotificationPresenter = new CreateNotificationPresenter(notificationPerSubscriber)
-        createNotification = new CreateNotification(connector, createNotificationPresenter)
+        FetchSubscriberDbConnector subscriberDbConnector = new FetchSubscriberDbConnector(DatabaseSession.getInstance())
+        FetchProjectDbConnector projectDbConnector = new FetchProjectDbConnector(DatabaseSession.getInstance())
+        createNotificationPresenter = new CreateNotificationPresenter(notifications)
+        createNotification = new CreateNotification(projectDbConnector, subscriberDbConnector, createNotificationPresenter)
         createNotificationController = new CreateNotificationController(createNotification)
-    }
-
-    private void setupSendEmail(){
-        //ToDo Remove after testing since this will be provided by the use case
-        NotificationContent notificationContent = new NotificationContent.Builder("Jo", "My_Dude", "steffen.greiner@uni-tuebingen.de", "coolProject", "NICE1", 2, 1000).build()
-        emailGenerator = new EmailGenerator(notificationContent)
     }
 
     CreateNotificationController getCreateNotificationController() {
@@ -80,6 +73,8 @@ class DependencyManager {
     }
 
     EmailGenerator getEmailGenerator(){
+        String HTMLTemplatePath = "notification-template/email-update-template.html"
+        emailGenerator = new EmailGenerator(HTMLTemplatePath, notifications)
         return emailGenerator
     }
 
