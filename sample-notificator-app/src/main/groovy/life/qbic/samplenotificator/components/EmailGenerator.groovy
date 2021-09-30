@@ -3,16 +3,8 @@ package life.qbic.samplenotificator.components
 import life.qbic.business.notification.create.NotificationContent
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-
-import java.nio.file.Files
-import java.nio.file.Paths
-import java.nio.file.StandardCopyOption
 import java.util.concurrent.TimeUnit
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.Paths
-import java.nio.file.StandardCopyOption
-
+import java.util.function.Supplier
 
 /**
  * Class responsible for generating an sending an email from the provided project and subscriber information
@@ -24,39 +16,48 @@ import java.nio.file.StandardCopyOption
  */
 class EmailGenerator {
 
-    private String subject = "Project Update"
+    private EmailHTMLTemplate emailHTMLTemplate
+    private Supplier<InputStream> emailHeaderTemplateSupplier
+    private Supplier<InputStream> emailNotificationTemplateSupplier
+
+    String emailTemplatePath = "notification-template/email-update-template.html"
+    String emailHeaderPath = "notification-template/header.txt"
+    List<NotificationContent> notificationContents
+
+    EmailGenerator(List<NotificationContent> notificationContents) {
+        loadEmailTemplates()
+        this.notificationContents = notificationContents
+    }
 
     /**
-     * Paths for temporary files used to prepare the final html file
+     * Generate an
+     * containing the provided notifications to the provided subscribers
      */
-    private final Path tempDir
-    private final Path EMAIL_HTML_TEMPLATE_PATH
-    private final Path EMAIL_HTML_HEADER_PATH
-    private final Path EMAIL_HTML_CREATED_PATH
-
-    NotificationContent notificationContent
-    private EmailHTMLTemplate emailHTMLTemplate
-    private Map<Document, String> emails = [:]
-    private Document filledTemplateMessage
-    private File preparedEmailHTMLFile
-
-    EmailGenerator(String templatePath, List<NotificationContent> notificationContents) {
-        this.tempDir = Files.createTempDirectory("EmailHTML")
-        this.EMAIL_HTML_HEADER_PATH = Paths.get(tempDir.toString(), "header.txt")
-        this.EMAIL_HTML_TEMPLATE_PATH = Paths.get(tempDir.toString(), "email-update-template.html")
-        this.EMAIL_HTML_CREATED_PATH = Paths.get(tempDir.toString(), "email.html")
+    void sendEmails() {
         notificationContents.each { NotificationContent notificationContent ->
-            prepareEmailTemplate(templatePath)
-            prepareEmails(notificationContent)
+            Document filledEmailContent = fillEmailContent(notificationContent)
+            File emailHTMLFile = GroupEmailBodyAndHeaderIntoHTMLFile(filledEmailContent.html())
+            send(emailHTMLFile, notificationContent.customerEmailAddress)
         }
     }
 
     /**
-     * Prepare temporary files storing email message and email header templates
+     * Loads the information stored in the Header and EmailTemplate File into Suppliers
+     * since the underlying InputStreams are consumed upon first time usage.
      */
-    private void importTemplateResources() {
-        Files.copy(EMAIL_HTML_TEMPLATE_STREAM, EMAIL_HTML_TEMPLATE_PATH, StandardCopyOption.REPLACE_EXISTING)
-        Files.copy(EMAIL_HTML_HEADER_STREAM, EMAIL_HTML_HEADER_PATH, StandardCopyOption.REPLACE_EXISTING)
+    private void loadEmailTemplates() {
+        //Template Content is stored in Jar and can only be accessed via InputStream which is consumed for each Jsoup Parsing
+        emailHeaderTemplateSupplier = () -> EmailHTMLTemplate.class.getClassLoader().getResourceAsStream(emailHeaderPath)
+        emailNotificationTemplateSupplier = ()  -> EmailHTMLTemplate.class.getClassLoader().getResourceAsStream(emailTemplatePath)
+    }
+
+    /**
+     * Triggers the adaption of the emailTemplate to contain the information provided in the notificationContent
+     */
+    private Document fillEmailContent(NotificationContent notificationContent) {
+        emailHTMLTemplate = new EmailHTMLTemplate(Jsoup.parse(emailNotificationTemplateSupplier.get(), "UTF-8", ""))
+        Document filledEmailTemplate = emailHTMLTemplate.fillTemplate(notificationContent)
+        return filledEmailTemplate
     }
 
     /**
@@ -67,31 +68,12 @@ class EmailGenerator {
      * @param notificationContent String representation of the filled in HTML Email Template {@see notification-template/email-update-template.html}
      * @return concatenatedHTMLFile of the mailutils sendmail tool for detailed information see(@link <a href=https://www.cs.ait.ac.th/~on/O/oreilly/tcpip/sendmail/ch36_05.htm/>here</a>)
      */
-    private File writeHTMLContentToFile(String notificationContent){
-        File concatenatedHTMLFile = new File(EMAIL_HTML_CREATED_PATH.toString())
-        File emailHeaderFile = new File(EMAIL_HTML_HEADER_PATH.toString())
-        concatenatedHTMLFile.append(emailHeaderFile.bytes)
+    private File GroupEmailBodyAndHeaderIntoHTMLFile(String notificationContent) {
+        File concatenatedHTMLFile = File.createTempFile("HTMLEmail", ".html")
+        concatenatedHTMLFile.append(emailHeaderTemplateSupplier.get())
         concatenatedHTMLFile.append(notificationContent)
+        concatenatedHTMLFile.deleteOnExit()
         return concatenatedHTMLFile
-    }
-
-    /**
-     * Reads in the HTML Template provided TemplatePath
-     * containing the provided notifications to the provided subscribers
-     */
-    private void prepareEmailTemplate(String templatePath) {
-        //Template Content is stored in Jar and can only be accessed via InputStream which is consumed for each Jsoup Parsing
-        InputStream EMAIL_HTML_TEMPLATE_STREAM = EmailHTMLTemplate.class.getClassLoader().getResourceAsStream(templatePath)
-        this.emailHTMLTemplate = new EmailHTMLTemplate(Jsoup.parse(EMAIL_HTML_TEMPLATE_STREAM, "UTF-8",""))
-    }
-
-    /**
-     * Triggers the creation and submission of each email
-     * containing the provided notifications to the provided subscribers
-     */
-    private void prepareEmails(NotificationContent notificationContent) {
-        Document filledEmailTemplate = emailHTMLTemplate.fillTemplate(notificationContent)
-        emails.put(filledEmailTemplate, notificationContent.customerEmailAddress)
     }
 
     /**
@@ -106,15 +88,16 @@ class EmailGenerator {
      *
      */
     //ToDo Move this into separate class
-    private int sendEmails(File emailHTMLFile, String emailRecipient) {
-        ProcessBuilder builder = new ProcessBuilder("sendmail", "-t", emailRecipient).redirectInput(emailHTMLFile)
-        builder.redirectErrorStream(true)
-        Process process = builder.start()
-        process.waitFor(10, TimeUnit.SECONDS)
-        //ToDo This has to be replaced with dedicated writing into a log on executing server
-        process.getInputStream().eachLine {println(it)}
-        //ToDo How should exit codes be handled with the cronjob? See https://mailutils.org/manual/html_section/mailutils.html for Exit Codes
-        return process.exitValue()
+    private int send(File emailHTMLFile, String emailRecipient) {
+            ProcessBuilder builder = new ProcessBuilder("sendmail", "-t", emailRecipient).redirectInput(emailHTMLFile)
+            builder.redirectErrorStream(true)
+            Process process = builder.start()
+            process.waitFor(10, TimeUnit.SECONDS)
+            //ToDo This has to be replaced with dedicated writing into a log on executing server
+            process.getInputStream().eachLine { println(it) }
+            //ToDo How should exit codes be handled with the cronjob? See https://mailutils.org/manual/html_section/mailutils.html for Exit Codes
+            println(process.exitValue())
+            return process.exitValue()
     }
 }
 

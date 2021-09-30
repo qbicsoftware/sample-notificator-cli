@@ -73,10 +73,7 @@ class DependencyManager {
     }
 
     EmailGenerator getEmailGenerator(){
-        String HTMLTemplatePath = "notification-template/email-update-template.html"
-        emailGenerator = new EmailGenerator(HTMLTemplatePath, notifications)
+        emailGenerator = new EmailGenerator(notifications)
         return emailGenerator
     }
-
-
 }
