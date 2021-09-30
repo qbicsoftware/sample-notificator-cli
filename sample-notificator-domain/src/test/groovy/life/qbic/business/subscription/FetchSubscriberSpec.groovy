@@ -56,8 +56,8 @@ class FetchSubscriberSpec extends Specification {
         FetchSubscriber fetchSubscriber = new FetchSubscriber(ds,output)
 
         ds.getUpdatedSamplesForDay(_ as LocalDate) >> updatedSamples
-        ds.getSubscriberForProject("QMCD") >> [subscriber1_without,subscriber2_without]
-        ds.getSubscriberForProject("QMAA") >> [subscriber1_without,subscriber3_without]
+        ds.getSubscriberForProject("QMCDP") >> [subscriber1_without,subscriber2_without]
+        ds.getSubscriberForProject("QMAAP") >> [subscriber1_without,subscriber3_without]
 
         when:
         fetchSubscriber.fetchSubscriber("2021-08-17")
@@ -73,8 +73,8 @@ class FetchSubscriberSpec extends Specification {
         FetchSubscriber fetchSubscriber = new FetchSubscriber(ds,output)
 
         ds.getUpdatedSamplesForDay(_ as LocalDate) >> new HashMap<String, Status>()
-        ds.getSubscriberForProject("QMCD") >> []
-        ds.getSubscriberForProject("QMAA") >> []
+        ds.getSubscriberForProject("QMCDP") >> []
+        ds.getSubscriberForProject("QMAAP") >> []
 
         when:
         fetchSubscriber.fetchSubscriber("2021-08-17")
@@ -107,7 +107,7 @@ class FetchSubscriberSpec extends Specification {
         FetchSubscriber fetchSubscriber = new FetchSubscriber(ds,output)
 
         ds.getUpdatedSamplesForDay(_ as LocalDate) >> updatedSamples
-        ds.getSubscriberForProject("QMCD") >> {throw new DatabaseQueryException("An error occurred")}
+        ds.getSubscriberForProject("QMCDP") >> {throw new DatabaseQueryException("An error occurred")}
 
         when:
         fetchSubscriber.fetchSubscriber("2021-08-17")
