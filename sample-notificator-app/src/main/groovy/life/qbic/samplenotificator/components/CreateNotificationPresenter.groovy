@@ -1,6 +1,7 @@
 package life.qbic.samplenotificator.components
 
 import life.qbic.business.notification.create.CreateNotificationOutput
+import life.qbic.business.notification.create.NotificationContent
 import life.qbic.business.subscription.Subscriber
 import life.qbic.business.subscription.fetch.FetchSubscriberOutput
 
@@ -21,10 +22,11 @@ class CreateNotificationPresenter implements CreateNotificationOutput, FetchSubs
     }
 
     @Override
-    void createdNotifications(Map<Subscriber, String> notificationPerSubscriber) {
-        notificationPerSubscriber.each {
-            this.notificationPerSubscriber.put(it.key, it.value)
-        }
+    void createdNotifications(List<NotificationContent> notifications) {
+      //TODO
+//        notificationPerSubscriber.each {
+//            this.notificationPerSubscriber.put(it.key, it.value)
+//        }
     }
 
     /**
