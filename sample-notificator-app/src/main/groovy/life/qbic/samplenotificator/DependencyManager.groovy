@@ -25,7 +25,6 @@ class DependencyManager {
     private CreateNotification createNotification
     private CreateNotificationController createNotificationController
     private List<NotificationContent> notifications = []
-    private EmailGenerator emailGenerator
 
     DependencyManager(NotificatorCommandLineOptions commandLineParameters){
         properties = getProperties(commandLineParameters.pathToConfig)
@@ -72,8 +71,8 @@ class DependencyManager {
         return createNotificationController
     }
 
-    EmailGenerator getEmailGenerator(){
-        emailGenerator = new EmailGenerator(notifications)
-        return emailGenerator
+    CreateNotificationPresenter getCreateNotificationsPresenter() {
+        return createNotificationPresenter
     }
+
 }

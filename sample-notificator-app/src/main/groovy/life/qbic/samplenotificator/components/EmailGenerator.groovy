@@ -22,18 +22,16 @@ class EmailGenerator {
 
     String emailTemplatePath = "notification-template/email-update-template.html"
     String emailHeaderPath = "notification-template/header.txt"
-    List<NotificationContent> notificationContents
 
-    EmailGenerator(List<NotificationContent> notificationContents) {
+    EmailGenerator() {
         loadEmailTemplates()
-        this.notificationContents = notificationContents
     }
 
     /**
      * Generate an
      * containing the provided notifications to the provided subscribers
      */
-    void sendEmails() {
+    void sendEmails(List<NotificationContent> notificationContents) {
         notificationContents.each { NotificationContent notificationContent ->
             Document filledEmailContent = fillEmailContent(notificationContent)
             File emailHTMLFile = GroupEmailBodyAndHeaderIntoHTMLFile(filledEmailContent.html())

@@ -13,7 +13,7 @@ import life.qbic.business.notification.create.NotificationContent
  */
 class CreateNotificationPresenter implements CreateNotificationOutput {
 
-    List<NotificationContent> notifications
+    private List<NotificationContent> notifications
 
     CreateNotificationPresenter(List<NotificationContent> notifications){
         this.notifications = notifications
@@ -42,5 +42,10 @@ class CreateNotificationPresenter implements CreateNotificationOutput {
     void failNotification(String notification) {
         //ToDo failNotification should be passed into dedicated logging file on executing server
         println(notification)
+    }
+
+    void sendEmailNotifications(){
+        EmailGenerator emailGenerator = new EmailGenerator()
+        emailGenerator.sendEmails(notifications)
     }
 }

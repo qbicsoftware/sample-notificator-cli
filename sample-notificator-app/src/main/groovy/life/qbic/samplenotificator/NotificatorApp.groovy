@@ -4,6 +4,7 @@ import groovy.util.logging.Log4j2
 import life.qbic.cli.QBiCTool
 import life.qbic.samplenotificator.cli.NotificatorCommandLineOptions
 import life.qbic.samplenotificator.components.CreateNotificationController
+import life.qbic.samplenotificator.components.CreateNotificationPresenter
 import life.qbic.samplenotificator.components.EmailGenerator
 
 /**
@@ -25,7 +26,7 @@ class NotificatorApp extends QBiCTool<NotificatorCommandLineOptions>{
         DependencyManager dependencyManager = new DependencyManager(commandLineParameters)
         CreateNotificationController createNotificationController = dependencyManager.getCreateNotificationController()
         createNotificationController.createNotification(commandLineParameters.date)
-        EmailGenerator emailGenerator = dependencyManager.getEmailGenerator()
-        emailGenerator.sendEmails()
+        CreateNotificationPresenter createNotificationPresenter = dependencyManager.getCreateNotificationsPresenter()
+        createNotificationPresenter.sendEmailNotifications()
     }
 }
