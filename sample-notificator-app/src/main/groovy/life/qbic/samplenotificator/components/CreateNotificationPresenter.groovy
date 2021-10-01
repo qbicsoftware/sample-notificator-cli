@@ -15,8 +15,8 @@ class CreateNotificationPresenter implements CreateNotificationOutput {
 
     private List<NotificationContent> notifications
 
-    CreateNotificationPresenter(List<NotificationContent> notifications){
-        this.notifications = notifications
+    CreateNotificationPresenter(EmailGenerator generator){
+        this.generator = generator
     }
 
     /**
