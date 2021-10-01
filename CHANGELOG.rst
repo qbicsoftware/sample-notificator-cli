@@ -15,4 +15,7 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 **Dependencies**
 
+* ``org.jsoup:jsoup:1.13.1``
+
 **Deprecated**
+
