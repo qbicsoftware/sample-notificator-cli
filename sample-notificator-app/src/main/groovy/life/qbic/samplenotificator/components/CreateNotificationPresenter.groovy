@@ -44,8 +44,7 @@ class CreateNotificationPresenter implements CreateNotificationOutput {
         println(notification)
     }
 
-    void sendEmailNotifications(){
-        EmailGenerator emailGenerator = new EmailGenerator()
+    void sendEmailNotifications(List notifications){
         emailGenerator.sendEmails(notifications)
     }
 }
