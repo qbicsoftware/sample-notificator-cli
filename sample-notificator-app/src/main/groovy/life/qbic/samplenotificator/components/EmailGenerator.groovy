@@ -34,7 +34,7 @@ class EmailGenerator {
     void sendEmails(List<NotificationContent> notificationContents) {
         notificationContents.each { NotificationContent notificationContent ->
             Document mailContent = fillEmailTemplate(notificationContent)
-            File emailHTMLFile = GroupEmailBodyAndHeaderIntoHTMLFile(filledEmailContent.html())
+            File emailHTMLFile = convertToEmail(filledEmailContent.html())
             send(emailHTMLFile, notificationContent.customerEmailAddress)
         }
     }
