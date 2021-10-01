@@ -6,7 +6,6 @@ import life.qbic.business.notification.create.NotificationContent
 import life.qbic.samplenotificator.cli.NotificatorCommandLineOptions
 import life.qbic.samplenotificator.components.CreateNotificationController
 import life.qbic.samplenotificator.components.CreateNotificationPresenter
-import life.qbic.samplenotificator.components.EmailGenerator
 import life.qbic.samplenotificator.datasource.database.DatabaseSession
 import life.qbic.samplenotificator.datasource.notification.create.FetchProjectDbConnector
 import life.qbic.samplenotificator.datasource.notification.create.FetchSubscriberDbConnector
