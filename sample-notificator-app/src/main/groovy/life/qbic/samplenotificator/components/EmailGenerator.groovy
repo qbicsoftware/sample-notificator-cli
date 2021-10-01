@@ -34,7 +34,7 @@ class EmailGenerator {
     void sendEmails(List<NotificationContent> notificationContents) {
         notificationContents.each { NotificationContent notificationContent ->
             Document mailContent = fillEmailTemplate(notificationContent)
-            File emailHTMLFile = convertToEmail(filledEmailContent.html())
+            File emailHTMLFile = convertToEmail(mailContent.html())
             send(emailHTMLFile, notificationContent.customerEmailAddress)
         }
     }
@@ -52,7 +52,7 @@ class EmailGenerator {
     /**
      * Triggers the adaption of the emailTemplate to contain the information provided in the notificationContent
      */
-    private Document fillEmailContent(NotificationContent notificationContent) {
+    private Document fillEmailTemplate(NotificationContent notificationContent) {
         emailHTMLTemplate = new EmailHTMLTemplate(Jsoup.parse(emailNotificationTemplateSupplier.get(), "UTF-8", ""))
         Document filledEmailTemplate = emailHTMLTemplate.fillTemplate(notificationContent)
         return filledEmailTemplate
@@ -66,7 +66,7 @@ class EmailGenerator {
      * @param notificationContent String representation of the filled in HTML Email Template {@see notification-template/email-update-template.html}
      * @return concatenatedHTMLFile of the mailutils sendmail tool for detailed information see(@link <a href=https://www.cs.ait.ac.th/~on/O/oreilly/tcpip/sendmail/ch36_05.htm/>here</a>)
      */
-    private File GroupEmailBodyAndHeaderIntoHTMLFile(String notificationContent) {
+    private File convertToEmail(String notificationContent) {
         File concatenatedHTMLFile = File.createTempFile("HTMLEmail", ".html")
         concatenatedHTMLFile.append(emailHeaderTemplateSupplier.get())
         concatenatedHTMLFile.append(notificationContent)

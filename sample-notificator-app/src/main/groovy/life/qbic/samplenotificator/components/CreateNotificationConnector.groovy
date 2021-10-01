@@ -11,12 +11,12 @@ import life.qbic.business.notification.create.NotificationContent
  * @since: 1.0.0
  *
  */
-class CreateNotificationPresenter implements CreateNotificationOutput {
+class CreateNotificationConnector implements CreateNotificationOutput {
 
-    private List<NotificationContent> notifications
+    private EmailGenerator emailGenerator
 
-    CreateNotificationPresenter(EmailGenerator generator){
-        this.generator = generator
+    CreateNotificationConnector(EmailGenerator emailGenerator){
+        this.emailGenerator = emailGenerator
     }
 
     /**
@@ -27,9 +27,7 @@ class CreateNotificationPresenter implements CreateNotificationOutput {
      */
     @Override
     void createdNotifications(List<NotificationContent> notifications) {
-        notifications.each {
-            this.notifications.add(it)
-        }
+        sendEmailNotifications(notifications)
     }
 
     /**

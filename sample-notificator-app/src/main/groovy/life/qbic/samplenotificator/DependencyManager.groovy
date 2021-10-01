@@ -2,10 +2,10 @@ package life.qbic.samplenotificator
 
 import groovy.util.logging.Log4j2
 import life.qbic.business.notification.create.CreateNotification
-import life.qbic.business.notification.create.NotificationContent
 import life.qbic.samplenotificator.cli.NotificatorCommandLineOptions
 import life.qbic.samplenotificator.components.CreateNotificationController
-import life.qbic.samplenotificator.components.CreateNotificationPresenter
+import life.qbic.samplenotificator.components.CreateNotificationConnector
+import life.qbic.samplenotificator.components.EmailGenerator
 import life.qbic.samplenotificator.datasource.database.DatabaseSession
 import life.qbic.samplenotificator.datasource.notification.create.FetchProjectDbConnector
 import life.qbic.samplenotificator.datasource.notification.create.FetchSubscriberDbConnector
@@ -20,10 +20,9 @@ import life.qbic.samplenotificator.datasource.notification.create.FetchSubscribe
 class DependencyManager {
 
     private Properties properties
-    private CreateNotificationPresenter createNotificationPresenter
+    private CreateNotificationConnector createNotificationConnector
     private CreateNotification createNotification
     private CreateNotificationController createNotificationController
-    private List<NotificationContent> notifications = []
 
     DependencyManager(NotificatorCommandLineOptions commandLineParameters){
         properties = getProperties(commandLineParameters.pathToConfig)
@@ -61,17 +60,13 @@ class DependencyManager {
     private void setupCreateNotification(){
         FetchSubscriberDbConnector subscriberDbConnector = new FetchSubscriberDbConnector(DatabaseSession.getInstance())
         FetchProjectDbConnector projectDbConnector = new FetchProjectDbConnector(DatabaseSession.getInstance())
-        createNotificationPresenter = new CreateNotificationPresenter(notifications)
-        createNotification = new CreateNotification(projectDbConnector, subscriberDbConnector, createNotificationPresenter)
+        EmailGenerator emailGenerator = new EmailGenerator()
+        createNotificationConnector = new CreateNotificationConnector(emailGenerator)
+        createNotification = new CreateNotification(projectDbConnector, subscriberDbConnector, createNotificationConnector)
         createNotificationController = new CreateNotificationController(createNotification)
     }
 
     CreateNotificationController getCreateNotificationController() {
         return createNotificationController
     }
-
-    CreateNotificationPresenter getCreateNotificationsPresenter() {
-        return createNotificationPresenter
-    }
-
 }
