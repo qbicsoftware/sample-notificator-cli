@@ -85,7 +85,6 @@ class EmailGenerator {
      * @return ExitCode of the mailutils sendmail tool for detailed information see(@link <a href=https://www.cs.ait.ac.th/~on/O/oreilly/tcpip/sendmail/ch36_05.htm/>here</a>)
      *
      */
-    //ToDo Move this into separate class
     private int send(File emailHTMLFile, String emailRecipient) {
             ProcessBuilder builder = new ProcessBuilder("sendmail", "-t", emailRecipient).redirectInput(emailHTMLFile)
             builder.redirectErrorStream(true)
