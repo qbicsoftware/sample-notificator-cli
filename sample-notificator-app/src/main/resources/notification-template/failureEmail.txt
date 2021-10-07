@@ -1,0 +1,12 @@
+Dear SysAdmin,
+
+Oops that should not have happened.
+Apparently sample-notificator-cli has failed.
+Please Check the dedicated LogFile for detailed information
+"/var/mail/notification-cli.log"
+or the more general logfile of the sendmail process:
+"/var/log/maillog"
+
+Kind regards,
+
+Your friendly neighborhood QBiC Developer

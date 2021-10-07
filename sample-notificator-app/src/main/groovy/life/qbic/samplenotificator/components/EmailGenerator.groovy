@@ -3,6 +3,7 @@ package life.qbic.samplenotificator.components
 import life.qbic.business.notification.create.NotificationContent
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+
 import java.util.concurrent.TimeUnit
 import java.util.function.Supplier
 
@@ -19,9 +20,17 @@ class EmailGenerator {
     private EmailHTMLTemplate emailHTMLTemplate
     private Supplier<InputStream> emailHeaderTemplateSupplier
     private Supplier<InputStream> emailNotificationTemplateSupplier
+    private Supplier<InputStream> emailFailureTemplateSupplier
 
     String emailTemplatePath = "notification-template/email-update-template.html"
     String emailHeaderPath = "notification-template/header.txt"
+    String emailFailureTemplatePath = "notification-template/failureEmail.txt"
+    String logPath = "./notification-cli.log"
+    Boolean notifyAdmin = false
+
+    String subject = "Failure Notification sample-notificator-cli"
+    //ToDo Exchange with support@qbic.zendesk.com
+    String supportEmail = "Steffen.Greiner@uni-tuebingen.de"
 
     EmailGenerator() {
         loadEmailTemplates()
@@ -35,8 +44,10 @@ class EmailGenerator {
         notificationContents.each { NotificationContent notificationContent ->
             Document mailContent = fillEmailTemplate(notificationContent)
             File emailHTMLFile = convertToEmail(mailContent.html())
-            send(emailHTMLFile, notificationContent.customerEmailAddress)
+            //ToDo replace my email with notificationContent.customerEmailAddress)
+            send(emailHTMLFile, "Steffen.Greiner@uni-tuebingen.de")
         }
+        notifyAdminUponFailure(notifyAdmin)
     }
 
     /**
@@ -47,6 +58,7 @@ class EmailGenerator {
         //Template Content is stored in Jar and can only be accessed via InputStream which is consumed for each Jsoup Parsing
         emailHeaderTemplateSupplier = () -> EmailHTMLTemplate.class.getClassLoader().getResourceAsStream(emailHeaderPath)
         emailNotificationTemplateSupplier = ()  -> EmailHTMLTemplate.class.getClassLoader().getResourceAsStream(emailTemplatePath)
+        emailFailureTemplateSupplier = () -> EmailHTMLTemplate.class.getClassLoader().getResourceAsStream(emailFailureTemplatePath)
     }
 
     /**
@@ -82,19 +94,80 @@ class EmailGenerator {
      *
      * @param emailHTMLFile Prepared HTMLFile containing a dedicated emailHeader and the filled in emailTemplate
      * @param emailRecipient String representation of the subscribers email address to which the email should be send
-     * @return ExitCode of the mailutils sendmail tool for detailed information see(@link <a href=https://www.cs.ait.ac.th/~on/O/oreilly/tcpip/sendmail/ch36_05.htm/>here</a>)
+     * @return ExitCode of the mailUtils sendmail tool for detailed information see(@link <a href=https://www.cs.ait.ac.th/~on/O/oreilly/tcpip/sendmail/ch36_05.htm/>here</a>)
      *
      */
     private int send(File emailHTMLFile, String emailRecipient) {
-            ProcessBuilder builder = new ProcessBuilder("sendmail", "-t", emailRecipient).redirectInput(emailHTMLFile)
+        ProcessBuilder builder = new ProcessBuilder("sendmail", "-t", emailRecipient).redirectInput(emailHTMLFile)
+        builder.redirectErrorStream(true)
+        Process process = builder.start()
+        process.waitFor(10, TimeUnit.SECONDS)
+        logSendMailOutput(process)
+        // If at least sendmail process fails the admin should be notified
+        if (shouldAdminBeNotified(process.exitValue())) {
+            notifyAdmin = true
+        }
+        return process.exitValue()
+    }
+
+    /**
+     * Logs the output of a given process(in this case sendmail) to a dedicated logfile to enable debugging
+     *
+     * @param process process for which its terminal output should be logged into the defined logfile
+     *
+     */
+    private void logSendMailOutput(Process process) {
+        File logFile = new File(logPath)
+        logFile.append(process.getInputStream())
+    }
+
+    /**
+     * Sets a Boolean which determines if an admin has to be notified upon process failure
+     *
+     * This method evaluates the exitCodes returned by a process(in this case sendmail).
+     * If the process returns anything else than exitCode 0 this means that a responsible party
+     * has to be notified since there were issues performing the process. For detailed information
+     * see(@link <a href=https://www.cs.ait.ac.th/~on/O/oreilly/tcpip/sendmail/ch36_05.htm/>here</a>)
+     *
+     * @param exitCode process for which its terminal output should be logged into the defined logfile
+     * @return Boolean evaluation if ExitCode differs from 0
+     *
+     */
+    private static Boolean shouldAdminBeNotified(int exitCode) {
+        return exitCode != 0
+    }
+
+    /**
+     * Creates a temporary File containing the failure Notification which will be sent to the responsible party
+     *
+     * This method creates a temporary file containing the template message notifying the responsible party that the sendmail process could not be completed
+     *
+     * @return failureEmailFile containing the failure Email Template Text
+     */
+    private File createFailureNotification() {
+        File failureEmailFile = File.createTempFile("failureEmail", ".txt")
+        failureEmailFile.deleteOnExit()
+        failureEmailFile.append(emailFailureTemplateSupplier.get())
+        return failureEmailFile
+    }
+
+    /**
+     * Creates and sends the failure email to the responsible party if the sendmail process failed
+     *
+     * This method is provided a boolean representation indicating if an Error occurred during the sendmail process
+     * If the original process failed this method will generate a text based email from the failureEmailTemplate and send it to the responsible party
+     *
+     * @param emailSendingFailed Boolean indicating that an error occurred during the original email sending to the subscribers
+     */
+    private void notifyAdminUponFailure(boolean emailSendingFailed) {
+        if (emailSendingFailed) {
+            File failureEmailFile = createFailureNotification()
+            ProcessBuilder builder = new ProcessBuilder("mail", "-s ${subject}", supportEmail).redirectInput(failureEmailFile)
             builder.redirectErrorStream(true)
             Process process = builder.start()
             process.waitFor(10, TimeUnit.SECONDS)
-            //ToDo This has to be replaced with dedicated writing into a log on executing server
-            process.getInputStream().eachLine { println(it) }
-            //ToDo How should exit codes be handled with the cronjob? See https://mailutils.org/manual/html_section/mailutils.html for Exit Codes
-            println(process.exitValue())
-            return process.exitValue()
+        }
     }
+
 }
 
