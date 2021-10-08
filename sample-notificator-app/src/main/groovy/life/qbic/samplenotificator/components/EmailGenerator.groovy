@@ -30,8 +30,7 @@ class EmailGenerator {
     Boolean notifyAdmin = false
 
     String subject = "Failure Notification sample-notificator-cli"
-    //ToDo Exchange with support@qbic.zendesk.com
-    String supportEmail = "Steffen.Greiner@uni-tuebingen.de"
+    String supportEmail = "support@qbic.zendesk.com"
 
     EmailGenerator() {
         loadEmailTemplates()
@@ -45,8 +44,7 @@ class EmailGenerator {
         notificationContents.each { NotificationContent notificationContent ->
             Document mailContent = fillEmailTemplate(notificationContent)
             File emailHTMLFile = convertToEmail(mailContent.html())
-            //ToDo replace my email with notificationContent.customerEmailAddress)
-            send(emailHTMLFile, "Steffen.Greiner@uni-tuebingen.de")
+            send(emailHTMLFile, notificationContent.customerEmailAddress)
         }
         notifyAdminUponFailure(notifyAdmin)
     }
