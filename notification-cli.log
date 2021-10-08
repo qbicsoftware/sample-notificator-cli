@@ -1,5 +1,0 @@
-
-An error occurred while trying to create the Notifications for 2021-10-07
-class java.lang.Class cannot be cast to class java.lang.Throwable (java.lang.Class and java.lang.Throwable are in module java.base of loader 'bootstrap')
-null
-Wow
