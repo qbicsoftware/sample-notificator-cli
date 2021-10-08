@@ -25,6 +25,7 @@ class EmailGenerator {
     String emailTemplatePath = "notification-template/email-update-template.html"
     String emailHeaderPath = "notification-template/header.txt"
     String emailFailureTemplatePath = "notification-template/failureEmail.txt"
+    //ToDo this path should be centralized
     String logPath = "./notification-cli.log"
     Boolean notifyAdmin = false
 
@@ -159,7 +160,7 @@ class EmailGenerator {
      *
      * @param emailSendingFailed Boolean indicating that an error occurred during the original email sending to the subscribers
      */
-    private void notifyAdminUponFailure(boolean emailSendingFailed) {
+    void notifyAdminUponFailure(boolean emailSendingFailed) {
         if (emailSendingFailed) {
             File failureEmailFile = createFailureNotification()
             ProcessBuilder builder = new ProcessBuilder("mail", "-s ${subject}", supportEmail).redirectInput(failureEmailFile)

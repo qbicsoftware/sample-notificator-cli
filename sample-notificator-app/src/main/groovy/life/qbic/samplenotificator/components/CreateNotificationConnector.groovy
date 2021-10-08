@@ -14,6 +14,8 @@ import life.qbic.business.notification.create.NotificationContent
 class CreateNotificationConnector implements CreateNotificationOutput {
 
     private EmailGenerator emailGenerator
+    //ToDo this should be centralized
+    String logPath = "./notification-cli.log"
 
     CreateNotificationConnector(EmailGenerator emailGenerator){
         this.emailGenerator = emailGenerator
@@ -38,8 +40,9 @@ class CreateNotificationConnector implements CreateNotificationOutput {
      */
     @Override
     void failNotification(String notification) {
-        //ToDo failNotification should be passed into dedicated logging file on executing server
-        println(notification)
+        File logFile = new File(logPath)
+        logFile.append(notification)
+        emailGenerator.notifyAdminUponFailure(true)
     }
 
     void sendEmailNotifications(List notifications){
