@@ -114,7 +114,7 @@ class FetchSubscriberSpec extends Specification {
 
         then:
         noExceptionThrown()
-        1*output.failNotification("An error occurred")
+        1*output.failNotification("An error occurred while fetching subscribers for updated projects\nAn error occurred")
     }
 
     def "No error is thrown when getting the updated samples failed"(){
@@ -131,6 +131,6 @@ class FetchSubscriberSpec extends Specification {
 
         then:
         noExceptionThrown()
-        1*output.failNotification("An error occurred")
+        1*output.failNotification("An error occurred while fetching subscribers for updated projects\nAn error occurred")
     }
 }
