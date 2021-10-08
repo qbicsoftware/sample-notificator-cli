@@ -11,7 +11,7 @@ import java.util.function.Supplier
  * Class responsible for generating an sending an email from the provided project and subscriber information
  *
  * EmailGenerator extracts the information provided in the NotificationContent DTO and fills it into a prepared template structure.
- * Afterwards it sends the prepared email via a commandline call to the mailutils sendmail tool(@link <a href=https://mailutils.org/>mailutils</a> via a ProcessBuilder
+ * Afterwards it sends the prepared email via a commandline call to the mailUtils sendmail tool(@link <a href=https://mailutils.org/>mailUtils</a> via a ProcessBuilder
  *
  * @since: 1.0.0
  */
@@ -76,7 +76,7 @@ class EmailGenerator {
      * Method to create a file containing the email header information{@see notification-template/header.txt} and the dynamically adapted email message.
      * This is necessary since sendmail doesn't provide a dedicated command line switch to set the content-type of the message
      * @param notificationContent String representation of the filled in HTML Email Template {@see notification-template/email-update-template.html}
-     * @return concatenatedHTMLFile of the mailutils sendmail tool for detailed information see(@link <a href=https://www.cs.ait.ac.th/~on/O/oreilly/tcpip/sendmail/ch36_05.htm/>here</a>)
+     * @return concatenatedHTMLFile of the mailUtils sendmail tool for detailed information see(@link <a href=https://www.cs.ait.ac.th/~on/O/oreilly/tcpip/sendmail/ch36_05.htm/>here</a>)
      */
     private File convertToEmail(String notificationContent) {
         File concatenatedHTMLFile = File.createTempFile("HTMLEmail", ".html")
@@ -89,7 +89,7 @@ class EmailGenerator {
     /**
      * Sends the prepared html file to the email address provided in the notificationContent via sendmail
      *
-     * The email is send via a commandline call to the mailutils sendmail tool(@link <a href=https://mailutils.org/>mailutils</a>) via a ProcessBuilder
+     * The email is send via a commandline call to the mailUtils sendmail tool(@link <a href=https://mailutils.org/>mailUtils</a>) via a ProcessBuilder
      * The "-t" switch allows sendmail to extract information about the email sender, subject and content-type from the email header.
      *
      * @param emailHTMLFile Prepared HTMLFile containing a dedicated emailHeader and the filled in emailTemplate

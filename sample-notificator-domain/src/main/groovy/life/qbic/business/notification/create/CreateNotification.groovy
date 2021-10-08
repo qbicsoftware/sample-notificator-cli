@@ -1,5 +1,6 @@
 package life.qbic.business.notification.create
 
+import life.qbic.business.exception.DatabaseQueryException
 import life.qbic.business.subscription.Subscriber
 import life.qbic.business.subscription.fetch.FetchSubscriberDataSource
 import life.qbic.datamodel.samples.Status
@@ -51,10 +52,12 @@ class CreateNotification implements CreateNotificationInput {
             projectsWithSamples.each { project ->
                 addNotificationForProject(project)
             }
-
             output.createdNotifications(notifications)
-        } catch (Exception e) {
-            output.failNotification("An error occurred while fetching updates for projects")
+        } catch (DatabaseQueryException databaseQueryException) {
+            output.failNotification(databaseQueryException.message)
+        }
+        catch (Exception e) {
+            output.failNotification("An error occurred while trying to create the Notifications for ${date}")
             output.failNotification(e.message)
         }
     }
