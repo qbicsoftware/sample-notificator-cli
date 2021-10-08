@@ -41,6 +41,7 @@ class CreateNotificationConnector implements CreateNotificationOutput {
     @Override
     void failNotification(String notification) {
         File logFile = new File(logPath)
+        logFile.append("\n")
         logFile.append(notification)
         emailGenerator.notifyAdminUponFailure(true)
     }

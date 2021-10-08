@@ -38,8 +38,7 @@ class FetchSubscriber implements FetchSubscriberInput {
             List subscribers = getSubscribersWithSubscriptions()
             output.fetchedSubscribers(subscribers)
         } catch (Exception e) {
-            output.failNotification("An error occurred while fetching subscribers for updated projects")
-            output.failNotification(e.message)
+            output.failNotification("An error occurred while fetching subscribers for updated projects\n" + e.message)
         }
     }
 

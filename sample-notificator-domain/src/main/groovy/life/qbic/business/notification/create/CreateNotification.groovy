@@ -39,7 +39,6 @@ class CreateNotification implements CreateNotificationInput {
 
         try {
             updatedSamplesWithStatus = fetchSubscriberDataSource.getUpdatedSamplesForDay(localDate)
-
             List<Project> projectsWithSamples = getProjects().toList()
             Map<String, String> projectsWithTitles = projectDataSource.fetchProjectsWithTitles()
 
@@ -57,8 +56,7 @@ class CreateNotification implements CreateNotificationInput {
             output.failNotification(databaseQueryException.message)
         }
         catch (Exception e) {
-            output.failNotification("An error occurred while trying to create the Notifications for ${date}")
-            output.failNotification(e.message)
+            output.failNotification("An error occurred while trying to create the Notifications for ${date}\n" + e.message)
         }
     }
 
