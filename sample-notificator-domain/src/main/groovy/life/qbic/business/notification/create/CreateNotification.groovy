@@ -27,7 +27,7 @@ class CreateNotification implements CreateNotificationInput {
 
     private Map<String, Status> updatedSamplesWithStatus
     private List<NotificationContent> notifications = []
-    private static final Logging log = Logger.getLogger(this.class)
+    private static final Logging log = Logger.getLogger(CreateNotification.class)
 
 
     CreateNotification(FetchProjectDataSource projectDataSource, FetchSubscriberDataSource fetchSubscriberDataSource, CreateNotificationOutput output) {
