@@ -1,3 +1,4 @@
+# mvn
 target/
 pom.xml.tag
 pom.xml.releaseBackup
@@ -9,3 +10,16 @@ buildNumber.properties
 .mvn/timing.properties
 # https://github.com/takari/maven-wrapper#usage-without-binary-jar
 .mvn/wrapper/maven-wrapper.jar
+
+#properties
+**/developer.properties
+
+#intellij files
+**/.idea/
+*.iml
+
+#config
+/sample-notificator-app/src/main/resources/config.properties
+
+#mac
+.DS_Store

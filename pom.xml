@@ -6,11 +6,190 @@
 
   <groupId>life.qbic</groupId>
   <artifactId>sample-notificator</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <version>1.0.0</version>
+  <modules>
+    <module>sample-notificator-app</module>
+    <module>sample-notificator-domain</module>
+  </modules>
 
   <properties>
-    <maven.compiler.source>8</maven.compiler.source>
-    <maven.compiler.target>8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <groovy.version>3.0.8</groovy.version>
   </properties>
 
+  <!-- we only need to tell maven where to find our parent pom and other QBiC
+		dependencies -->
+  <repositories>
+    <!-- maven repository -->
+    <repository>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+        <checksumPolicy>fail</checksumPolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>maven-central</id>
+      <name>Maven central</name>
+      <url>https://repo.maven.apache.org/maven2</url>
+    </repository>
+    <!-- QBiC nexus repositories -->
+    <repository>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+        <checksumPolicy>fail</checksumPolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>nexus-releases</id>
+      <name>QBiC Releases</name>
+      <url>https://qbic-repo.qbic.uni-tuebingen.de/repository/maven-releases</url>
+    </repository>
+    <repository>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+        <checksumPolicy>fail</checksumPolicy>
+      </snapshots>
+      <id>nexus-snapshots</id>
+      <name>QBiC Snapshots</name>
+      <url>https://qbic-repo.qbic.uni-tuebingen.de/repository/maven-snapshots</url>
+    </repository>
+  </repositories>
+
+  <distributionManagement>
+    <!-- QBiC nexus repositories -->
+    <repository>
+      <uniqueVersion>true</uniqueVersion>
+      <id>nexus-releases</id>
+      <name>QBiC Releases</name>
+      <url>https://qbic-repo.qbic.uni-tuebingen.de/repository/maven-releases</url>
+    </repository>
+    <snapshotRepository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>nexus-snapshots</id>
+      <name>QBiC Snapshots</name>
+      <url>https://qbic-repo.qbic.uni-tuebingen.de/repository/maven-snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- Groovy dependencies -->
+      <dependency>
+        <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy-bom</artifactId>
+        <version>${groovy.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.spockframework</groupId>
+        <artifactId>spock-bom</artifactId>
+        <version>2.0-groovy-3.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <!-- QBiC dependencies -->
+      <dependency>
+        <groupId>life.qbic</groupId>
+        <artifactId>data-model-lib</artifactId>
+        <version>2.11.0</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <!-- Groovy dependencies -->
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-all</artifactId>
+      <version>${groovy.version}</version>
+      <type>pom</type>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-sql</artifactId>
+      <version>${groovy.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.spockframework</groupId>
+      <artifactId>spock-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- QBiC dependencies -->
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.7.1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>3.1.1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.gmavenplus</groupId>
+        <artifactId>gmavenplus-plugin</artifactId>
+        <version>1.12.1</version>
+        <executions>
+          <execution>
+            <id>default</id>
+            <goals>
+              <goal>addSources</goal>
+              <goal>addTestSources</goal>
+              <goal>generateStubs</goal>
+              <goal>compile</goal>
+              <goal>generateTestStubs</goal>
+              <goal>compileTests</goal>
+              <goal>removeStubs</goal>
+              <goal>removeTestStubs</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>site</id>
+            <phase>site</phase>
+            <goals>
+              <goal>generateStubs</goal>
+              <goal>generateTestStubs</goal>
+              <goal>groovydoc</goal>
+              <goal>groovydocTests</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <groovyDocOutputDirectory>${project.build.directory}/site/gapidocs</groovyDocOutputDirectory>
+          <testGroovyDocOutputDirectory>${project.build.directory}/site/testgapidocs</testGroovyDocOutputDirectory>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M5</version>
+        <configuration>
+          <includes>
+            <include>**/*Spec</include>
+          </includes>
+        </configuration>
+      </plugin>
+    </plugins>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
 </project>
