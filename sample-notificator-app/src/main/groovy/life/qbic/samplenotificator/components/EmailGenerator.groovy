@@ -170,7 +170,6 @@ class EmailGenerator {
          * This method is provided a boolean representation indicating if an Error occurred during the sendmail process
          * If the original process failed this method will generate a text based email from the failureEmailTemplate and send it to the responsible party
          *
-         * @param emailSendingFailed Boolean indicating that an error occurred during the original email sending to the subscribers
          */
         void notifyAdmin() {
             try {
