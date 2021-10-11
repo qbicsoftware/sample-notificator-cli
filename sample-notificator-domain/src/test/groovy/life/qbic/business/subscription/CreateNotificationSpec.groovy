@@ -14,6 +14,7 @@ import java.time.LocalDate
  *
  * @since: 1.0.0
  */
+
 class CreateNotificationSpec extends Specification{
 
     def "If an exception is thrown in the notification creation process because no subscribers are found, a fail notification is returned"(){

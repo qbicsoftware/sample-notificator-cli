@@ -1,6 +1,8 @@
 package life.qbic.business.subscription.fetch
 
-
+import life.qbic.business.exception.DatabaseQueryException
+import life.qbic.business.logging.Logger
+import life.qbic.business.logging.Logging
 import life.qbic.business.subscription.Subscriber
 import life.qbic.datamodel.samples.Status
 
@@ -20,6 +22,7 @@ class FetchSubscriber implements FetchSubscriberInput {
     private Map<String, Status> sampleToStatus
     private Set<Subscriber> foundSubscribers = new HashSet<>()
     private Set<String> updatedProjects
+    private static final Logging log = Logger.getLogger(FetchSubscriber.class)
 
     FetchSubscriber(FetchSubscriberDataSource ds, FetchSubscriberOutput output) {
         this.ds = ds
@@ -37,9 +40,15 @@ class FetchSubscriber implements FetchSubscriberInput {
             //3. create subscribers and associate them with their subscriptions
             List subscribers = getSubscribersWithSubscriptions()
             output.fetchedSubscribers(subscribers)
-        } catch (Exception e) {
-            output.failNotification("An error occurred while fetching subscribers for updated projects")
-            output.failNotification(e.message)
+        } catch (DatabaseQueryException databaseQueryException) {
+            output.failNotification("An error occurred while trying to query the database during Subscriber retrieval for ${date}")
+            log.error(databaseQueryException.message)
+            log.error(databaseQueryException.stackTrace.join("\n"))
+        }
+        catch (Exception e) {
+            output.failNotification("An error occurred while trying to fetch Subscribers for ${date}")
+            log.error(e.message)
+            log.error(e.stackTrace.join("\n"))
         }
     }
 

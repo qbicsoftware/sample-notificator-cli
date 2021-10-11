@@ -1,5 +1,6 @@
 package life.qbic.samplenotificator.components
 
+import groovy.util.logging.Log4j2
 import life.qbic.business.notification.create.CreateNotificationOutput
 import life.qbic.business.notification.create.NotificationContent
 
@@ -11,6 +12,7 @@ import life.qbic.business.notification.create.NotificationContent
  * @since: 1.0.0
  *
  */
+@Log4j2
 class CreateNotificationConnector implements CreateNotificationOutput {
 
     private EmailGenerator emailGenerator
@@ -20,7 +22,7 @@ class CreateNotificationConnector implements CreateNotificationOutput {
     }
 
     /**
-     * Returns a NoticiationContent DTO per project containing the information for updated projects for the provided Date
+     * Returns a NotificationContent DTO per project containing the information for updated projects for the provided Date
      *
      * @param notifications List of DTOs containing the update information for one project each to send out
      * @since 1.0.0
@@ -38,8 +40,8 @@ class CreateNotificationConnector implements CreateNotificationOutput {
      */
     @Override
     void failNotification(String notification) {
-        //ToDo failNotification should be passed into dedicated logging file on executing server
-        println(notification)
+        log.error(notification)
+        emailGenerator.failureEmailGenerator.notifyAdmin()
     }
 
     void sendEmailNotifications(List notifications){

@@ -105,16 +105,17 @@ class FetchSubscriberSpec extends Specification {
         FetchSubscriberOutput output = Mock()
         FetchSubscriberDataSource ds = Stub(FetchSubscriberDataSource.class)
         FetchSubscriber fetchSubscriber = new FetchSubscriber(ds,output)
+        String exampleDate = "2021-08-17"
 
         ds.getUpdatedSamplesForDay(_ as LocalDate) >> updatedSamples
         ds.getSubscriberForProject("QMCDP") >> {throw new DatabaseQueryException("An error occurred")}
 
         when:
-        fetchSubscriber.fetchSubscriber("2021-08-17")
+        fetchSubscriber.fetchSubscriber(exampleDate)
 
         then:
         noExceptionThrown()
-        1*output.failNotification("An error occurred")
+        1*output.failNotification("An error occurred while trying to query the database during Subscriber retrieval for ${exampleDate}")
     }
 
     def "No error is thrown when getting the updated samples failed"(){
@@ -122,15 +123,16 @@ class FetchSubscriberSpec extends Specification {
         FetchSubscriberOutput output = Mock()
         FetchSubscriberDataSource ds = Stub(FetchSubscriberDataSource.class)
         FetchSubscriber fetchSubscriber = new FetchSubscriber(ds,output)
+        String exampleDate = "2021-08-17"
 
         ds.getUpdatedSamplesForDay(_ as LocalDate) >> {throw new DatabaseQueryException("An error occurred")}
         ds.getSubscriberForProject("QMCD") >> [subscriber1_without,subscriber2_without,subscriber3_without]
 
         when:
-        fetchSubscriber.fetchSubscriber("2021-08-17")
+        fetchSubscriber.fetchSubscriber(exampleDate)
 
         then:
         noExceptionThrown()
-        1*output.failNotification("An error occurred")
+        1*output.failNotification("An error occurred while trying to query the database during Subscriber retrieval for ${exampleDate}")
     }
 }
