@@ -28,7 +28,7 @@ class EmailGenerator {
     private final String emailHeaderPath = "notification-template/header.txt"
     private final String emailFailureTemplatePath = "notification-template/failureEmail.txt"
 
-    Boolean notifyAdmin = false
+    private Boolean notifyAdmin = false
     FailureEmailGenerator failureEmailGenerator
 
     EmailGenerator() {
@@ -47,7 +47,9 @@ class EmailGenerator {
                 File emailHTMLFile = convertToEmail(mailContent.html())
                 send(emailHTMLFile, notificationContent.customerEmailAddress)
             }
-            failureEmailGenerator.notifyAdminUponFailure(notifyAdmin)
+            if (notifyAdmin) {
+                failureEmailGenerator.notifyAdmin()
+            }
         } catch (Exception e) {
             log.error(e.message)
             log.error(e.stackTrace.join("\n"))
@@ -170,22 +172,20 @@ class EmailGenerator {
          *
          * @param emailSendingFailed Boolean indicating that an error occurred during the original email sending to the subscribers
          */
-        void notifyAdminUponFailure(boolean emailSendingFailed) {
-            if (emailSendingFailed) {
-                try {
-                    File failureEmailFile = createFailureNotification()
-                    ProcessBuilder builder = new ProcessBuilder("mail", "-s ${subject}", supportEmail).redirectInput(failureEmailFile)
-                    builder.redirectErrorStream(true)
-                    Process process = builder.start()
-                    log.info("Trying to notify sysadmin via Email about failure with the following settings: " + builder.command())
-                    process.waitFor(10, TimeUnit.SECONDS)
-                    logMailOutput(process)
-                } catch (Exception e) {
-                    log.error(e.message)
+        void notifyAdmin() {
+            try {
+                File failureEmailFile = createFailureNotification()
+                ProcessBuilder builder = new ProcessBuilder("mail", "-s ${subject}", supportEmail).redirectInput(failureEmailFile)
+                builder.redirectErrorStream(true)
+                Process process = builder.start()
+                log.info("Trying to notify sysadmin via Email about failure with the following settings: " + builder.command())
+                process.waitFor(10, TimeUnit.SECONDS)
+                logMailOutput(process)
+            } catch (Exception e) {
+                log.error(e.message)
                     log.error(e.stackTrace.join("\n"))
                 }
             }
-        }
     }
 }
 

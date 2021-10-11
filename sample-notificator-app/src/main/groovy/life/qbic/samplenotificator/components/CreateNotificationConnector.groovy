@@ -41,7 +41,7 @@ class CreateNotificationConnector implements CreateNotificationOutput {
     @Override
     void failNotification(String notification) {
         log.error(notification)
-        emailGenerator.failureEmailGenerator.notifyAdminUponFailure(true)
+        emailGenerator.failureEmailGenerator.notifyAdmin()
     }
 
     void sendEmailNotifications(List notifications){
