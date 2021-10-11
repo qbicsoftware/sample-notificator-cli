@@ -61,7 +61,6 @@ class FetchSubscriberDbConnector implements FetchSubscriberDataSource{
         return foundNotifications
     }
 
-
     @Override
     List<Subscriber> getSubscriberForProject(String projectCode){
 

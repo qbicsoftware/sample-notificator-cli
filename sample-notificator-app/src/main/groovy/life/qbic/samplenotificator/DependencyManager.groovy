@@ -2,13 +2,13 @@ package life.qbic.samplenotificator
 
 import groovy.util.logging.Log4j2
 import life.qbic.business.notification.create.CreateNotification
-import life.qbic.business.subscription.Subscriber
 import life.qbic.samplenotificator.cli.NotificatorCommandLineOptions
-import life.qbic.samplenotificator.components.EmailGenerator
-import life.qbic.samplenotificator.datasource.notification.create.FetchSubscriberDbConnector
+import life.qbic.samplenotificator.components.CreateNotificationConnector
 import life.qbic.samplenotificator.components.CreateNotificationController
-import life.qbic.samplenotificator.components.CreateNotificationPresenter
+import life.qbic.samplenotificator.components.EmailGenerator
 import life.qbic.samplenotificator.datasource.database.DatabaseSession
+import life.qbic.samplenotificator.datasource.notification.create.FetchProjectDbConnector
+import life.qbic.samplenotificator.datasource.notification.create.FetchSubscriberDbConnector
 
 /**
  * <h1>Sets up the use cases</h1>
@@ -20,11 +20,9 @@ import life.qbic.samplenotificator.datasource.database.DatabaseSession
 class DependencyManager {
 
     private Properties properties
-    private CreateNotificationPresenter createNotificationPresenter
+    private CreateNotificationConnector createNotificationConnector
     private CreateNotification createNotification
     private CreateNotificationController createNotificationController
-    private Map<Subscriber, String> notificationPerSubscriber = new HashMap<Subscriber, String>()
-    private EmailGenerator emailGenerator
 
     DependencyManager(NotificatorCommandLineOptions commandLineParameters){
         properties = getProperties(commandLineParameters.pathToConfig)
@@ -34,7 +32,6 @@ class DependencyManager {
     private void initializeDependencies(){
         setupDatabase()
         setupCreateNotification()
-        setupSendEmail()
     }
 
     private void setupDatabase(){
@@ -46,37 +43,41 @@ class DependencyManager {
             String sqlDatabase = Objects.requireNonNull(properties.get("mysql.db"), "Mysql database name missing.")
 
             DatabaseSession.init(user, password, host, port, sqlDatabase)
-        }catch(Exception e){
+        } catch (Exception e) {
             log.error "Could not setup connection to the database"
+            log.error(e.message)
         }
     }
 
-    private static Properties getProperties(String pathToConfig){
-        Properties properties = new Properties()
-        File propertiesFile = new File(pathToConfig)
-        propertiesFile.withInputStream {
-            properties.load(it)
+    private static Properties getProperties(String pathToConfig) {
+        try {
+            Properties properties = new Properties()
+            File propertiesFile = new File(pathToConfig)
+            propertiesFile.withInputStream {
+                properties.load(it)
+            }
+            return properties
+        } catch (Exception e) {
+            log.error("Could not get properties from provided property file")
+            log.error(e.message)
         }
-        return properties
     }
 
-    private void setupCreateNotification(){
-        FetchSubscriberDbConnector connector = new FetchSubscriberDbConnector(DatabaseSession.getInstance())
-        createNotificationPresenter = new CreateNotificationPresenter(notificationPerSubscriber)
-        createNotification = new CreateNotification(connector, createNotificationPresenter)
-        createNotificationController = new CreateNotificationController(createNotification)
-    }
-
-    private void setupSendEmail(){
-        emailGenerator = new EmailGenerator(notificationPerSubscriber)
+    private void setupCreateNotification() {
+        try {
+            FetchSubscriberDbConnector subscriberDbConnector = new FetchSubscriberDbConnector(DatabaseSession.getInstance())
+            FetchProjectDbConnector projectDbConnector = new FetchProjectDbConnector(DatabaseSession.getInstance())
+            EmailGenerator emailGenerator = new EmailGenerator()
+            createNotificationConnector = new CreateNotificationConnector(emailGenerator)
+            createNotification = new CreateNotification(projectDbConnector, subscriberDbConnector, createNotificationConnector)
+            createNotificationController = new CreateNotificationController(createNotification)
+        } catch (Exception e) {
+            log.error("Could not setup Create Notification Use Case")
+            log.error(e.message)
+        }
     }
 
     CreateNotificationController getCreateNotificationController() {
         return createNotificationController
     }
-
-    EmailGenerator getEmailGenerator(){
-        return emailGenerator
-    }
-
 }
