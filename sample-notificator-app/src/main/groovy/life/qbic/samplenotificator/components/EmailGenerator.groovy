@@ -61,7 +61,7 @@ class EmailGenerator {
     private void loadEmailTemplates() {
         //Template Content is stored in Jar and can only be accessed via InputStream which is consumed for each Jsoup Parsing
         emailHeaderTemplateSupplier = () -> EmailHTMLTemplate.class.getClassLoader().getResourceAsStream(emailHeaderPath)
-        emailNotificationTemplateSupplier = ()  -> EmailHTMLTemplate.class.getClassLoader().getResourceAsStream(emailTemplatePath)
+        emailNotificationTemplateSupplier = () -> EmailHTMLTemplate.class.getClassLoader().getResourceAsStream(emailTemplatePath)
         emailFailureTemplateSupplier = () -> EmailHTMLTemplate.class.getClassLoader().getResourceAsStream(emailFailureTemplatePath)
     }
 
