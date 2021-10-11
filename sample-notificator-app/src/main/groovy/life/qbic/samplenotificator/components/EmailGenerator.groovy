@@ -1,5 +1,6 @@
 package life.qbic.samplenotificator.components
 
+import groovy.util.logging.Log4j2
 import life.qbic.business.notification.create.NotificationContent
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -15,6 +16,7 @@ import java.util.function.Supplier
  *
  * @since: 1.0.0
  */
+@Log4j2
 class EmailGenerator {
 
     private EmailHTMLTemplate emailHTMLTemplate
@@ -22,18 +24,16 @@ class EmailGenerator {
     private Supplier<InputStream> emailNotificationTemplateSupplier
     private Supplier<InputStream> emailFailureTemplateSupplier
 
-    String emailTemplatePath = "notification-template/email-update-template.html"
-    String emailHeaderPath = "notification-template/header.txt"
-    String emailFailureTemplatePath = "notification-template/failureEmail.txt"
-    //ToDo this path should be centralized
-    String logPath = "./notification-cli.log"
-    Boolean notifyAdmin = false
+    private final String emailTemplatePath = "notification-template/email-update-template.html"
+    private final String emailHeaderPath = "notification-template/header.txt"
+    private final String emailFailureTemplatePath = "notification-template/failureEmail.txt"
 
-    String subject = "Failure Notification sample-notificator-cli"
-    String supportEmail = "support@qbic.zendesk.com"
+    Boolean notifyAdmin = false
+    FailureEmailGenerator failureEmailGenerator
 
     EmailGenerator() {
         loadEmailTemplates()
+        failureEmailGenerator = new FailureEmailGenerator()
     }
 
     /**
@@ -41,12 +41,17 @@ class EmailGenerator {
      * containing the provided notifications to the provided subscribers
      */
     void sendEmails(List<NotificationContent> notificationContents) {
-        notificationContents.each { NotificationContent notificationContent ->
-            Document mailContent = fillEmailTemplate(notificationContent)
-            File emailHTMLFile = convertToEmail(mailContent.html())
-            send(emailHTMLFile, notificationContent.customerEmailAddress)
+        try {
+            notificationContents.each { NotificationContent notificationContent ->
+                Document mailContent = fillEmailTemplate(notificationContent)
+                File emailHTMLFile = convertToEmail(mailContent.html())
+                send(emailHTMLFile, notificationContent.customerEmailAddress)
+            }
+            failureEmailGenerator.notifyAdminUponFailure(notifyAdmin)
+        } catch (Exception e) {
+            log.error(e.message)
+            log.error(e.stackTrace.join("\n"))
         }
-        notifyAdminUponFailure(notifyAdmin)
     }
 
     /**
@@ -96,17 +101,15 @@ class EmailGenerator {
      * @return ExitCode of the mailUtils sendmail tool for detailed information see(@link <a href=https://www.cs.ait.ac.th/~on/O/oreilly/tcpip/sendmail/ch36_05.htm/>here</a>)
      *
      */
-    private int send(File emailHTMLFile, String emailRecipient) {
-        ProcessBuilder builder = new ProcessBuilder("sendmail", "-t", emailRecipient).redirectInput(emailHTMLFile)
+    private void send(File emailHTMLFile, String emailRecipient) {
+        ProcessBuilder builder = new ProcessBuilder("sendmail", "-t", "steffen.greiner@uni-tuebingen.de").redirectInput(emailHTMLFile)
         builder.redirectErrorStream(true)
         Process process = builder.start()
+        log.info("Trying to send update mail with the following settings: " + builder.command())
         process.waitFor(10, TimeUnit.SECONDS)
-        logSendMailOutput(process)
+        logMailOutput(process)
         // If at least sendmail process fails the admin should be notified
-        if (shouldAdminBeNotified(process.exitValue())) {
-            notifyAdmin = true
-        }
-        return process.exitValue()
+        notifyAdmin = isProcessFailing(process.exitValue())
     }
 
     /**
@@ -115,9 +118,13 @@ class EmailGenerator {
      * @param process process for which its terminal output should be logged into the defined logfile
      *
      */
-    private void logSendMailOutput(Process process) {
-        File logFile = new File(logPath)
-        logFile.append(process.getInputStream())
+    private static void logMailOutput(Process process) {
+        if (isProcessFailing(process.exitValue())) {
+            log.error("Mail could not be sent:")
+            log.error(process.getText())
+        } else {
+            log.info("Mail was sent successful")
+        }
     }
 
     /**
@@ -132,41 +139,53 @@ class EmailGenerator {
      * @return Boolean evaluation if ExitCode differs from 0
      *
      */
-    private static Boolean shouldAdminBeNotified(int exitCode) {
+    private static Boolean isProcessFailing(int exitCode) {
         return exitCode != 0
     }
 
-    /**
-     * Creates a temporary File containing the failure Notification which will be sent to the responsible party
-     *
-     * This method creates a temporary file containing the template message notifying the responsible party that the sendmail process could not be completed
-     *
-     * @return failureEmailFile containing the failure Email Template Text
-     */
-    private File createFailureNotification() {
-        File failureEmailFile = File.createTempFile("failureEmail", ".txt")
-        failureEmailFile.deleteOnExit()
-        failureEmailFile.append(emailFailureTemplateSupplier.get())
-        return failureEmailFile
-    }
+    private class FailureEmailGenerator {
 
-    /**
-     * Creates and sends the failure email to the responsible party if the sendmail process failed
-     *
-     * This method is provided a boolean representation indicating if an Error occurred during the sendmail process
-     * If the original process failed this method will generate a text based email from the failureEmailTemplate and send it to the responsible party
-     *
-     * @param emailSendingFailed Boolean indicating that an error occurred during the original email sending to the subscribers
-     */
-    void notifyAdminUponFailure(boolean emailSendingFailed) {
-        if (emailSendingFailed) {
-            File failureEmailFile = createFailureNotification()
-            ProcessBuilder builder = new ProcessBuilder("mail", "-s ${subject}", supportEmail).redirectInput(failureEmailFile)
-            builder.redirectErrorStream(true)
-            Process process = builder.start()
-            process.waitFor(10, TimeUnit.SECONDS)
+        private final String subject = "Failure Notification sample-notificator-cli"
+        private final String supportEmail = "support@qbic.zendesk.com"
+
+        /**
+         * Creates a temporary File containing the failure Notification which will be sent to the responsible party
+         *
+         * This method creates a temporary file containing the template message notifying the responsible party that the sendmail process could not be completed
+         *
+         * @return failureEmailFile containing the failure Email Template Text
+         */
+        private File createFailureNotification() {
+            File failureEmailFile = File.createTempFile("failureEmail", ".txt")
+            failureEmailFile.deleteOnExit()
+            failureEmailFile.append(emailFailureTemplateSupplier.get())
+            return failureEmailFile
+        }
+
+        /**
+         * Creates and sends the failure email to the responsible party if the sendmail process failed
+         *
+         * This method is provided a boolean representation indicating if an Error occurred during the sendmail process
+         * If the original process failed this method will generate a text based email from the failureEmailTemplate and send it to the responsible party
+         *
+         * @param emailSendingFailed Boolean indicating that an error occurred during the original email sending to the subscribers
+         */
+        void notifyAdminUponFailure(boolean emailSendingFailed) {
+            if (emailSendingFailed) {
+                try {
+                    File failureEmailFile = createFailureNotification()
+                    ProcessBuilder builder = new ProcessBuilder("mail", "-s ${subject}", "steffen.greiner@uni-tuebingen.de").redirectInput(failureEmailFile)
+                    builder.redirectErrorStream(true)
+                    Process process = builder.start()
+                    log.info("Trying to notify sysadmin via Email about failure with the following settings: " + builder.command())
+                    process.waitFor(10, TimeUnit.SECONDS)
+                    logMailOutput(process)
+                } catch (Exception e) {
+                    log.error(e.message)
+                    log.error(e.stackTrace.join("\n"))
+                }
+            }
         }
     }
-
 }
 

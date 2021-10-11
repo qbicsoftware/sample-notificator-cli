@@ -1,6 +1,8 @@
 package life.qbic.business.notification.create
 
 import life.qbic.business.exception.DatabaseQueryException
+import life.qbic.business.logging.Logger
+import life.qbic.business.logging.Logging
 import life.qbic.business.subscription.Subscriber
 import life.qbic.business.subscription.fetch.FetchSubscriberDataSource
 import life.qbic.datamodel.samples.Status
@@ -25,6 +27,7 @@ class CreateNotification implements CreateNotificationInput {
 
     private Map<String, Status> updatedSamplesWithStatus
     private List<NotificationContent> notifications = []
+    private static final Logging log = Logger.getLogger(this.class)
 
 
     CreateNotification(FetchProjectDataSource projectDataSource, FetchSubscriberDataSource fetchSubscriberDataSource, CreateNotificationOutput output) {
@@ -36,12 +39,10 @@ class CreateNotification implements CreateNotificationInput {
     @Override
     void createNotifications(String date) {
         LocalDate localDate = LocalDate.parse(date)
-
         try {
             updatedSamplesWithStatus = fetchSubscriberDataSource.getUpdatedSamplesForDay(localDate)
             List<Project> projectsWithSamples = getProjects().toList()
             Map<String, String> projectsWithTitles = projectDataSource.fetchProjectsWithTitles()
-
             //take out the assignment of the project title (another method?)
             projectsWithSamples.each { project ->
                 project.title = projectsWithTitles.get(project.code)
@@ -53,10 +54,14 @@ class CreateNotification implements CreateNotificationInput {
             }
             output.createdNotifications(notifications)
         } catch (DatabaseQueryException databaseQueryException) {
-            output.failNotification(databaseQueryException.message)
+            output.failNotification("An error occurred while trying to query the database during Notification creation for ${date}")
+            log.error(databaseQueryException.message)
+            log.error(databaseQueryException.stackTrace.join("\n"))
         }
         catch (Exception e) {
-            output.failNotification("An error occurred while trying to create the Notifications for ${date}\n" + e.message)
+            output.failNotification("An error occurred while trying to create the Notifications for ${date}")
+            log.error(e.message)
+            log.error(e.stackTrace.join("\n"))
         }
     }
 
