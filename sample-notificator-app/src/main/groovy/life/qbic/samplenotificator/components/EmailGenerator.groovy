@@ -102,7 +102,7 @@ class EmailGenerator {
      *
      */
     private void send(File emailHTMLFile, String emailRecipient) {
-        ProcessBuilder builder = new ProcessBuilder("sendmail", "-t", "steffen.greiner@uni-tuebingen.de").redirectInput(emailHTMLFile)
+        ProcessBuilder builder = new ProcessBuilder("sendmail", "-t", emailRecipient).redirectInput(emailHTMLFile)
         builder.redirectErrorStream(true)
         Process process = builder.start()
         log.info("Trying to send update mail with the following settings: " + builder.command())
@@ -174,7 +174,7 @@ class EmailGenerator {
             if (emailSendingFailed) {
                 try {
                     File failureEmailFile = createFailureNotification()
-                    ProcessBuilder builder = new ProcessBuilder("mail", "-s ${subject}", "steffen.greiner@uni-tuebingen.de").redirectInput(failureEmailFile)
+                    ProcessBuilder builder = new ProcessBuilder("mail", "-s ${subject}", supportEmail).redirectInput(failureEmailFile)
                     builder.redirectErrorStream(true)
                     Process process = builder.start()
                     log.info("Trying to notify sysadmin via Email about failure with the following settings: " + builder.command())
