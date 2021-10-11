@@ -22,7 +22,7 @@ class FetchSubscriber implements FetchSubscriberInput {
     private Map<String, Status> sampleToStatus
     private Set<Subscriber> foundSubscribers = new HashSet<>()
     private Set<String> updatedProjects
-    private static final Logging log = Logger.getLogger(this.class)
+    private static final Logging log = Logger.getLogger(FetchSubscriber.class)
 
     FetchSubscriber(FetchSubscriberDataSource ds, FetchSubscriberOutput output) {
         this.ds = ds
