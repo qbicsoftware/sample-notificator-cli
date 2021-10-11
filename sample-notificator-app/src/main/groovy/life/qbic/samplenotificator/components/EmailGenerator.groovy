@@ -123,7 +123,7 @@ class EmailGenerator {
             log.error("Mail could not be sent:")
             log.error(process.getText())
         } else {
-            log.info("Mail was sent successful")
+            log.info("Mail was sent successfully")
         }
     }
 
