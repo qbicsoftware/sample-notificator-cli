@@ -4,6 +4,19 @@ Changelog
 
 This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
+1.0.1 (2021-10-26)
+------------------
+
+**Added**
+
+**Fixed**
+
+* ProjectTitle is not mandatory anymore for NotificationContent creation (`#34 <https://github.com/qbicsoftware/sample-notificator-cli/pull/34>`_) 
+
+**Dependencies**
+
+**Deprecated**
+
 1.0.0 (2021-10-11)
 ------------------
 

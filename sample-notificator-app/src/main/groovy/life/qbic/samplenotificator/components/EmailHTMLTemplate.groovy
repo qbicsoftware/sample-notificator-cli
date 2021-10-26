@@ -42,6 +42,7 @@ class EmailHTMLTemplate {
         Element projectCode = document.getElementById("project-code")
         projectTitle.empty()
         projectCode.empty()
+        String titleContent = notificationContent.getProjectTitle() ? notificationContent.getProjectTitle() : "n.a."
         projectTitle.text(notificationContent.getProjectTitle())
         projectCode.text(notificationContent.getProjectCode())
     }
