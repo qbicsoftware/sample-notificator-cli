@@ -11,9 +11,9 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 **Fixed**
 
-**Dependencies**
+* ProjectTitle is not mandatory anymore for NotificationContent creation (`#34 <https://github.com/qbicsoftware/sample-notificator-cli/pull/34>`_) 
 
-* Fixes #34
+**Dependencies**
 
 **Deprecated**
 
