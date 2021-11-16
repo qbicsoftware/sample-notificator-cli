@@ -1,4 +1,4 @@
-From: Developers@QBiC.com
+From: NoReply@QBiC.com
 Subject: Sample Status Update
 Content-Type: text/html
 
