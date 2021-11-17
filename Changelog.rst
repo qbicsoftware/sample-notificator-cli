@@ -9,6 +9,10 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 **Added**
 
+* Remove contact email information from HTML template (`#16 <https://github.com/qbicsoftware/sample-notificator-cli/issues/16>`_)
+
+* Update email sender address to a noreply email (`#33 <https://github.com/qbicsoftware/sample-notificator-cli/issues/33>`_)
+
 **Fixed**
 
 **Dependencies**
