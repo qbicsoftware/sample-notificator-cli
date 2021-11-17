@@ -43,7 +43,7 @@ class NotificationContent {
             this.customerEmailAddress = Objects.requireNonNull(customerEmailAddress, "Email address of customer must not be null")
 
             /*Project Information*/
-            this.projectTitle = Objects.requireNonNull(projectTitle, "Project title must not be null")
+            this.projectTitle = projectTitle ?: ""
             this.projectCode = Objects.requireNonNull(projectCode, "Project code must not be null")
             this.failedQCCount = Objects.requireNonNull(failedQCCount, "Count of samples with failed QC must not be null")
             this.availableDataCount = Objects.requireNonNull(availableDataCount, "Count of samples with available data must not be null")
