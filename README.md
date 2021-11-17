@@ -23,7 +23,7 @@ java -jar <path-to-jar>/target/sample-notificator-app-<version>-jar-with-depende
 To get help use following command:
 
 ```
-java -jar sample-notificator-app/target/sample-notificator-app-1.0.0-jar-with-dependencies.jar -h
+java -jar sample-notificator-app/target/sample-notificator-app-<version>-jar-with-dependencies.jar -h
 Usage: SampleNotificator [-h] -c=<pathToConfig> -d=<date>
 A service to send notifications to subscribers to inform them about changes
 within their projects
