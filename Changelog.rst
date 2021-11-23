@@ -4,6 +4,21 @@ Changelog
 
 This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
+1.1.0 (2021-11-23)
+------------------
+
+**Added**
+
+* Remove contact email information from HTML template (`#16 <https://github.com/qbicsoftware/sample-notificator-cli/issues/16>`_)
+
+* Update email sender address to a noreply email (`#33 <https://github.com/qbicsoftware/sample-notificator-cli/issues/33>`_)
+
+**Fixed**
+
+**Dependencies**
+
+**Deprecated**
+
 1.0.1 (2021-10-26)
 ------------------
 
@@ -11,7 +26,7 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 **Fixed**
 
-* ProjectTitle is not mandatory anymore for NotificationContent creation (`#34 <https://github.com/qbicsoftware/sample-notificator-cli/pull/34>`_) 
+* ProjectTitle is not mandatory anymore for NotificationContent creation (`#34 <https://github.com/qbicsoftware/sample-notificator-cli/pull/34>`_)
 
 **Dependencies**
 
