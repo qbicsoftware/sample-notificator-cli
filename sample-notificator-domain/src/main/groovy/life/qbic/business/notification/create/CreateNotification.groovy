@@ -47,12 +47,13 @@ class CreateNotification implements CreateNotificationInput {
             projectsWithSamples.each { project ->
                 project.title = projectsWithTitles.get(project.code)
             }
-
             //add notifications with create notification method (directly adds notifications to list)
             projectsWithSamples.each { project ->
                 addNotificationForProject(project)
             }
-            output.createdNotifications(notifications)
+            if (!notifications.isEmpty()) {
+                output.createdNotifications(notifications)
+            }
         } catch (DatabaseQueryException databaseQueryException) {
             output.failNotification("An error occurred while trying to query the database during Notification creation for ${date}")
             log.error(databaseQueryException.message)
@@ -69,6 +70,7 @@ class CreateNotification implements CreateNotificationInput {
 
         int failedQCCount = filterSamplesByStatus(project.sampleCodes, "SAMPLE_QC_FAIL").size()
         int availableDataCount = filterSamplesByStatus(project.sampleCodes, "DATA_AVAILABLE").size()
+
         if (noRelevantStatusWasUpdated(failedQCCount, availableDataCount)) {
             log.info("Notification for project ${project.code} was not generated, since the sample status was not set to FAILED_QC or DATA_AVAILABLE")
             return

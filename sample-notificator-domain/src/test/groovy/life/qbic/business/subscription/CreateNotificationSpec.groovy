@@ -43,7 +43,7 @@ class CreateNotificationSpec extends Specification{
         when: "The CreateNotification use case is triggered"
         createNotification.createNotifications("2020-08-17")
 
-        then: "A fail notification"
+        then: "A fail notification is returned"
         0* output.createdNotifications(_ as List<NotificationContent>)
         1* output.failNotification(_ as String)
     }
@@ -74,8 +74,8 @@ class CreateNotificationSpec extends Specification{
         when: "The CreateNotification use case is triggered"
         createNotification.createNotifications("2020-08-17")
 
-        then: "A fail notification"
-        1* output.createdNotifications(_ as List<NotificationContent>)
+        then: "No notification is returned"
+        0* output.createdNotifications(_ as List<NotificationContent>)
         0* output.failNotification(_ as String)
     }
 
@@ -218,5 +218,41 @@ class CreateNotificationSpec extends Specification{
             assert notifications.get(0).getCustomerEmailAddress() == subscriber1.getEmail()
             assert notifications.get(1).getCustomerEmailAddress() == subscriber2.getEmail()
         }
+    }
+
+    def "Notifications are only returned if a status was set to DATA_AVAILABLE or FAILED_QC"(){
+        given: "The CreateNotification use case"
+        FetchProjectDataSource projectDataSource = Stub()
+        FetchSubscriberDataSource fetchSubscriberDataSource = Stub()
+        CreateNotificationOutput output = Mock()
+        CreateNotification createNotification = new CreateNotification(projectDataSource,fetchSubscriberDataSource, output)
+
+        and: "a dummy Subscriber list and a map containing Samples with their updated Sample status"
+        Map<String, Status> updatedSamples = ["QMCDP007A3":Status.SAMPLE_RECEIVED,
+                                              "QMCDP007A2":Status.SEQUENCING,
+                                              "QMCDP007A1":Status.SAMPLE_QC_PASS,
+                                              "QMCDP007A4":Status.WAITING,
+                                              "QMCDP007A5":Status.PROCESSED,
+                                              "QMCDP007A6":Status.PROCESSING,
+                                              "QMAAP007A3":Status.METADATA_REGISTERED,
+                                              "QMAAP018A2":Status.DATA_AT_QBIC,
+                                              "QMAAP04525":Status.LIBRARY_PREP_FINISHED,
+                                              "QMAAP04526":Status.SEQUENCING_COMPLETE]
+
+        Subscriber subscriber1 = new Subscriber("Awesome", "Customer", "awesome.customer@provider.com")
+        List<Subscriber> subscribers = [subscriber1]
+        Map<String,String> projectsWithTitles = ["QMCDP": "",
+                                                 "QMAAP": ""]
+
+        and: "Datasource that returns various information needed"
+        fetchSubscriberDataSource.getUpdatedSamplesForDay(_ as LocalDate) >> updatedSamples
+        fetchSubscriberDataSource.getSubscriberForProject(_ as String) >> subscribers
+        projectDataSource.fetchProjectsWithTitles() >> projectsWithTitles
+
+        when: "The CreateNotification use case is triggered"
+        createNotification.createNotifications("2020-08-17")
+
+        then: "No notifications are returned"
+        0 * output.createdNotifications(_ as List<NotificationContent>)
     }
 }
