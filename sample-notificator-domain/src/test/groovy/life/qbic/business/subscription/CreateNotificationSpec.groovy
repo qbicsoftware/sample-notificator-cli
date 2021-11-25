@@ -227,7 +227,7 @@ class CreateNotificationSpec extends Specification{
         CreateNotificationOutput output = Mock()
         CreateNotification createNotification = new CreateNotification(projectDataSource,fetchSubscriberDataSource, output)
 
-        and: "a dummy Subscriber list and a map containing Samples with their updated Sample status"
+        and: "a dummy subscriber list and a map containing samples with their updated sample status that should not trigger an notifaction email"
         Map<String, Status> updatedSamples = ["QMCDP007A3":Status.SAMPLE_RECEIVED,
                                               "QMCDP007A2":Status.SEQUENCING,
                                               "QMCDP007A1":Status.SAMPLE_QC_PASS,
