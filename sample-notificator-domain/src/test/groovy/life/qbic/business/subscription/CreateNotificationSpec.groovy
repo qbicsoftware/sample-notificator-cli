@@ -74,8 +74,11 @@ class CreateNotificationSpec extends Specification{
         when: "The CreateNotification use case is triggered"
         createNotification.createNotifications("2020-08-17")
 
-        then: "No notification is returned"
-        0* output.createdNotifications(_ as List<NotificationContent>)
+        then: "An Empty List with no notifications is returned"
+        1* output.createdNotifications(_ as List<NotificationContent>) >> {arguments ->
+            List<NotificationContent> notifications = arguments.get(0)
+            assert notifications.isEmpty()
+        }
         0* output.failNotification(_ as String)
     }
 
@@ -252,7 +255,10 @@ class CreateNotificationSpec extends Specification{
         when: "The CreateNotification use case is triggered"
         createNotification.createNotifications("2020-08-17")
 
-        then: "No notifications are returned"
-        0 * output.createdNotifications(_ as List<NotificationContent>)
+        then: "An empty list with no notifications is returned"
+        1* output.createdNotifications(_ as List<NotificationContent>) >> {arguments ->
+            List<NotificationContent> notifications = arguments.get(0)
+            assert notifications.isEmpty()
+        }
     }
 }
