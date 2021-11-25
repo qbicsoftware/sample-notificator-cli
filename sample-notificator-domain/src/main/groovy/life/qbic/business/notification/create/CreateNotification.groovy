@@ -111,7 +111,7 @@ class CreateNotification implements CreateNotificationInput {
         return projects
     }
 
-    private static boolean noRelevantStatusWasUpdated(int failedQCCount, int dataAvailableCount) {
-        return failedQCCount + dataAvailableCount == 0
+    private static boolean isRelevantStatusUpdate(int failedQCCount, int dataAvailableCount) {
+        return (failedQCCount + dataAvailableCount) > 0
     }
 }
