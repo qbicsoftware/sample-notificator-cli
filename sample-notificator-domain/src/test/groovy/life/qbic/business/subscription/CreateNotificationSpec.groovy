@@ -241,8 +241,8 @@ class CreateNotificationSpec extends Specification{
 
         Subscriber subscriber1 = new Subscriber("Awesome", "Customer", "awesome.customer@provider.com")
         List<Subscriber> subscribers = [subscriber1]
-        Map<String,String> projectsWithTitles = ["QMCDP": "",
-                                                 "QMAAP": ""]
+        Map<String,String> projectsWithTitles = ["QMCDP": "A test project title",
+                                                 "QMAAP": "Sequencing of bees"]
 
         and: "Datasource that returns various information needed"
         fetchSubscriberDataSource.getUpdatedSamplesForDay(_ as LocalDate) >> updatedSamples
