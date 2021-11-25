@@ -71,7 +71,7 @@ class CreateNotification implements CreateNotificationInput {
         int failedQCCount = filterSamplesByStatus(project.sampleCodes, "SAMPLE_QC_FAIL").size()
         int availableDataCount = filterSamplesByStatus(project.sampleCodes, "DATA_AVAILABLE").size()
 
-        if (noRelevantStatusWasUpdated(failedQCCount, availableDataCount)) {
+        if (!isRelevantStatusUpdate(failedQCCount, availableDataCount)) {
             log.info("Notification for project ${project.code} was not generated, since the sample status was not set to FAILED_QC or DATA_AVAILABLE")
             return
         }
