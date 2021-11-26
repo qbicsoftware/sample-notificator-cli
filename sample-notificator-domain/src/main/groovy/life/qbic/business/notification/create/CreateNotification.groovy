@@ -47,12 +47,12 @@ class CreateNotification implements CreateNotificationInput {
             projectsWithSamples.each { project ->
                 project.title = projectsWithTitles.get(project.code)
             }
-
             //add notifications with create notification method (directly adds notifications to list)
             projectsWithSamples.each { project ->
                 addNotificationForProject(project)
             }
             output.createdNotifications(notifications)
+
         } catch (DatabaseQueryException databaseQueryException) {
             output.failNotification("An error occurred while trying to query the database during Notification creation for ${date}")
             log.error(databaseQueryException.message)
@@ -70,14 +70,16 @@ class CreateNotification implements CreateNotificationInput {
         int failedQCCount = filterSamplesByStatus(project.sampleCodes, "SAMPLE_QC_FAIL").size()
         int availableDataCount = filterSamplesByStatus(project.sampleCodes, "DATA_AVAILABLE").size()
 
+        if (!isRelevantStatusUpdated(failedQCCount, availableDataCount)) {
+            log.info("Notification for project ${project.code} was not generated, since the sample status was not set to FAILED_QC or DATA_AVAILABLE")
+            return
+        }
         //4. get subscribers of this projects
         List<Subscriber> subscribers = fetchSubscriberDataSource.getSubscriberForProject(project.code)
-
         for (Subscriber subscriber : subscribers) {
             notifications << new NotificationContent.Builder(subscriber.firstName, subscriber.lastName, subscriber.email,
                     project.title, project.code, failedQCCount, availableDataCount).build()
         }
-
     }
 
     private List<String> filterSamplesByStatus(List<String> samples, String statusName) {
@@ -98,13 +100,17 @@ class CreateNotification implements CreateNotificationInput {
 
             Optional<Project> foundProject = projects.stream().filter({it.code == project.code}).findFirst()
 
-            if(foundProject.isPresent()){
+            if (foundProject.isPresent()) {
                 foundProject.get().sampleCodes.add(sampleCode)
-            }else{
+            } else {
                 project.sampleCodes = [sampleCode]
                 projects.add(project)
             }
         }
         return projects
+    }
+
+    private static boolean isRelevantStatusUpdated(int failedQCCount, int dataAvailableCount) {
+        return (failedQCCount + dataAvailableCount) > 0
     }
 }
