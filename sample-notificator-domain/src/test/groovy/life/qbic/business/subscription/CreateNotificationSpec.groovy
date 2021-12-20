@@ -1,12 +1,13 @@
 package life.qbic.business.subscription
 
 import life.qbic.business.notification.create.CreateNotification
-import life.qbic.business.notification.create.NotificationContent
 import life.qbic.business.notification.create.CreateNotificationOutput
 import life.qbic.business.notification.create.FetchProjectDataSource
+import life.qbic.business.notification.create.NotificationContent
 import life.qbic.business.subscription.fetch.FetchSubscriberDataSource
 import life.qbic.datamodel.samples.Status
 import spock.lang.Specification
+
 import java.time.LocalDate
 
 /**
@@ -48,6 +49,24 @@ class CreateNotificationSpec extends Specification{
         1* output.failNotification(_ as String)
     }
 
+    def "When an empty list of subscribers is returned from the data source, no notification is sent out"() {
+        given: "The CreateNotification use case"
+        FetchProjectDataSource projectDataSource = Stub()
+        FetchSubscriberDataSource fetchSubscriberDataSource = Stub()
+        CreateNotificationOutput output = Mock()
+        CreateNotification createNotification = new CreateNotification(projectDataSource,fetchSubscriberDataSource, output)
+
+        and: "Datasource that returns various information needed, but throws an exception when getting subscribers"
+        fetchSubscriberDataSource.getSubscriberForProject(_ as String) >> []
+
+        when: "The CreateNotification use case is triggered"
+        createNotification.createNotifications("2020-08-17")
+
+        then: "No notifications are created"
+        0 * output.createdNotifications(_ as List<NotificationContent>)
+        0 * output.failNotification(_ as String)
+    }
+
     def "If no subscribers are found no notifications are returned"(){
         given: "The CreateNotification use case"
         FetchProjectDataSource projectDataSource = Stub()
@@ -75,10 +94,7 @@ class CreateNotificationSpec extends Specification{
         createNotification.createNotifications("2020-08-17")
 
         then: "An Empty List with no notifications is returned"
-        1* output.createdNotifications(_ as List<NotificationContent>) >> {arguments ->
-            List<NotificationContent> notifications = arguments.get(0)
-            assert notifications.isEmpty()
-        }
+        0 * output.createdNotifications(_)
         0* output.failNotification(_ as String)
     }
 
@@ -255,10 +271,8 @@ class CreateNotificationSpec extends Specification{
         when: "The CreateNotification use case is triggered"
         createNotification.createNotifications("2020-08-17")
 
-        then: "An empty list with no notifications is returned"
-        1* output.createdNotifications(_ as List<NotificationContent>) >> {arguments ->
-            List<NotificationContent> notifications = arguments.get(0)
-            assert notifications.isEmpty()
-        }
+        then: "No notifications are returned"
+        0 * output.createdNotifications(_)
+        0 * output.failNotification(_)
     }
 }
