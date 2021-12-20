@@ -67,37 +67,6 @@ class CreateNotificationSpec extends Specification{
         0 * output.failNotification(_ as String)
     }
 
-    def "If no subscribers are found no notifications are returned"(){
-        given: "The CreateNotification use case"
-        FetchProjectDataSource projectDataSource = Stub()
-        FetchSubscriberDataSource fetchSubscriberDataSource = Stub()
-        CreateNotificationOutput output = Mock()
-        CreateNotification createNotification = new CreateNotification(projectDataSource,fetchSubscriberDataSource, output)
-
-        and: "a dummy Subscriber list and a map containing Samples with their updated Sample status"
-        Map<String, Status> updatedSamples = ["QMCDP007A3":Status.DATA_AVAILABLE,
-                                              "QMCDP007A2":Status.SAMPLE_QC_FAIL,
-                                              "QMCDP007A1":Status.DATA_AVAILABLE,
-                                              "QMAAP007A3":Status.SAMPLE_QC_FAIL,
-                                              "QMAAP018A2":Status.SAMPLE_RECEIVED,
-                                              "QMAAP04525":Status.SAMPLE_QC_FAIL]
-
-        Map<String,String> projectsWithTitles = ["QMCDP": "first project",
-                                                 "QMAAP": ""]
-
-        and: "Datasource that returns various information needed, but throws an exception when getting subscribers"
-        fetchSubscriberDataSource.getUpdatedSamplesForDay(_ as LocalDate) >> updatedSamples
-        fetchSubscriberDataSource.getSubscriberForProject(_ as String) >> {[]}
-        projectDataSource.fetchProjectsWithTitles() >> projectsWithTitles
-
-        when: "The CreateNotification use case is triggered"
-        createNotification.createNotifications("2020-08-17")
-
-        then: "An Empty List with no notifications is returned"
-        0 * output.createdNotifications(_)
-        0* output.failNotification(_ as String)
-    }
-
     def "Providing a valid Date will return notifications stored for that date"(){
         given: "The CreateNotification use case"
         FetchProjectDataSource projectDataSource = Stub()
