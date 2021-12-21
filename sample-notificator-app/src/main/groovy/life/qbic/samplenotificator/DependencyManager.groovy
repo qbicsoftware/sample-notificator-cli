@@ -11,7 +11,7 @@ import life.qbic.samplenotificator.datasource.notification.create.FetchProjectDb
 import life.qbic.samplenotificator.datasource.notification.create.FetchSubscriberDbConnector
 
 /**
- * <h1>Sets up the use cases</h1>
+ * <b>Sets up the use cases</b>
  *
  * @since 1.0.0
  *
@@ -20,8 +20,6 @@ import life.qbic.samplenotificator.datasource.notification.create.FetchSubscribe
 class DependencyManager {
 
     private Properties properties
-    private CreateNotificationConnector createNotificationConnector
-    private CreateNotification createNotification
     private CreateNotificationController createNotificationController
 
     DependencyManager(NotificatorCommandLineOptions commandLineParameters){
@@ -29,9 +27,9 @@ class DependencyManager {
         initializeDependencies()
     }
 
-    private void initializeDependencies(){
+    private void initializeDependencies() {
         setupDatabase()
-        setupCreateNotification()
+        createNotificationController = setupCreateNotification()
     }
 
     private void setupDatabase(){
@@ -50,31 +48,22 @@ class DependencyManager {
     }
 
     private static Properties getProperties(String pathToConfig) {
-        try {
-            Properties properties = new Properties()
-            File propertiesFile = new File(pathToConfig)
-            propertiesFile.withInputStream {
-                properties.load(it)
-            }
-            return properties
-        } catch (Exception e) {
-            log.error("Could not get properties from provided property file")
-            log.error(e.message)
+        Properties properties = new Properties()
+        File propertiesFile = new File(pathToConfig)
+        propertiesFile.withInputStream {
+            properties.load(it)
         }
+        return properties
     }
 
-    private void setupCreateNotification() {
-        try {
-            FetchSubscriberDbConnector subscriberDbConnector = new FetchSubscriberDbConnector(DatabaseSession.getInstance())
-            FetchProjectDbConnector projectDbConnector = new FetchProjectDbConnector(DatabaseSession.getInstance())
-            EmailGenerator emailGenerator = new EmailGenerator()
-            createNotificationConnector = new CreateNotificationConnector(emailGenerator)
-            createNotification = new CreateNotification(projectDbConnector, subscriberDbConnector, createNotificationConnector)
-            createNotificationController = new CreateNotificationController(createNotification)
-        } catch (Exception e) {
-            log.error("Could not setup Create Notification Use Case")
-            log.error(e.message)
-        }
+    private static CreateNotificationController setupCreateNotification() {
+        FetchSubscriberDbConnector subscriberDbConnector = new FetchSubscriberDbConnector(DatabaseSession.getInstance())
+        FetchProjectDbConnector projectDbConnector = new FetchProjectDbConnector(DatabaseSession.getInstance())
+        EmailGenerator emailGenerator = new EmailGenerator()
+        def createNotificationConnector = new CreateNotificationConnector(emailGenerator)
+        def createNotification = new CreateNotification(projectDbConnector, subscriberDbConnector, createNotificationConnector)
+        return new CreateNotificationController(createNotification)
+
     }
 
     CreateNotificationController getCreateNotificationController() {
