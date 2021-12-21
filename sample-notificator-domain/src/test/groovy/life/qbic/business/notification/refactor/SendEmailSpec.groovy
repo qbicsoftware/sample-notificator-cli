@@ -30,22 +30,6 @@ class SendEmailSpec extends Specification {
           1)
           .build()
 
-  def "when a notification is present then send an email"() {
-    given: "a notification content"
-    NotificationEmail email = Mock()
-    emailGenerator.apply(notificationContent) >> email
-    var notifications = [notificationContent]
-
-    when: "a notification is present"
-    SendEmail sendEmail = new SendEmail(flawlessEmailSender, adminInformer, emailGenerator)
-    sendEmail.sendEmailNotifications(notifications)
-
-    then: "send an email"
-    1 * flawlessEmailSender.accept(email)
-    and: "the admin is not informed"
-    0 * adminInformer.sendFailure()
-  }
-
   def "when #n notifications are present then send #n emails"() {
     given: "a notification content"
     NotificationEmail email = Mock()
