@@ -1,31 +1,42 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  </head>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <title>Automated Email Update</title>
+</head>
+<title>Automated Email Update</title>
 <body>
 <div id="email-body">
-  <div id="introduction">Dear <span id="person-information">Max Mustermann</span></div>
-  <p id="content">this is an automated email to inform you about recent updates on your subscribed
-    project<br>
-    <span id="project-information"><span id="project-title">My awesome project</span> (<span
-        id="project-code">ABCDE</span>):</span>
-  <div id="sample-status-enumeration">
-    <div id="sample-status-failed-qc"><strong><span id="sample-status-failed-qc-count">X</span>
-      samples failed QC</strong><br><br>
-      <span id="failed-qc-contact">We will contact you with detailed information as soon as possible.</span>
-    </div>
-    <div id="sample-status-available-data"><span id="sample-status-available-data-count">X</span>
-      samples have data available
-    </div>
+  <div id="introduction">
+    Dear <span id="person-information">Max Mustermann</span>
   </div>
-  </p>
-  <p id="subscription-information">You can also check the <a
-      href="https://portal.qbic.uni-tuebingen.de/portal/">QBiC portal</a>
-    to learn more or unsubscribe from further notifications.
-  </p>
-  <div id="sign-off">Best regards, <br> your QBiC team.</div>
+  <div id="content">
+    <p>this is an automated email to inform you about recent updates on your subscribed
+      project
+      <span id="project-information"><span id="project-title">"My awesome project"</span> (<span
+          id="project-code">ABCDE</span>):</span>
+    </p>
+    <div id="sample-status-enumeration">
+      <div id="sample-status-failed-qc">
+        <div>
+          <strong><span id="sample-status-failed-qc-count">X</span> samples failed QC</strong>
+        </div>
+        <span id="failed-qc-contact">We will contact you with detailed information as soon as possible.</span>
+      </div>
+      <div id="sample-status-available-data">
+        <div>
+          <span id="sample-status-available-data-count">X</span> samples have data available
+        </div>
+      </div>
+    </div>
+    <p id="subscription-information">
+      You can also check the <a href="https://portal.qbic.uni-tuebingen.de/portal/" target="_blank">QBiC portal</a>
+      to learn more or <a id="unsubscription-link" href="" target="_blank">unsubscribe</a> from further notifications.
+    </p>
+  </div>
+  <div id="sign-off">
+    Best regards, <br> your QBiC team.
+  </div>
 </div>
 </body>
 </html>

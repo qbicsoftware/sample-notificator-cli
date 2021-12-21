@@ -29,11 +29,11 @@ class SendEmailSpec extends Specification {
           2,
           1)
           .build()
+  NotificationEmail emailMock = Mock()
 
   def "when #n notifications are present then send #n emails"() {
-    given: "a notification content"
-    NotificationEmail email = Mock()
-    emailGenerator.apply(notificationContent) >> email
+    given: "a notification Mcontent"
+    emailGenerator.apply(notificationContent) >> emailMock
     var notifications = [notificationContent] * n
 
     when: "a notification is present"
@@ -41,7 +41,7 @@ class SendEmailSpec extends Specification {
     sendEmail.sendEmailNotifications(notifications)
 
     then: "send an email"
-    n * flawlessEmailSender.accept(email)
+    n * flawlessEmailSender.accept(emailMock)
     and: "the admin is not informed"
     0 * adminInformer.sendFailure()
     where:
@@ -51,14 +51,13 @@ class SendEmailSpec extends Specification {
   def "when the sending of at least one email fails then the admin is informed once"() {
     given:
     NotificationEmail email = Mock()
-    NotificationEmail emailTwo = Mock()
-    emailGenerator.apply(notificationContent) >> email
-    emailGenerator.apply(notificationContentTwo) >> emailTwo
+    emailGenerator.apply(notificationContent) >> emailMock
+    emailGenerator.apply(notificationContentTwo) >> email
     var notifications = [notificationContent, notificationContentTwo]
     flawlessEmailSender = Stub()
 
     when: "the sending of at least one email fails"
-    flawlessEmailSender.notSent() >> [email, emailTwo]
+    flawlessEmailSender.notSent() >> [emailMock, email]
     SendEmail sendEmail = new SendEmail(flawlessEmailSender, adminInformer, emailGenerator)
     sendEmail.sendEmailNotifications(notifications)
 
