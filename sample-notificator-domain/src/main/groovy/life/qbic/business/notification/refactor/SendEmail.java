@@ -7,12 +7,12 @@ import life.qbic.business.notification.create.NotificationContent;
 /**
  * <p>Implements the business logic of sending emails for project updates.</p>
  */
-class SendEmail implements Consumer<List<NotificationContent>>, SendEmailInput{
+public class SendEmail implements Consumer<List<NotificationContent>>, SendEmailInput{
     private final EmailSender<NotificationEmail> sendOrRemember;
     private final FailureEmailSender informAdmin;
     private final EmailGenerator<NotificationEmail> generateEmail;
 
-    SendEmail(EmailSender<NotificationEmail> sendOrRemember, FailureEmailSender informAdmin, EmailGenerator<NotificationEmail> generateEmail) {
+    public SendEmail(EmailSender<NotificationEmail> sendOrRemember, FailureEmailSender informAdmin, EmailGenerator<NotificationEmail> generateEmail) {
         this.sendOrRemember = sendOrRemember;
         this.informAdmin = informAdmin;
         this.generateEmail = generateEmail;

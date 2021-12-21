@@ -1,11 +1,16 @@
 package life.qbic.samplenotificator
 
 import groovy.util.logging.Log4j2
+import life.qbic.business.notification.SendNotificationConnector
 import life.qbic.business.notification.create.CreateNotification
+import life.qbic.business.notification.refactor.*
 import life.qbic.samplenotificator.cli.NotificatorCommandLineOptions
 import life.qbic.samplenotificator.components.CreateNotificationConnector
 import life.qbic.samplenotificator.components.CreateNotificationController
 import life.qbic.samplenotificator.components.EmailGenerator
+import life.qbic.samplenotificator.components.refactor.HtmlEmailGenerator
+import life.qbic.samplenotificator.components.refactor.HtmlEmailSender
+import life.qbic.samplenotificator.components.refactor.SupportEmailSender
 import life.qbic.samplenotificator.datasource.database.DatabaseSession
 import life.qbic.samplenotificator.datasource.notification.create.FetchProjectDbConnector
 import life.qbic.samplenotificator.datasource.notification.create.FetchSubscriberDbConnector
@@ -29,7 +34,7 @@ class DependencyManager {
 
     private void initializeDependencies() {
         setupDatabase()
-        createNotificationController = setupCreateNotification()
+        createNotificationController = setupCreateNotificationRefactor()
     }
 
     private void setupDatabase(){
@@ -64,6 +69,21 @@ class DependencyManager {
         def createNotification = new CreateNotification(projectDbConnector, subscriberDbConnector, createNotificationConnector)
         return new CreateNotificationController(createNotification)
 
+    }
+
+    private static CreateNotificationController setupCreateNotificationRefactor() {
+        FetchSubscriberDbConnector subscriberDbConnector = new FetchSubscriberDbConnector(DatabaseSession.getInstance())
+        FetchProjectDbConnector projectDbConnector = new FetchProjectDbConnector(DatabaseSession.getInstance())
+
+        EmailSender<NotificationEmail> emailSender = new HtmlEmailSender()
+        FailureEmailSender failureEmailSender = new SupportEmailSender()
+        life.qbic.business.notification.refactor.EmailGenerator<NotificationEmail> notificationEmailGenerator = new HtmlEmailGenerator()
+
+        SendEmailInput sendEmail = new SendEmail(emailSender, failureEmailSender, notificationEmailGenerator)
+
+        SendNotificationConnector sendNotificationConnector = new SendNotificationConnector(sendEmail)
+        def createNotification = new CreateNotification(projectDbConnector, subscriberDbConnector, sendNotificationConnector)
+        return new CreateNotificationController(createNotification)
     }
 
     CreateNotificationController getCreateNotificationController() {
