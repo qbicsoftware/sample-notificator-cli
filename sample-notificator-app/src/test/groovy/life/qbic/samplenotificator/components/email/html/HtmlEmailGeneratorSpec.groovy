@@ -1,4 +1,4 @@
-package life.qbic.samplenotificator.components.refactor
+package life.qbic.samplenotificator.components.email.html
 
 import life.qbic.business.notification.create.NotificationContent
 import life.qbic.business.notification.refactor.EmailGenerator

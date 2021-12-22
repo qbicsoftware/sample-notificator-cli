@@ -1,4 +1,4 @@
-package life.qbic.samplenotificator.components.refactor;
+package life.qbic.samplenotificator.components.email.support;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 import life.qbic.business.logging.Logger;
 import life.qbic.business.logging.Logging;
 import life.qbic.business.notification.refactor.FailureEmailSender;
+import life.qbic.samplenotificator.components.email.EmailSendException;
+import life.qbic.samplenotificator.components.email.html.HtmlEmailSender;
 
 /** Sends emails to the QBiC support */
 public class SupportEmailSender implements FailureEmailSender {
@@ -20,7 +22,7 @@ public class SupportEmailSender implements FailureEmailSender {
           HtmlEmailSender.class
               .getClassLoader()
               .getResourceAsStream("notification-template/failureEmail.txt"));
-  private static final String SUPPORT_EMAIL = "support@qbic.zendesk.com";
+  protected String supportEmail = "support@qbic.zendesk.com";
 
   @Override
   public void sendFailure() {
@@ -41,10 +43,10 @@ public class SupportEmailSender implements FailureEmailSender {
     return sendmailFile;
   }
 
-  private void sendPlainEmail(File emailFile, String subject) throws EmailSendException {
+  protected void sendPlainEmail(File emailFile, String subject) throws EmailSendException {
     try {
       ProcessBuilder builder =
-          new ProcessBuilder("mail", "-s", subject, SupportEmailSender.SUPPORT_EMAIL)
+          new ProcessBuilder("mail", "-s", subject, supportEmail)
               .redirectInput(emailFile)
               .redirectErrorStream(true);
       Process process = builder.start();
@@ -53,6 +55,7 @@ public class SupportEmailSender implements FailureEmailSender {
               + builder.command());
       process.waitFor(10, TimeUnit.SECONDS);
     } catch (IOException | InterruptedException e) {
+      log.error(e.getMessage(), e);
       throw new EmailSendException();
     }
   }
