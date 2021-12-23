@@ -7,6 +7,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -16,23 +17,25 @@ public class QBiCUnsubscriptionGenerator implements UnsubscriptionLinkSupplier {
 
   private final String unsubscriptionBaseUri;
   private final String subscriptionServiceUri;
-
+  private final String tokenGenerationEndpoint;
   private final String subscriptionServiceUser;
   private final String subscriptionServicePassword;
 
   public QBiCUnsubscriptionGenerator(
       String unsubscriptionBaseUri,
       String subscriptionServiceUri,
-      String subscriptionServiceUser,
+      String tokenGenerationEndpoint, String subscriptionServiceUser,
       String subscriptionServicePassword) {
-    requireNonNull(unsubscriptionBaseUri);
+    requireNonNull(subscriptionServicePassword);
     requireNonNull(subscriptionServiceUri);
     requireNonNull(subscriptionServiceUser);
-    requireNonNull(subscriptionServicePassword);
-    this.subscriptionServiceUser = subscriptionServiceUser;
+    requireNonNull(tokenGenerationEndpoint);
+    requireNonNull(unsubscriptionBaseUri);
     this.subscriptionServicePassword = subscriptionServicePassword;
-    this.unsubscriptionBaseUri = unsubscriptionBaseUri;
     this.subscriptionServiceUri = subscriptionServiceUri;
+    this.subscriptionServiceUser = subscriptionServiceUser;
+    this.tokenGenerationEndpoint = tokenGenerationEndpoint;
+    this.unsubscriptionBaseUri = unsubscriptionBaseUri;
   }
 
   @Override
@@ -59,14 +62,16 @@ public class QBiCUnsubscriptionGenerator implements UnsubscriptionLinkSupplier {
 
   private String getToken(String projectCode, String userId) {
     HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
     headers.setBasicAuth(subscriptionServiceUser, subscriptionServicePassword);
 
     String requestBody =
         String.format("{\"project\":\"%s\",\"userId\":\"%s\"}", projectCode, userId);
     HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
 
-    ResponseEntity<String> response = new RestTemplate().exchange(subscriptionServiceUri,
-        HttpMethod.GET, request, String.class);
+    String endpoint = subscriptionServiceUri + tokenGenerationEndpoint;
+    ResponseEntity<String> response = new RestTemplate().exchange(endpoint,
+        HttpMethod.POST, request, String.class);
 
     if (response.hasBody() && response.getStatusCode() == HttpStatus.OK) {
       return response.getBody();
