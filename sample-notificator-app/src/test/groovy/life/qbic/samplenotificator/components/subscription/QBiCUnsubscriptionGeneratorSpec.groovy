@@ -44,10 +44,12 @@ class QBiCUnsubscriptionGeneratorSpec extends Specification {
   @Ignore
   def "when test token then token there"() {
     when: "test token"
-    def underTest = new QBiCUnsubscriptionGenerator(baseUrl, "http://localhost:8080", "/subscription/cancel/token/generate", "ChuckNorris", "astrongpassphrase!")
+    baseUrl = "http://www.test.services.qbic/endpoint/"
+    def underTest = new QBiCUnsubscriptionGenerator(baseUrl, "http://localhost:8080", "/subscriptions/cancel/token/generate", "ChuckNorris", "astrongpassphrase!")
     underTest.userId("test@user.id").projectCode("QABCD")
     def token = underTest.get()
     then: "token there"
-    token == "BStOJDfmn0ZyNceOPN3qU2xJw1mQfdbzY_a-uGt7Ae0="
+    println token
+    token == "$baseUrl?token=PrOmH8LTbcNC7j0cTYUtHwWtiT0XB0HjvdhEaJRF1sc="
   }
 }
