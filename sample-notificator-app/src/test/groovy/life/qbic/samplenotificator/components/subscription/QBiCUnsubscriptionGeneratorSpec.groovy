@@ -13,9 +13,10 @@ import spock.lang.Specification
 class QBiCUnsubscriptionGeneratorSpec extends Specification {
 
   private String subscriptionServiceUri = "test"
-  private String baseUrl = "baseUrl"
+  private String baseUrl = "http://www.test.services.qbic/endpoint/"
   private String subscriptionServiceUser = "user"
   private String subscriptionServicePassword = "password"
+  private String tokenGenerationEndpoint = "/subscriptions/cancel/token/generate"
 
   def "when the instance is not configured then a NullPointerException is thrown"() {
     when: "the instance is not configured"
@@ -44,8 +45,7 @@ class QBiCUnsubscriptionGeneratorSpec extends Specification {
   @Ignore
   def "when test token then token there"() {
     when: "test token"
-    baseUrl = "http://www.test.services.qbic/endpoint/"
-    def underTest = new QBiCUnsubscriptionGenerator(baseUrl, "http://localhost:8080", "/subscriptions/cancel/token/generate", "ChuckNorris", "astrongpassphrase!")
+    def underTest = new QBiCUnsubscriptionGenerator(baseUrl, "http://localhost:8080", tokenGenerationEndpoint, "ChuckNorris", "astrongpassphrase!")
     underTest.userId("test@user.id").projectCode("QABCD")
     def token = underTest.get()
     then: "token there"
