@@ -1,6 +1,7 @@
 package life.qbic.samplenotificator.components.email.html
 
 import life.qbic.business.notification.create.NotificationContent
+import life.qbic.business.notification.unsubscription.UnsubscriptionLinkSupplier
 import life.qbic.samplenotificator.components.email.EmailSendException
 import spock.lang.Specification
 
@@ -8,19 +9,26 @@ import spock.lang.Specification
  * <p>Tests email sending behaviour</p>
  */
 class HtmlEmailSenderSpec extends Specification {
-  NotificationContent notificationContent = new NotificationContent.Builder(
-          "Maximilian",
-          "Muster",
-          "max.muster@ma.nn",
-          "Test project",
-          "QABCD",
-          5,
-          6)
-          .build()
-  HtmlEmailGenerator htmlEmailGenerator = new HtmlEmailGenerator()
-  HtmlNotificationEmail htmlNotificationEmail = htmlEmailGenerator.apply(notificationContent)
+  static NotificationContent notificationContent
+  static HtmlEmailGenerator htmlEmailGenerator
+  static HtmlNotificationEmail htmlNotificationEmail
 
+  void setupSpec() {
+    UnsubscriptionLinkSupplier unsubscriptionLinkSupplier = Stub()
+    unsubscriptionLinkSupplier.get(_ as String, _ as String) >> "awesome.page/unsubscribe"
 
+    notificationContent = new NotificationContent.Builder(
+            "Maximilian",
+            "Muster",
+            "max.muster@ma.nn",
+            "Test project",
+            "QABCD",
+            5,
+            6)
+            .build()
+    htmlEmailGenerator= new HtmlEmailGenerator(unsubscriptionLinkSupplier)
+    htmlNotificationEmail = htmlEmailGenerator.apply(notificationContent)
+  }
 
   def "when the email sender sends an email then no exception is thrown"() {
     when: "the email sender sends an email"

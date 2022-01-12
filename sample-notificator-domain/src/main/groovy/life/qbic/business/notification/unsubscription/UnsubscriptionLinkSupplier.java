@@ -1,27 +1,14 @@
 package life.qbic.business.notification.unsubscription;
 
-import java.util.function.Supplier;
-
 /** Supplies the caller with an unsubscription link. Based on the configuration of the instance.*/
-public interface UnsubscriptionLinkSupplier extends Supplier<String> {
+@FunctionalInterface
+public interface UnsubscriptionLinkSupplier {
 
   /**
-   * @param projectCode the project code used by this supplier
-   * @return itself
-   */
-  UnsubscriptionLinkSupplier projectCode(String projectCode);
-
-  /**
-   * @param userId the user id used by this supplier
-   * @return itself
-   */
-  UnsubscriptionLinkSupplier userId(String userId);
-
-  /**
-   * Gets a new unsubscription link based on the configuration of this instance
-   *
+   * Gets a new unsubscription link for the project and email combination provided
+   * @param project the project for which the unsubscription link should be generated
+   * @param email the email for which this unsubscription link is generated
    * @return a valid unsubscription url
    */
-  @Override
-  String get();
+  String get(String project, String email);
 }

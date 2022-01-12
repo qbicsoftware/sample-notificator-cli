@@ -12,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 public class QBiCUnsubscriptionGenerator implements UnsubscriptionLinkSupplier {
-  private String projectCode;
-  private String userId;
 
   private final String unsubscriptionBaseUri;
   private final String subscriptionServiceUri;
@@ -21,39 +19,24 @@ public class QBiCUnsubscriptionGenerator implements UnsubscriptionLinkSupplier {
   private final String subscriptionServiceUser;
   private final String subscriptionServicePassword;
 
-  public QBiCUnsubscriptionGenerator(
-      String unsubscriptionBaseUri,
-      String subscriptionServiceUri,
-      String tokenGenerationEndpoint, String subscriptionServiceUser,
-      String subscriptionServicePassword) {
+  public QBiCUnsubscriptionGenerator(String unsubscriptionBaseUri,
+      String subscriptionServiceUri, String tokenGenerationEndpoint,
+      String subscriptionServiceUser, String subscriptionServicePassword) {
     requireNonNull(subscriptionServicePassword);
     requireNonNull(subscriptionServiceUri);
     requireNonNull(subscriptionServiceUser);
     requireNonNull(tokenGenerationEndpoint);
     requireNonNull(unsubscriptionBaseUri);
-    this.subscriptionServicePassword = subscriptionServicePassword;
-    this.subscriptionServiceUri = subscriptionServiceUri;
-    this.subscriptionServiceUser = subscriptionServiceUser;
-    this.tokenGenerationEndpoint = tokenGenerationEndpoint;
     this.unsubscriptionBaseUri = unsubscriptionBaseUri;
+    this.subscriptionServiceUri = subscriptionServiceUri;
+    this.tokenGenerationEndpoint = tokenGenerationEndpoint;
+    this.subscriptionServiceUser = subscriptionServiceUser;
+    this.subscriptionServicePassword = subscriptionServicePassword;
   }
 
-  @Override
-  public UnsubscriptionLinkSupplier projectCode(String projectCode) {
-    requireNonNull(projectCode);
-    this.projectCode = projectCode;
-    return this;
-  }
 
   @Override
-  public UnsubscriptionLinkSupplier userId(String userId) {
-    requireNonNull(userId);
-    this.userId = userId;
-    return this;
-  }
-
-  @Override
-  public String get() {
+  public String get(String projectCode, String userId) {
     requireNonNull(projectCode);
     requireNonNull(userId);
     String token = getToken(projectCode, userId);
@@ -73,7 +56,7 @@ public class QBiCUnsubscriptionGenerator implements UnsubscriptionLinkSupplier {
     ResponseEntity<String> response = new RestTemplate().exchange(endpoint,
         HttpMethod.POST, request, String.class);
 
-    if (response.hasBody() && response.getStatusCode() == HttpStatus.OK) {
+    if (response.hasBody() && response.getStatusCode() == HttpStatus.CREATED) {
       return response.getBody();
     }
     return null;

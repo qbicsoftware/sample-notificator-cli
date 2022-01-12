@@ -3,6 +3,7 @@ package life.qbic.samplenotificator.components.email.html
 import life.qbic.business.notification.create.NotificationContent
 import life.qbic.business.notification.refactor.EmailGenerator
 import life.qbic.business.notification.refactor.NotificationEmail
+import life.qbic.business.notification.unsubscription.UnsubscriptionLinkSupplier
 import spock.lang.Specification
 
 /**
@@ -18,12 +19,14 @@ class HtmlEmailGeneratorSpec extends Specification {
           4,
           6
   )
-  EmailGenerator<NotificationEmail> emailGenerator = new HtmlEmailGenerator()
+  UnsubscriptionLinkSupplier unsubscriptionLinkSupplier = Stub()
+  EmailGenerator<NotificationEmail> emailGenerator = new HtmlEmailGenerator(unsubscriptionLinkSupplier)
 
   def "when the generator is applied to a notification content then the generated email comes filled"() {
     given: "a notification content"
     NotificationContent notificationContent = notificationContentBuilder.build()
-    HtmlNotificationEmail expectedEmail = new HtmlNotificationEmail()
+    unsubscriptionLinkSupplier.get(_ as String, _ as String) >> "my-awesome-test/unsubscribe"
+    HtmlNotificationEmail expectedEmail = new HtmlNotificationEmail(unsubscriptionLinkSupplier)
     when: "the generator is applied to a notification content"
     def result = emailGenerator.apply(notificationContent)
     expectedEmail.fill(notificationContent)

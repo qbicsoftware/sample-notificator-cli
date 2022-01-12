@@ -2,6 +2,7 @@ package life.qbic.samplenotificator.components.email.html
 
 import life.qbic.business.notification.create.NotificationContent
 import life.qbic.business.notification.refactor.NotificationEmail
+import life.qbic.business.notification.unsubscription.UnsubscriptionLinkSupplier
 import spock.lang.Specification
 
 /**
@@ -20,6 +21,7 @@ class HtmlNotificationEmailSpec extends Specification {
           "QABCD",
           5,
           6)
+  UnsubscriptionLinkSupplier unsubscriptionLinkSupplier = Stub()
 
   def "constructor works"() {
     given:
@@ -27,7 +29,7 @@ class HtmlNotificationEmailSpec extends Specification {
     notificationContentBuilder.setAvailableDataCount(4)
     NotificationContent notificationContent = notificationContentBuilder.build()
     when:
-    NotificationEmail notificationEmail = new HtmlNotificationEmail()
+    NotificationEmail notificationEmail = new HtmlNotificationEmail(unsubscriptionLinkSupplier)
     notificationEmail.fill(notificationContent)
     then:
     notificationEmail.recipient() == notificationContent.getCustomerEmailAddress()
@@ -40,12 +42,12 @@ class HtmlNotificationEmailSpec extends Specification {
     notificationContentBuilder.setAvailableDataCount(0)
     NotificationContent notificationContent = notificationContentBuilder.build()
     when:
-    NotificationEmail notificationEmail = new HtmlNotificationEmail()
+    NotificationEmail notificationEmail = new HtmlNotificationEmail(unsubscriptionLinkSupplier)
     notificationEmail.fill(notificationContent)
     then:
     notificationEmail.recipient() == notificationContent.getCustomerEmailAddress()
-    ! notificationEmail.body().contains("sample-status-failed-qc")
-    ! notificationEmail.body().contains("sample-status-available-data-count")
+    !notificationEmail.body().contains("sample-status-failed-qc")
+    !notificationEmail.body().contains("sample-status-available-data-count")
   }
 
 }

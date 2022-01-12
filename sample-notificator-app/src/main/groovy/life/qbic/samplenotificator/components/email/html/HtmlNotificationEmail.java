@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import life.qbic.business.notification.create.NotificationContent;
 import life.qbic.business.notification.refactor.NotificationEmail;
+import life.qbic.business.notification.unsubscription.UnsubscriptionLinkSupplier;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Node;
@@ -16,7 +17,7 @@ import org.jsoup.nodes.Node;
 /**
  * An email containing information of a NotificationContent formatted using a http template
  */
-public class HtmlNotificationEmail implements NotificationEmail<NotificationContent> {
+public class HtmlNotificationEmail implements NotificationEmail {
 
   private static final Supplier<InputStream> TEMPLATE_RESOURCE_STREAM_SUPPLIER =
       () ->
@@ -24,19 +25,25 @@ public class HtmlNotificationEmail implements NotificationEmail<NotificationCont
               HtmlNotificationEmail.class
                   .getClassLoader()
                   .getResourceAsStream("notification-template/email-update-template.html"));
+  private final UnsubscriptionLinkSupplier unsubscriptionLinkSupplier;
 
   private final Document document = getCopyOfTemplate();
   private String recipient;
 
+  public HtmlNotificationEmail(
+      UnsubscriptionLinkSupplier unsubscriptionLinkSupplier) {
+    this.unsubscriptionLinkSupplier = unsubscriptionLinkSupplier;
+  }
+
 
   @Override
   public void fill(NotificationContent content) {
+    requireNonNull(unsubscriptionLinkSupplier, "No unsubscription link supplier set.");
     this.recipient = content.getCustomerEmailAddress();
     fillPersonInformation(content.getCustomerFirstName(), content.getCustomerLastName());
     fillProjectInformation(content.getProjectCode(), content.getProjectTitle());
     fillSampleStatusInformation(content.getAvailableDataCount(), content.getFailedQCCount());
-    //TODO wire this in
-    setUnsubscriptionLinkLocation("https://duckduckgo.com");
+    fillUnsubscriptionLink(content.getProjectCode(), content.getCustomerEmailAddress());
   }
 
   @Override
@@ -72,6 +79,11 @@ public class HtmlNotificationEmail implements NotificationEmail<NotificationCont
     int result = recipient().hashCode();
     result = 31 * result + body().hashCode();
     return result;
+  }
+
+  private void fillUnsubscriptionLink(String projectCode, String customerEmailAddress) {
+    String unsubscriptionUrl = unsubscriptionLinkSupplier.get(projectCode, customerEmailAddress);
+    setUnsubscriptionLinkLocation(unsubscriptionUrl);
   }
 
   private void setUnsubscriptionLinkLocation(String href) {
