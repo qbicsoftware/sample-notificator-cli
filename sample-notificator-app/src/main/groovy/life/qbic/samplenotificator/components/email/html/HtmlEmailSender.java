@@ -57,11 +57,8 @@ public class HtmlEmailSender implements EmailSender<HtmlNotificationEmail> {
 
   protected void sendSendmailEmail(File emailFile, String recipient) throws EmailSendException {
     try {
-/*      ProcessBuilder builder =
-          new ProcessBuilder("sendmail", "-t", recipient).redirectInput(emailFile)
-              .redirectErrorStream(true);*/
       ProcessBuilder builder =
-          new ProcessBuilder("ls", "testing").redirectInput(emailFile)
+          new ProcessBuilder("sendmail", "-t", recipient).redirectInput(emailFile)
               .redirectErrorStream(true);
       Process process = builder.start();
       log.info("Trying to send update mail with the following settings: " + builder.command());
