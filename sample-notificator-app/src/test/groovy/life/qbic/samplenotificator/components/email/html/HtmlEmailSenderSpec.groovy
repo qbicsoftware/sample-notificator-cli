@@ -3,11 +3,13 @@ package life.qbic.samplenotificator.components.email.html
 import life.qbic.business.notification.create.NotificationContent
 import life.qbic.business.notification.unsubscription.UnsubscriptionLinkSupplier
 import life.qbic.samplenotificator.components.email.EmailSendException
+import spock.lang.Ignore
 import spock.lang.Specification
 
 /**
  * <p>Tests email sending behaviour</p>
  */
+@Ignore
 class HtmlEmailSenderSpec extends Specification {
   static NotificationContent notificationContent
   static HtmlEmailGenerator htmlEmailGenerator

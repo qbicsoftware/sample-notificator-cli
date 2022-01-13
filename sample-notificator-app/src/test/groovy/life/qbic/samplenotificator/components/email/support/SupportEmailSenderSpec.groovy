@@ -1,11 +1,13 @@
 package life.qbic.samplenotificator.components.email.support
 
 import life.qbic.samplenotificator.components.email.EmailSendException
+import spock.lang.Ignore
 import spock.lang.Specification
 
 /**
  * <p>Tests QBiC support email sending functionality.</p>
  */
+@Ignore
 class SupportEmailSenderSpec extends Specification {
 
   def "when the email sender sends an email then no exception is thrown"() {
