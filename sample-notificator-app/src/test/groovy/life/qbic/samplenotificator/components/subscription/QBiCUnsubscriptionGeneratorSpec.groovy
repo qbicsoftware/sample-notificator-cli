@@ -4,11 +4,9 @@ import spock.lang.Ignore
 import spock.lang.Specification
 
 /**
- * <b>short description</b>
+ * <p>Tests unsubscription link generation functionality.</p>
  *
- * <p>detailed description</p>
- *
- * @since <version tag>
+ * @since 1.2.0
  */
 class QBiCUnsubscriptionGeneratorSpec extends Specification {
 
