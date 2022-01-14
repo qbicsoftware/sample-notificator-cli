@@ -22,13 +22,13 @@ public class SupportEmailSender implements FailureEmailSender {
           HtmlEmailSender.class
               .getClassLoader()
               .getResourceAsStream("notification-template/failureEmail.txt"));
-  protected String supportEmail = "support@qbic.zendesk.com";
+  protected final String supportEmail = "support@qbic.zendesk.com";
 
   @Override
   public void sendFailure() {
     try {
       File emailFile = getEmailFile();
-      sendPlainEmail(emailFile, "Failure Notification sample-notificator-cli");
+      sendPlainEmail(emailFile);
     } catch (IOException e) {
       log.error("Could not inform admin.", e);
     }
@@ -43,10 +43,10 @@ public class SupportEmailSender implements FailureEmailSender {
     return sendmailFile;
   }
 
-  protected void sendPlainEmail(File emailFile, String subject) throws EmailSendException {
+  protected void sendPlainEmail(File emailFile) throws EmailSendException {
     try {
       ProcessBuilder builder =
-          new ProcessBuilder("mail", "-s", subject, supportEmail)
+          new ProcessBuilder("mail", "-s", "Failure Notification sample-notificator-cli", supportEmail)
               .redirectInput(emailFile)
               .redirectErrorStream(true);
       Process process = builder.start();
