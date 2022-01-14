@@ -1,17 +1,10 @@
 package life.qbic.samplenotificator.components.email.html
 
 import life.qbic.business.notification.create.NotificationContent
-import life.qbic.business.notification.refactor.NotificationEmail
+import life.qbic.business.notification.send.NotificationEmail
 import life.qbic.business.notification.unsubscription.UnsubscriptionLinkSupplier
 import spock.lang.Specification
 
-/**
- * <b>short description</b>
- *
- * <p>detailed description</p>
- *
- * @since <version tag>
- */
 class HtmlNotificationEmailSpec extends Specification {
   NotificationContent.Builder notificationContentBuilder = new NotificationContent.Builder(
           "Maximilian",

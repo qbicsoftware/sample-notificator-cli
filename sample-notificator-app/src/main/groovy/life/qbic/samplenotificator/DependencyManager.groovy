@@ -3,7 +3,7 @@ package life.qbic.samplenotificator
 import groovy.util.logging.Log4j2
 import life.qbic.business.notification.SendNotificationConnector
 import life.qbic.business.notification.create.CreateNotification
-import life.qbic.business.notification.refactor.*
+import life.qbic.business.notification.send.*
 import life.qbic.business.notification.unsubscription.UnsubscriptionLinkSupplier
 import life.qbic.samplenotificator.cli.NotificatorCommandLineOptions
 import life.qbic.samplenotificator.components.CreateNotificationController
@@ -63,7 +63,7 @@ class DependencyManager {
         return properties
     }
 
-    private static CreateNotificationController setupCreateNotification() {
+    private CreateNotificationController setupCreateNotification() {
 
         FetchSubscriberDbConnector subscriberDbConnector = new FetchSubscriberDbConnector(DatabaseSession.getInstance())
         FetchProjectDbConnector projectDbConnector = new FetchProjectDbConnector(DatabaseSession.getInstance())

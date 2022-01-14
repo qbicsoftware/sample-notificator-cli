@@ -28,7 +28,7 @@ class SupportEmailSenderSpec extends Specification {
 
   class FailingEmailSenderMock extends SupportEmailSender {
     @Override
-    protected void sendPlainEmail(File emailFile, String subject) throws EmailSendException {
+    protected void sendPlainEmail(File emailFile) throws EmailSendException {
       throw new EmailSendException()
     }
   }
