@@ -32,7 +32,7 @@ class SendEmailSpec extends Specification {
   NotificationEmail emailMock = Mock()
 
   def "when #n notifications are present then send #n emails"() {
-    given: "a notification Mcontent"
+    given: "a notification content"
     emailGenerator.apply(notificationContent) >> emailMock
     var notifications = [notificationContent] * n
 
