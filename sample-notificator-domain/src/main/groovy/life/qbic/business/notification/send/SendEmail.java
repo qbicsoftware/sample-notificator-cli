@@ -9,12 +9,12 @@ import life.qbic.business.notification.create.NotificationContent;
  */
 public class SendEmail implements Consumer<List<NotificationContent>>, SendEmailInput{
     private final EmailSender<NotificationEmail> sendOrRemember;
-    private final FailureEmailSender informAdmin;
+    private final FailureEmailSender failureSender;
     private final EmailGenerator<NotificationEmail> generateEmail;
 
-    public SendEmail(EmailSender<NotificationEmail> sendOrRemember, FailureEmailSender informAdmin, EmailGenerator<NotificationEmail> generateEmail) {
+    public SendEmail(EmailSender<NotificationEmail> sendOrRemember, FailureEmailSender failureSender, EmailGenerator<NotificationEmail> generateEmail) {
         this.sendOrRemember = sendOrRemember;
-        this.informAdmin = informAdmin;
+        this.failureSender = failureSender;
         this.generateEmail = generateEmail;
     }
 
@@ -46,6 +46,6 @@ public class SendEmail implements Consumer<List<NotificationContent>>, SendEmail
 
     @Override
     public void sendFailureEmail() {
-        informAdmin.sendFailure();
+        failureSender.sendFailure();
     }
 }
