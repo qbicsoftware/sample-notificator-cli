@@ -1,4 +1,4 @@
-package life.qbic.business.notification.refactor;
+package life.qbic.business.notification.send;
 
 /**
  * <p>Sends a failure email to the administrator.</p>

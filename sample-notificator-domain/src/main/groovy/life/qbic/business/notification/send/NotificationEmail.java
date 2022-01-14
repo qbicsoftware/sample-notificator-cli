@@ -1,4 +1,4 @@
-package life.qbic.business.notification.refactor;
+package life.qbic.business.notification.send;
 
 import life.qbic.business.notification.create.NotificationContent;
 

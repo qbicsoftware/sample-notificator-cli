@@ -5,7 +5,7 @@ import life.qbic.business.logging.Logger;
 import life.qbic.business.logging.Logging;
 import life.qbic.business.notification.create.CreateNotificationOutput;
 import life.qbic.business.notification.create.NotificationContent;
-import life.qbic.business.notification.refactor.SendEmailInput;
+import life.qbic.business.notification.send.SendEmailInput;
 
 /**
  * <p>Connects the {@link CreateNotificationOutput} and the {@link SendEmailInput}</p>

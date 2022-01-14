@@ -7,7 +7,7 @@ import java.io.InputStream;
 import java.util.Optional;
 import java.util.function.Supplier;
 import life.qbic.business.notification.create.NotificationContent;
-import life.qbic.business.notification.refactor.NotificationEmail;
+import life.qbic.business.notification.send.NotificationEmail;
 import life.qbic.business.notification.unsubscription.UnsubscriptionLinkSupplier;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

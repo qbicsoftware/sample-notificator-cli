@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import life.qbic.business.logging.Logger;
 import life.qbic.business.logging.Logging;
-import life.qbic.business.notification.refactor.EmailSender;
+import life.qbic.business.notification.send.EmailSender;
 import life.qbic.samplenotificator.components.email.EmailSendException;
 
 /**

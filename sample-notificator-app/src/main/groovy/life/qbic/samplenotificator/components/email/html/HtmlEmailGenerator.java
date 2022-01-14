@@ -1,7 +1,7 @@
 package life.qbic.samplenotificator.components.email.html;
 
 import life.qbic.business.notification.create.NotificationContent;
-import life.qbic.business.notification.refactor.EmailGenerator;
+import life.qbic.business.notification.send.EmailGenerator;
 import life.qbic.business.notification.unsubscription.UnsubscriptionLinkSupplier;
 
 /**
