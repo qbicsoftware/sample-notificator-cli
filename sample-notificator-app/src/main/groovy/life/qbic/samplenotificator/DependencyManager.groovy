@@ -83,7 +83,7 @@ class DependencyManager {
 
     private UnsubscriptionLinkSupplier setupUnsubscriptionLinkSupplier() {
         String subscriptionServicePassword = requireNonNull(properties.get("services.subscriptions.password"), "Subscription service password missing.")
-        String subscriptionServiceTokengenerationEndpoint = requireNonNull(properties.get("services.tokengeneration.endpoint"), "Subscription service token endpoint missing.")
+        String subscriptionServiceTokengenerationEndpoint = requireNonNull(properties.get("services.subscriptions.tokengeneration.endpoint"), "Subscription service token endpoint missing.")
         String subscriptionServiceUrl = requireNonNull(properties.get("services.subscriptions.url"), "Subscription service url missing.")
         String subscriptionServiceUser = requireNonNull(properties.get("services.subscriptions.user"), "Subscription service user missing.")
         String unsubscriptionBaseUrl = requireNonNull(properties.get("portal.unsubscription.baseurl"), "Unsubscription endpoint is missing.")
