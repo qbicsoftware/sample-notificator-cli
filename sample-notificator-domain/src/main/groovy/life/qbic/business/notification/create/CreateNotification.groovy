@@ -9,6 +9,7 @@ import life.qbic.datamodel.samples.Status
 
 import java.time.LocalDate
 import java.util.function.Predicate
+import java.util.stream.Collectors
 
 /**
  * This class implements the logic to create template email messages.
@@ -26,7 +27,6 @@ class CreateNotification implements CreateNotificationInput {
     private final FetchSubscriberDataSource fetchSubscriberDataSource
 
     private Map<String, Status> updatedSamplesWithStatus
-    private List<NotificationContent> notifications = []
     private static final Logging log = Logger.getLogger(CreateNotification.class)
 
 
@@ -44,12 +44,15 @@ class CreateNotification implements CreateNotificationInput {
             List<Project> projectsWithSamples = getProjects().toList()
             Map<String, String> projectsWithTitles = projectDataSource.fetchProjectsWithTitles()
             //take out the assignment of the project title (another method?)
-            projectsWithSamples.each { project ->
-                project.title = projectsWithTitles.get(project.code)
-            }
-            //add notifications with create notification method (directly adds notifications to list)
-            projectsWithSamples.each { project ->
-                addNotificationForProject(project)
+            List<NotificationContent> notifications = projectsWithSamples.stream()
+                    .map(it -> fillProjectWithTitle(it, projectsWithTitles))
+                    .map(this::getNotificationsForProject)
+                    .filter((List projectNotifications) -> !projectNotifications.isEmpty())
+                    .flatMap(Collection::stream) // flattens the list
+                    .collect(Collectors.toList())
+            if (notifications.isEmpty()) {
+                log.info("No notifications created for ${date}.")
+                return
             }
             output.createdNotifications(notifications)
 
@@ -65,21 +68,37 @@ class CreateNotification implements CreateNotificationInput {
         }
     }
 
-    private void addNotificationForProject(Project project) {
+    private static Project fillProjectWithTitle(Project project, Map<String, String> projectCodeToTitle) {
+        project.setTitle(projectCodeToTitle.get(project.getCode()))
+        return project
+    }
 
+    private List<NotificationContent> getNotificationsForProject(Project project) {
         int failedQCCount = filterSamplesByStatus(project.sampleCodes, "SAMPLE_QC_FAIL").size()
         int availableDataCount = filterSamplesByStatus(project.sampleCodes, "DATA_AVAILABLE").size()
 
         if (!isRelevantStatusUpdated(failedQCCount, availableDataCount)) {
             log.info("Notification for project ${project.code} was not generated, since the sample status was not set to FAILED_QC or DATA_AVAILABLE")
-            return
+            return noNotifications()
         }
         //4. get subscribers of this projects
         List<Subscriber> subscribers = fetchSubscriberDataSource.getSubscriberForProject(project.code)
-        for (Subscriber subscriber : subscribers) {
-            notifications << new NotificationContent.Builder(subscriber.firstName, subscriber.lastName, subscriber.email,
-                    project.title, project.code, failedQCCount, availableDataCount).build()
-        }
+        Collection<NotificationContent> notifications = subscribers.stream()
+                .map(subscriber -> {
+                    createNotificationForSubscriber(subscriber, project, failedQCCount, availableDataCount)
+                }).collect()
+        return notifications
+
+    }
+
+    private static NotificationContent createNotificationForSubscriber(Subscriber subscriber, Project project, int failedQCCount, int availableDataCount) {
+        return new NotificationContent.Builder(subscriber.firstName, subscriber.lastName, subscriber.email,
+                project.title, project.code, failedQCCount, availableDataCount).build()
+    }
+
+
+    private static List<NotificationContent> noNotifications() {
+        return []
     }
 
     private List<String> filterSamplesByStatus(List<String> samples, String statusName) {

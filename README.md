@@ -5,6 +5,16 @@ that have received a new status. This is only done for the current day the tool 
 People who are subscribed are notified about their projects' changes
 will be notified via email. This service creates the messages and sends them.
 
+## Requirements
+
+### Database
+
+// INSERT UML HERE
+
+### Subscription Service
+
+An instance of the [subscription service](https://github.com/qbicsoftware/subscription-service) is needed to run this application.
+
 ## Usage
 
 Build the tool with
@@ -51,4 +61,18 @@ mysql.pass = myPassWord
 mysql.user = myUserName
 mysql.db = myDatabase
 mysql.port = 8888
+```
+
+For the subscription service the following properties are required:
+
+```
+services.subscriptions.password = ...
+services.subscriptions.tokengeneration.endpoint = "/subscriptions/tokens"
+services.subscriptions.url = "http://localhost:8080"
+services.subscriptions.user = "ChuckNorris"
+```
+
+In addition a base URL is needed where users can unsubscribe with the generated token.
+```
+portal.unsubscription.baseurl = "www.my-awesome-website/unsubscribe"
 ```
