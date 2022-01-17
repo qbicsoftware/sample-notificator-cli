@@ -5,6 +5,16 @@ that have received a new status. This is only done for the current day the tool 
 People who are subscribed are notified about their projects' changes
 will be notified via email. This service creates the messages and sends them.
 
+## Requirements
+
+### Database
+
+// INSERT UML HERE
+
+### Subscription Service
+
+An instance of the [subscription service](https://github.com/qbicsoftware/subscription-service) is needed to run this application.
+
 ## Usage
 
 Build the tool with
