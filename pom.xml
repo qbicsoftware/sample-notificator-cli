@@ -7,7 +7,7 @@
   <groupId>life.qbic</groupId>
   <artifactId>sample-notificator</artifactId>
   <packaging>pom</packaging>
-  <version>1.1.0</version>
+  <version>1.2.0</version>
   <modules>
     <module>sample-notificator-app</module>
     <module>sample-notificator-domain</module>
@@ -22,20 +22,6 @@
   <!-- we only need to tell maven where to find our parent pom and other QBiC
 		dependencies -->
   <repositories>
-    <!-- maven repository -->
-    <repository>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>always</updatePolicy>
-        <checksumPolicy>fail</checksumPolicy>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <id>maven-central</id>
-      <name>Maven central</name>
-      <url>https://repo.maven.apache.org/maven2</url>
-    </repository>
     <!-- QBiC nexus repositories -->
     <repository>
       <releases>
@@ -62,6 +48,24 @@
       <id>nexus-snapshots</id>
       <name>QBiC Snapshots</name>
       <url>https://qbic-repo.qbic.uni-tuebingen.de/repository/maven-snapshots</url>
+    </repository>
+    <!-- maven repository -->
+    <repository>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+        <checksumPolicy>fail</checksumPolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>maven-central</id>
+      <name>Maven central</name>
+      <url>https://repo.maven.apache.org/maven2</url>
+    </repository>
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
     </repository>
   </repositories>
 

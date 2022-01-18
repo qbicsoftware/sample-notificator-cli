@@ -55,7 +55,7 @@ class NotificationContent {
 
     }
 
-    private NotificationContent(Builder builder) {
+    protected NotificationContent(Builder builder) {
         /*Customer Information */
         this.customerFirstName = builder.customerFirstName
         this.customerLastName = builder.customerLastName

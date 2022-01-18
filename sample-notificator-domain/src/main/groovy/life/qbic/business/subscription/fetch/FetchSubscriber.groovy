@@ -16,7 +16,7 @@ import java.time.LocalDate
  * @since 1.0.0*
  */
 class FetchSubscriber implements FetchSubscriberInput {
-    private final FetchSubscriberDataSource ds
+    private final FetchSubscriberDataSource dataSource
     private final FetchSubscriberOutput output
 
     private Map<String, Status> sampleToStatus
@@ -24,8 +24,8 @@ class FetchSubscriber implements FetchSubscriberInput {
     private Set<String> updatedProjects
     private static final Logging log = Logger.getLogger(FetchSubscriber.class)
 
-    FetchSubscriber(FetchSubscriberDataSource ds, FetchSubscriberOutput output) {
-        this.ds = ds
+    FetchSubscriber(FetchSubscriberDataSource dataSource, FetchSubscriberOutput output) {
+        this.dataSource = dataSource
         this.output = output
     }
 
@@ -34,7 +34,7 @@ class FetchSubscriber implements FetchSubscriberInput {
         LocalDate localDate = LocalDate.parse(date)
         try {
             //1. get todays notifications
-            sampleToStatus = ds.getUpdatedSamplesForDay(localDate)
+            sampleToStatus = dataSource.getUpdatedSamplesForDay(localDate)
             //2. get subscribers for projects
             updatedProjects = getProjectsFromSamples(sampleToStatus.keySet().asList())
             //3. create subscribers and associate them with their subscriptions
@@ -85,17 +85,18 @@ class FetchSubscriber implements FetchSubscriberInput {
 
         updatedProjects.each { project ->
             Map samplesForProject = getSamplesForProject(project)
-            List subscribersForProject = ds.getSubscriberForProject(project)
+            List subscribersForProject = dataSource.getSubscriberForProject(project)
             //store the subscriber information for later
             foundSubscribers.addAll(subscribersForProject)
 
             subscribersForProject.each { subscriber ->
-                if (userIdToSamples.containsKey(subscriber.email)) {
+                final var subscriberEmail = subscriber.getEmail()
+                if (userIdToSamples.containsKey(subscriberEmail)) {
                     //add new samples to existing subscriber
-                    userIdToSamples.get(subscriber.email).putAll(samplesForProject)
+                    userIdToSamples.get(subscriberEmail).putAll(samplesForProject)
                 } else {
                     //add new subscriber
-                    userIdToSamples.put(subscriber.email, samplesForProject)
+                    userIdToSamples.put(subscriberEmail, samplesForProject)
                 }
             }
         }
