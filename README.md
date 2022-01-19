@@ -67,12 +67,14 @@ For the subscription service the following properties are required:
 
 ```
 services.subscriptions.password = ...
-services.subscriptions.tokengeneration.endpoint = "/subscriptions/tokens"
-services.subscriptions.url = "http://localhost:8080"
-services.subscriptions.user = "ChuckNorris"
+services.subscriptions.tokengeneration.endpoint = /subscriptions/tokens
+services.subscriptions.url = http://localhost:8080
+services.subscriptions.user = ChuckNorris
 ```
 
 In addition a base URL is needed where users can unsubscribe with the generated token.
 ```
-portal.unsubscription.baseurl = "www.my-awesome-website/unsubscribe"
+portal.unsubscription.baseurl = www.my-awesome-website/unsubscribe
 ```
+
+Please don't use quotation marks `"` for the values!
