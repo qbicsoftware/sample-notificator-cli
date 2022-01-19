@@ -11,7 +11,7 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 **Fixed**
 
-* Adapt email sender from ``qbic`` to qbic.life
+* Adapt email sender from ``noreply.qbic.com`` to ``noreply@qbic.life.com``
 
 **Dependencies**
 
