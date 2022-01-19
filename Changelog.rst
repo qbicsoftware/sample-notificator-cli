@@ -4,14 +4,32 @@ Changelog
 
 This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
-1.2.0-SNAPSHOT (2021-11-26)
-------------------
+1.3.0-SNAPSHOT (2022-01-19)
+--------------------------
 
 **Added**
 
 **Fixed**
 
 **Dependencies**
+
+**Deprecated**
+
+1.2.0 (2022-01-18)
+------------------
+
+**Added**
+
+* Provide unsubscription link in email (`#42 <https://github.com/qbicsoftware/sample-notificator-cli/pull/42>`_)
+
+**Fixed**
+
+**Dependencies**
+
+* ``info.picocli.picocli:4.6.1`` -> ``4.6.2``
+* ``org.apache.commons.commons-dbcp2:2.7.0`` -> ``2.8.0``
+* ``org.jsoup.jsoup:1.13.1`` -> ``1.14.3``
+*   Add ``org.springframework.spring-web:5.3.13``
 
 **Deprecated**
 
