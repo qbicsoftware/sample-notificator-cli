@@ -77,4 +77,4 @@ In addition a base URL is needed where users can unsubscribe with the generated 
 portal.unsubscription.baseurl = www.my-awesome-website/unsubscribe
 ```
 
-Please don't use quotation marks `"` for the values!
+NOTE: Please don't use quotation marks `"` for the values!
