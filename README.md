@@ -27,7 +27,7 @@ You can find the executable jar-with-dependencies in the target folder.
 Execute the jar
 
 ```
-java -jar <path-to-jar>/target/sample-notificator-app-<version>-jar-with-dependencies.jar -c <path-to-config>
+java -jar <path-to-jar>/target/sample-notificator-app-<version>-jar-with-dependencies.jar -c <path-to-config> -d <ISO8601-formatted-date>
 ```
 
 To get help use following command:

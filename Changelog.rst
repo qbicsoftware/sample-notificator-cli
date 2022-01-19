@@ -4,6 +4,19 @@ Changelog
 
 This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
+1.2.1 (2022-01-19)
+------------------
+
+**Added**
+
+**Fixed**
+
+* Adapt email sender from ``qbic`` to qbic.life
+
+**Dependencies**
+
+**Deprecated**
+
 1.2.0 (2022-01-18)
 ------------------
 
