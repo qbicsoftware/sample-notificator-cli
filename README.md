@@ -27,7 +27,7 @@ You can find the executable jar-with-dependencies in the target folder.
 Execute the jar
 
 ```
-java -jar <path-to-jar>/target/sample-notificator-app-<version>-jar-with-dependencies.jar -c <path-to-config>
+java -jar <path-to-jar>/target/sample-notificator-app-<version>-jar-with-dependencies.jar -c <path-to-config> -d <ISO8601-formatted-date>
 ```
 
 To get help use following command:
@@ -67,12 +67,14 @@ For the subscription service the following properties are required:
 
 ```
 services.subscriptions.password = ...
-services.subscriptions.tokengeneration.endpoint = "/subscriptions/tokens"
-services.subscriptions.url = "http://localhost:8080"
-services.subscriptions.user = "ChuckNorris"
+services.subscriptions.tokengeneration.endpoint = /subscriptions/tokens
+services.subscriptions.url = http://localhost:8080
+services.subscriptions.user = ChuckNorris
 ```
 
 In addition a base URL is needed where users can unsubscribe with the generated token.
 ```
-portal.unsubscription.baseurl = "www.my-awesome-website/unsubscribe"
+portal.unsubscription.baseurl = www.my-awesome-website/unsubscribe
 ```
+
+NOTE: Please don't use quotation marks `"` for the values!

@@ -15,6 +15,19 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 **Deprecated**
 
+1.2.1 (2022-01-19)
+------------------
+
+**Added**
+
+**Fixed**
+
+* Adapt email sender from ``noreply.qbic.com`` to ``noreply@qbic.life.com``
+
+**Dependencies**
+
+**Deprecated**
+
 1.2.0 (2022-01-18)
 ------------------
 
