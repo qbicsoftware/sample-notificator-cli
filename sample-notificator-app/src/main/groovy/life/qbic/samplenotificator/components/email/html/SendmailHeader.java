@@ -20,7 +20,7 @@ public class SendmailHeader {
    * Creates a multi-line String with the values of this header.
    *
    * <pre>
-   *   From: noreply@qbic.life.com
+   *   From: noreply@qbic.life
    *   Subject: Sample Status Update
    *   Content-Type: text/html
    * </pre>
