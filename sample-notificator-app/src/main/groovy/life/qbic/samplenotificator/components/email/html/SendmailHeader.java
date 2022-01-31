@@ -13,7 +13,7 @@ public class SendmailHeader {
     return this;
   }
   /**
-   * Creates a multi-line String with the values of this header.
+   * Creates a multi-line String with the values of this header. For example:
    *
    * <pre>
    *   From: noreply@qbic.life
