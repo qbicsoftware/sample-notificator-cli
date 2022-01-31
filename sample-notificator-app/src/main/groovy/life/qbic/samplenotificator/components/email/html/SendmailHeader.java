@@ -16,10 +16,6 @@ public class SendmailHeader {
     return sendmailHeader;
   }
 
-  //  From: noreply@qbic.life.com
-  //  Subject: Sample Status Update
-  //  Content-Type: text/html
-
   /**
    * Creates a multi-line String with the values of this header.
    *
