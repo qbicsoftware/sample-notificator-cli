@@ -21,6 +21,8 @@ class SendmailHeaderSpec extends Specification {
 
   def "when a modified SendmailHeader is printed, then the modifications are present"() {
     given:
+    String defaultSender = "noreply@qbic.life"
+    String defaultContentType = "text/html"
     String subject = "Test subject"
     NotificationEmail notificationEmail = Stub()
     notificationEmail.subject() >> subject
@@ -31,9 +33,9 @@ class SendmailHeaderSpec extends Specification {
     def printed = header.format()
     then: "the modifications are present"
     printed == """\
-      From: test@qbic.life
+      From: $defaultSender
       Subject: Test subject
-      Content-Type: text/html
+      Content-Type: $defaultContentType
       """.stripIndent()
   }
 }
