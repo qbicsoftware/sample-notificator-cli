@@ -58,6 +58,11 @@ public class HtmlNotificationEmail implements NotificationEmail {
   }
 
   @Override
+  public String subject() {
+    return null;
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
