@@ -29,7 +29,7 @@ class SendmailHeaderSpec extends Specification {
 
 
     when: "a modified SendmailHeader is printed"
-    def header = SendmailHeader.forNotificationEmail(notificationEmail)
+    def header = new SendmailHeader().withSubject(notificationEmail.subject())
     def printed = header.format()
     then: "the modifications are present"
     printed == """\
