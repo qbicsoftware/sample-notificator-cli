@@ -84,7 +84,7 @@ public class HtmlEmailSender implements EmailSender<HtmlNotificationEmail> {
 
   private File getSendmailFile(HtmlNotificationEmail notificationEmail) throws IOException {
     File sendmailFile = File.createTempFile("HtmlEmail", ".html");
-    SendmailHeader sendmailHeader = SendmailHeader.forNotificationEmail(notificationEmail);
+    SendmailHeader sendmailHeader = new SendmailHeader().withSubject(notificationEmail.subject());
     try (FileWriter fileWriter = new FileWriter(sendmailFile, true)) {
       fileWriter.append(sendmailHeader.format());
       fileWriter.append(notificationEmail.body());
