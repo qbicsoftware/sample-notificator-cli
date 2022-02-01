@@ -29,6 +29,7 @@ public class HtmlNotificationEmail implements NotificationEmail {
 
   private final Document document = getCopyOfTemplate();
   private String recipient;
+  private String subject;
 
   public HtmlNotificationEmail(
       UnsubscriptionLinkSupplier unsubscriptionLinkSupplier) {
@@ -40,6 +41,7 @@ public class HtmlNotificationEmail implements NotificationEmail {
   public void fill(NotificationContent content) {
     requireNonNull(unsubscriptionLinkSupplier, "No unsubscription link supplier set.");
     this.recipient = content.getCustomerEmailAddress();
+    this.subject = formatSubject(content.getProjectCode());
     fillPersonInformation(content.getCustomerFirstName(), content.getCustomerLastName());
     fillProjectInformation(content.getProjectCode(), content.getProjectTitle());
     fillSampleStatusInformation(content.getAvailableDataCount(), content.getFailedQCCount());
@@ -58,6 +60,12 @@ public class HtmlNotificationEmail implements NotificationEmail {
   }
 
   @Override
+  public String subject() {
+    requireNonNull(this.subject);
+    return subject;
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -71,6 +79,9 @@ public class HtmlNotificationEmail implements NotificationEmail {
     if (!recipient().equals(that.recipient())) {
       return false;
     }
+    if (!subject().equals(that.subject())) {
+      return false;
+    }
     return body().equals(that.body());
   }
 
@@ -78,7 +89,13 @@ public class HtmlNotificationEmail implements NotificationEmail {
   public int hashCode() {
     int result = recipient().hashCode();
     result = 31 * result + body().hashCode();
+    result = 31 * result + subject().hashCode();
     return result;
+  }
+
+  private String formatSubject(String projectCode) {
+    requireNonNull(projectCode);
+    return String.format("Samples updated in project %s", projectCode);
   }
 
   private void fillUnsubscriptionLink(String projectCode, String customerEmailAddress) {

@@ -21,11 +21,6 @@ import life.qbic.samplenotificator.components.email.EmailSendException;
  */
 public class HtmlEmailSender implements EmailSender<HtmlNotificationEmail> {
   private static final Logging log = Logger.getLogger(HtmlEmailSender.class);
-  private static final String SENDMAIL_HEADER =
-      readInputStream(
-          HtmlEmailSender.class
-              .getClassLoader()
-              .getResourceAsStream("notification-template/header.txt"));
   private final List<HtmlNotificationEmail> unsentEmails = new ArrayList<>();
 
   @Override
@@ -47,7 +42,7 @@ public class HtmlEmailSender implements EmailSender<HtmlNotificationEmail> {
   private void sendNotificationEmail(HtmlNotificationEmail notificationEmail)
       throws EmailSendException {
     try {
-      File emailFile = getSendmailFile(notificationEmail.body());
+      File emailFile = getSendmailFile(notificationEmail);
       sendSendmailEmail(emailFile, notificationEmail.recipient());
     } catch (IOException | NullPointerException e) {
       log.error(e.getMessage(), e);
@@ -87,19 +82,15 @@ public class HtmlEmailSender implements EmailSender<HtmlNotificationEmail> {
     }
   }
 
-  private File getSendmailFile(String content) throws IOException {
+  private File getSendmailFile(HtmlNotificationEmail notificationEmail) throws IOException {
     File sendmailFile = File.createTempFile("HtmlEmail", ".html");
+    String sendmailHeaderText = SendmailHeaderGenerator.generateFromSubject(notificationEmail.subject());
     try (FileWriter fileWriter = new FileWriter(sendmailFile, true)) {
-      fileWriter.append(SENDMAIL_HEADER);
-      fileWriter.append(content);
+      fileWriter.append(sendmailHeaderText);
+      fileWriter.append(notificationEmail.body());
       fileWriter.flush();
     }
     return sendmailFile;
   }
 
-  private static String readInputStream(InputStream inputStream) {
-    return new BufferedReader(new InputStreamReader(inputStream))
-        .lines()
-        .collect(Collectors.joining("\n"));
-  }
 }

@@ -4,6 +4,23 @@ Changelog
 
 This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
+1.3.0 (2022-02-01)
+--------------------------
+
+**Added**
+
+* Dynamic email subject containing the project code (#47)
+
+* Improved wording in the email template and link to the sample viewer application (#48)
+
+**Fixed**
+
+* Adapt email sender from ``noreply@qbic.life.com`` to ``noreply@qbic.life``
+
+**Dependencies**
+
+**Deprecated**
+
 1.2.1 (2022-01-19)
 ------------------
 
