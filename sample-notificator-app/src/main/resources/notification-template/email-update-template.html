@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <title>Sample Status Update</title>
@@ -10,10 +10,9 @@
     Dear <span id="person-information">Max Mustermann</span>
   </div>
   <div id="content">
-    <p>This is an automated email to inform you about recent updates on your subscribed
-      project
-      <span id="project-information"><span id="project-title">"My awesome project"</span> (<span
-          id="project-code">ABCDE</span>):</span>
+    <p>This is an automated email to inform you about recent updates on your subscribed project
+      <span id="project-information"><span id="project-title">"My awesome project"</span>
+        (<span id="project-code">ABCDE</span>):</span>
     </p>
     <ul id="sample-status-enumeration">
       <li id="sample-status-failed-qc">
@@ -26,10 +25,15 @@
         </div>
       </li>
     </ul>
-    <p id="subscription-information">
-      You can also check the <a href="https://portal.qbic.uni-tuebingen.de/portal/" target="_blank">QBiC portal</a>
-      to learn more or <a id="unsubscription-link" href="" target="_blank">unsubscribe</a> from further notifications.
-    </p>
+    <div id="subscription-information">
+      <p> For more details on your samples visit the <a
+          href="https://portal.qbic.uni-tuebingen.de/portal/web/qbic/sample-tracking"
+          target="_blank">QBiC portal.</a><br/>
+        To stop receiving updates on your project,
+        you can <a id="unsubscription-link" href="" target="_blank">unsubscribe</a> from further
+        notifications.
+      </p>
+    </div>
   </div>
   <div id="sign-off">
     Best regards, <br>The QBiC team
