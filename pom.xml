@@ -7,7 +7,7 @@
   <groupId>life.qbic</groupId>
   <artifactId>sample-notificator</artifactId>
   <packaging>pom</packaging>
-  <version>1.3.0-SNAPSHOT</version>
+  <version>1.3.0</version>
   <modules>
     <module>sample-notificator-app</module>
     <module>sample-notificator-domain</module>
