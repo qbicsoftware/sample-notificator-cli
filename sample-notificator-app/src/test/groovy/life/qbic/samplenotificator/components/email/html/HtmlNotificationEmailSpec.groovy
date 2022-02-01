@@ -43,4 +43,18 @@ class HtmlNotificationEmailSpec extends Specification {
     !notificationEmail.body().contains("sample-status-available-data-count")
   }
 
+  def "given a filled notification email, when the subject is retrieved, then the subject contains the project code"() {
+    given: "a filled notification email"
+    notificationContentBuilder.setProjectCode("MY_PROJECT_CODE")
+    NotificationContent notificationContent = notificationContentBuilder.build()
+    NotificationEmail notificationEmail = new HtmlNotificationEmail(unsubscriptionLinkSupplier)
+    notificationEmail.fill(notificationContent)
+
+    when: "the subject is retrieved"
+    def subject = notificationEmail.subject()
+
+    then: "the subject contains the project code"
+    subject.contains("MY_PROJECT_CODE")
+  }
+
 }

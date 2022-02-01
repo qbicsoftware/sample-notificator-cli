@@ -1,4 +1,4 @@
 package life.qbic.samplenotificator.components.email;
 
-/** To be thrown when the sending of emails was unsuccessful. */
+/** Thrown when the sending of emails is unsuccessful. */
 public class EmailSendException extends RuntimeException {}
