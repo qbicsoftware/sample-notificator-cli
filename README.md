@@ -26,6 +26,7 @@ You can find the executable jar-with-dependencies in the target folder.
 
 Note:
 An instance of the [subscription service](https://github.com/qbicsoftware/subscription-service) is needed to run this application.
+Also, java 8 is required for packaging and running the software.
 
 ## How to use
 Execute the jar
