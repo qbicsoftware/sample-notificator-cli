@@ -49,9 +49,10 @@ within their projects
 
 ```
 
-#### Provide a config file
+## Configurations
+
 To run the tool you need to provide the credentials to access and read
-data from the database. Therefore, you need to set up a credential file
+data from the database. Therefore, you need to set up a properties file
 which should contain the following content:
 
 - **Host**: provide the host name to access the DB
