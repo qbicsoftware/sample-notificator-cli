@@ -5,17 +5,17 @@ that have received a new status. This is only done for the current day the tool 
 People who are subscribed are notified about their projects' changes
 will be notified via email. This service creates the messages and sends them.
 
-## Requirements
+[![Build Maven Package](https://github.com/qbicsoftware/sample-notificator-cli/actions/workflows/build_package.yml/badge.svg)](https://github.com/qbicsoftware/spring-boot-rest-service-template/actions/workflows/build_package.yml)
+[![Run Maven Tests](https://github.com/qbicsoftware/sample-notificator-cli/actions/workflows/run_tests.yml/badge.svg)](https://github.com/qbicsoftware/spring-boot-rest-service-template/actions/workflows/run_tests.yml)
+[![CodeQL](https://github.com/qbicsoftware/sample-notificator-cli/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/qbicsoftware/spring-boot-rest-service-template/actions/workflows/codeql-analysis.yml)
+[![release](https://img.shields.io/github/v/release/qbicsoftware/sample-notificator-cli?include_prereleases)](https://github.com/qbicsoftware/spring-boot-rest-service-template/releases)
 
-### Database
+[![license](https://img.shields.io/github/license/qbicsoftware/sample-notificator-cli)](https://github.com/qbicsoftware/spring-boot-rest-service-template/blob/main/LICENSE)
+![language](https://img.shields.io/badge/language-java-blue.svg)
+![language](https://img.shields.io/badge/language-groovy-blue.svg)
 
-// INSERT UML HERE
 
-### Subscription Service
-
-An instance of the [subscription service](https://github.com/qbicsoftware/subscription-service) is needed to run this application.
-
-## Usage
+## How to run
 
 Build the tool with
 ```
@@ -24,6 +24,10 @@ mvn clean package
 
 You can find the executable jar-with-dependencies in the target folder.
 
+Note:
+An instance of the [subscription service](https://github.com/qbicsoftware/subscription-service) is needed to run this application.
+
+## How to use
 Execute the jar
 
 ```
