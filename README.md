@@ -1,9 +1,8 @@
-# Sample Notificator Service
-This CLI is intended to search the database for projects (samples of a project)
-that have received a new status. This is only done for the current day the tool is executed.
+<div align="center">
 
-People who are subscribed are notified about their projects' changes
-will be notified via email. This service creates the messages and sends them.
+# Sample Notificator CLI
+
+_A CLI that creates and sends notifications about sample status changes_
 
 [![Build Maven Package](https://github.com/qbicsoftware/sample-notificator-cli/actions/workflows/build_package.yml/badge.svg)](https://github.com/qbicsoftware/sample-notificator-cli/actions/workflows/build_package.yml)
 [![Run Maven Tests](https://github.com/qbicsoftware/sample-notificator-cli/actions/workflows/run_tests.yml/badge.svg)](https://github.com/qbicsoftware/sample-notificator-cli/actions/workflows/run_tests.yml)
@@ -13,8 +12,13 @@ will be notified via email. This service creates the messages and sends them.
 [![license](https://img.shields.io/github/license/qbicsoftware/sample-notificator-cli)](https://github.com/qbicsoftware/sample-notificator-cli/blob/main/LICENSE)
 ![language](https://img.shields.io/badge/language-java-blue.svg)
 ![language](https://img.shields.io/badge/language-groovy-blue.svg)
+</div>
 
+This CLI is intended to search the database for projects (samples of a project)
+that have received a new status. This is only done for the current day the tool is executed.
 
+People who are subscribed are notified about their projects' changes
+will be notified via email. This service creates the messages and sends them.
 ## How to run
 
 Build the tool with
@@ -84,3 +88,10 @@ portal.unsubscription.baseurl = www.my-awesome-website/unsubscribe
 ```
 
 NOTE: Please don't use quotation marks `"` for the values!
+
+## License
+
+This work is licensed under the [MIT license](https://mit-license.org/).
+
+**Note**: This work uses the [Spring Framework](https://github.com/spring-projects) and derivatives from the Spring framework family, which are licensed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+
