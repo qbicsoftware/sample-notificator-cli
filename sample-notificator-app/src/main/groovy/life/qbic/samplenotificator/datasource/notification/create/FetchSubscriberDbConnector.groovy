@@ -2,8 +2,8 @@ package life.qbic.samplenotificator.datasource.notification.create
 
 import groovy.util.logging.Log4j2
 import life.qbic.business.exception.DatabaseQueryException
-import life.qbic.business.subscription.fetch.FetchSubscriberDataSource
 import life.qbic.business.subscription.Subscriber
+import life.qbic.business.subscription.fetch.FetchSubscriberDataSource
 import life.qbic.datamodel.samples.Status
 import life.qbic.samplenotificator.datasource.database.ConnectionProvider
 
@@ -92,7 +92,7 @@ class FetchSubscriberDbConnector implements FetchSubscriberDataSource{
         return subscribers
     }
 
-    private static String JOIN_SUBSCRIBERS_SUBSCRIPTIONS = "SELECT * FROM subscription LEFT JOIN subscriber ON subscription.subscriber_id = subscriber.id"
+    private static String JOIN_SUBSCRIBERS_SUBSCRIPTIONS = "SELECT * FROM subscriptions LEFT JOIN person ON subscriptions.person_id = person.id"
     private static String SELECT_NOTIFICATIONS = "SELECT sample_code, sample_status FROM notification"
 
 }
