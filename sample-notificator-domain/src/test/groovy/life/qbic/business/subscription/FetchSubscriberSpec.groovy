@@ -40,12 +40,12 @@ class FetchSubscriberSpec extends Specification {
                           "QMAAP007A3":Status.SAMPLE_RECEIVED,
                           "QMAAP018A2":Status.SAMPLE_RECEIVED,
                           "QMAAP04525":Status.SAMPLE_RECEIVED]
-        subscriber1 = new Subscriber("John","Doe","john.doe@gmail.de", updatedSamples)
-        subscriber2 = new Subscriber("Janet","Doe","janet.doe@gmail.de",updatedSamples)
-        subscriber3 = new Subscriber("Janet","Doe","janet.doe@gmail.de",updatedSamples)
-        subscriber1_without = new Subscriber("John","Doe","john.doe@gmail.de")
-        subscriber2_without = new Subscriber("Janet","Doe","janet.doe@gmail.de")
-        subscriber3_without = new Subscriber("Janet","Doe","janet.doe@gmail.de")
+        subscriber1 = new Subscriber("john.doe@gmail.de", "John", "Doe", "john.doe@gmail.de", updatedSamples)
+        subscriber2 = new Subscriber("janet.doe@gmail.de", "Janet", "Doe", "janet.doe@gmail.de", updatedSamples)
+        subscriber3 = new Subscriber("janet.doe@gmail.de", "Janet", "Doe", "janet.doe@gmail.de", updatedSamples)
+        subscriber1_without = new Subscriber("john.doe@gmail.de", "John", "Doe", "john.doe@gmail.de")
+        subscriber2_without = new Subscriber("janet.doe@gmail.de", "Janet", "Doe", "janet.doe@gmail.de")
+        subscriber3_without = new Subscriber("janet.doe@gmail.de", "Janet", "Doe", "janet.doe@gmail.de")
 
     }
 

@@ -45,7 +45,7 @@ public class HtmlNotificationEmail implements NotificationEmail {
     fillPersonInformation(content.getCustomerFirstName(), content.getCustomerLastName());
     fillProjectInformation(content.getProjectCode(), content.getProjectTitle());
     fillSampleStatusInformation(content.getAvailableDataCount(), content.getFailedQCCount());
-    fillUnsubscriptionLink(content.getProjectCode(), content.getCustomerEmailAddress());
+    fillUnsubscriptionLink(content.getProjectCode(), content.getUserId());
   }
 
   @Override
@@ -98,8 +98,8 @@ public class HtmlNotificationEmail implements NotificationEmail {
     return String.format("Samples updated in project %s", projectCode);
   }
 
-  private void fillUnsubscriptionLink(String projectCode, String customerEmailAddress) {
-    String unsubscriptionUrl = unsubscriptionLinkSupplier.get(projectCode, customerEmailAddress);
+  private void fillUnsubscriptionLink(String projectCode, String userId) {
+    String unsubscriptionUrl = unsubscriptionLinkSupplier.get(projectCode, userId);
     setUnsubscriptionLinkLocation(unsubscriptionUrl);
   }
 

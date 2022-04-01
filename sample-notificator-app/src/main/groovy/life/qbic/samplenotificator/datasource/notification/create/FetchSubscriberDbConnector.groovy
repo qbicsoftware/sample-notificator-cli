@@ -81,8 +81,9 @@ class FetchSubscriberDbConnector implements FetchSubscriberDataSource{
                         String firstName = resultSet.getString("first_name")
                         String lastName = resultSet.getString("last_name")
                         String email = resultSet.getString("email")
+                        String userId = resultSet.getString("user_id")
 
-                        subscribers << new Subscriber(firstName,lastName,email)
+                        subscribers << new Subscriber(userId, firstName, lastName, email)
                     }
             }
         }catch(Exception exception){

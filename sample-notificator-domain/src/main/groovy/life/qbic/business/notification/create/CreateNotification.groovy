@@ -92,7 +92,7 @@ class CreateNotification implements CreateNotificationInput {
     }
 
     private static NotificationContent createNotificationForSubscriber(Subscriber subscriber, Project project, int failedQCCount, int availableDataCount) {
-        return new NotificationContent.Builder(subscriber.firstName, subscriber.lastName, subscriber.email,
+        return new NotificationContent.Builder(subscriber.userId, subscriber.firstName, subscriber.lastName, subscriber.email,
                 project.title, project.code, failedQCCount, availableDataCount).build()
     }
 

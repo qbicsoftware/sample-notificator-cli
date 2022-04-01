@@ -90,13 +90,13 @@ class FetchSubscriber implements FetchSubscriberInput {
             foundSubscribers.addAll(subscribersForProject)
 
             subscribersForProject.each { subscriber ->
-                final var subscriberEmail = subscriber.getEmail()
-                if (userIdToSamples.containsKey(subscriberEmail)) {
+                final var subscriberUserId = subscriber.getUserId()
+                if (userIdToSamples.containsKey(subscriberUserId)) {
                     //add new samples to existing subscriber
-                    userIdToSamples.get(subscriberEmail).putAll(samplesForProject)
+                    userIdToSamples.get(subscriberUserId).putAll(samplesForProject)
                 } else {
                     //add new subscriber
-                    userIdToSamples.put(subscriberEmail, samplesForProject)
+                    userIdToSamples.put(subscriberUserId, samplesForProject)
                 }
             }
         }
@@ -105,7 +105,7 @@ class FetchSubscriber implements FetchSubscriberInput {
     }
 
     private static Subscriber createSubscriberWithSubscriptions(Subscriber subscriber, Map<String, Status> subscribedSamples) {
-        return new Subscriber(subscriber.firstName,subscriber.lastName,subscriber.email,subscribedSamples)
+        return new Subscriber(subscriber.userId, subscriber.firstName, subscriber.lastName, subscriber.email, subscribedSamples)
     }
 
     private Map<String, Status> getSamplesForProject(String project) {
