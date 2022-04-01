@@ -7,8 +7,8 @@ public interface UnsubscriptionLinkSupplier {
   /**
    * Gets a new unsubscription link for the project and email combination provided
    * @param project the project for which the unsubscription link should be generated
-   * @param email the email for which this unsubscription link is generated
+   * @param userId the user_id for the person for which this unsubscription link is generated
    * @return a valid unsubscription url
    */
-  String get(String project, String email);
+  String get(String project, String userId);
 }

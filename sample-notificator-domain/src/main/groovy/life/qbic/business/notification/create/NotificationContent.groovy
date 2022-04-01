@@ -17,6 +17,7 @@ class NotificationContent {
     final String customerFirstName
     final String customerLastName
     final String customerEmailAddress
+    final String userId
 
     /*Project Information*/
     final String projectTitle
@@ -24,20 +25,35 @@ class NotificationContent {
     final int failedQCCount
     final int availableDataCount
 
+    protected NotificationContent(Builder builder) {
+        /*Customer Information */
+        this.userId = builder.userId
+        this.customerFirstName = builder.customerFirstName
+        this.customerLastName = builder.customerLastName
+        this.customerEmailAddress = builder.customerEmailAddress
+        /*Project Information*/
+        this.projectTitle = builder.projectTitle
+        this.projectCode = builder.projectCode
+        this.failedQCCount = builder.failedQCCount
+        this.availableDataCount = builder.availableDataCount
+    }
+
     static class Builder {
         /*Person Information */
         String customerFirstName
         String customerLastName
         String customerEmailAddress
+        String userId
         /*Project Information*/
         String projectTitle
         String projectCode
         int failedQCCount
         int availableDataCount
 
-        Builder(String customerFirstName, String customerLastName, String customerEmailAddress, String projectTitle, String projectCode, int failedQCCount, int availableDataCount) {
+        Builder(String userId, String customerFirstName, String customerLastName, String customerEmailAddress, String projectTitle, String projectCode, int failedQCCount, int availableDataCount) {
 
             /*Customer Information */
+            this.userId = Objects.requireNonNull(userId)
             this.customerFirstName = Objects.requireNonNull(customerFirstName, "First name of customer must not be null")
             this.customerLastName = Objects.requireNonNull(customerLastName, "Last name of customer must not be null")
             this.customerEmailAddress = Objects.requireNonNull(customerEmailAddress, "Email address of customer must not be null")
@@ -55,27 +71,18 @@ class NotificationContent {
 
     }
 
-    protected NotificationContent(Builder builder) {
-        /*Customer Information */
-        this.customerFirstName = builder.customerFirstName
-        this.customerLastName = builder.customerLastName
-        this.customerEmailAddress = builder.customerEmailAddress
-        /*Project Information*/
-        this.projectTitle = builder.projectTitle
-        this.projectCode = builder.projectCode
-        this.failedQCCount = builder.failedQCCount
-        this.availableDataCount = builder.availableDataCount
-    }
-
     @Override
     String toString() {
-        return "NotificationContent:" +
+        return "NotificationContent{" +
                 "customerFirstName='" + customerFirstName + '\'' +
                 ", customerLastName='" + customerLastName + '\'' +
                 ", customerEmailAddress='" + customerEmailAddress + '\'' +
+                ", userId='" + userId + '\'' +
                 ", projectTitle='" + projectTitle + '\'' +
                 ", projectCode='" + projectCode + '\'' +
                 ", failedQCCount=" + failedQCCount +
-                ", availableDataCount=" + availableDataCount}
+                ", availableDataCount=" + availableDataCount +
+                '}'
+    }
 
 }
