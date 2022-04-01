@@ -12,6 +12,7 @@ class SendEmailSpec extends Specification {
   EmailSender flawlessEmailSender = Mock()
   FailureEmailSender adminInformer = Mock()
   NotificationContent notificationContent = new NotificationContent.Builder(
+          "max@muster.mann",
           "Max",
           "Mustermann",
           "max@muster.mann",
@@ -21,6 +22,7 @@ class SendEmailSpec extends Specification {
           1)
           .build()
   NotificationContent notificationContentTwo = new NotificationContent.Builder(
+          "max@muster.mann",
           "Max",
           "Mustermann",
           "max@muster.mann",

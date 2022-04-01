@@ -7,6 +7,7 @@ import spock.lang.Specification
 
 class HtmlNotificationEmailSpec extends Specification {
   NotificationContent.Builder notificationContentBuilder = new NotificationContent.Builder(
+          "max@muster.mann",
           "Maximilian",
           "Muster",
           "max.muster@ma.nn",

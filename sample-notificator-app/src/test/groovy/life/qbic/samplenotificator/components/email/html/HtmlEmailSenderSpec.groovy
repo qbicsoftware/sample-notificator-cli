@@ -20,6 +20,7 @@ class HtmlEmailSenderSpec extends Specification {
     unsubscriptionLinkSupplier.get(_ as String, _ as String) >> "awesome.page/unsubscribe"
 
     notificationContent = new NotificationContent.Builder(
+            "max.muster@ma.nn",
             "Maximilian",
             "Muster",
             "max.muster@ma.nn",

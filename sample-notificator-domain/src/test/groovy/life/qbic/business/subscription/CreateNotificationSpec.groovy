@@ -82,8 +82,8 @@ class CreateNotificationSpec extends Specification{
                                               "QMAAP018A2":Status.SAMPLE_RECEIVED,
                                               "QMAAP04525":Status.SAMPLE_QC_FAIL]
 
-        Subscriber subscriber1 = new Subscriber("Awesome", "Customer", "awesome.customer@provider.com")
-        Subscriber subscriber2 = new Subscriber("Good", "Customer", "good.customer@provider.de")
+        Subscriber subscriber1 = new Subscriber("awesome.customer@provider.com", "Awesome", "Customer", "awesome.customer@provider.com")
+        Subscriber subscriber2 = new Subscriber("awesome.customer@provider.com", "Good", "Customer", "good.customer@provider.de")
         List<Subscriber> subscribers = [subscriber1, subscriber2]
         Map<String,String> projectsWithTitles = ["QMCDP": "first project",
                                                  "QMAAP": ""]
@@ -115,7 +115,7 @@ class CreateNotificationSpec extends Specification{
                                               "QMAAP018A2":Status.SAMPLE_RECEIVED,
                                               "QMAAP04525":Status.SAMPLE_QC_FAIL]
 
-        Subscriber subscriber1 = new Subscriber("Awesome", "Customer", "awesome.customer@provider.com")
+        Subscriber subscriber1 = new Subscriber("awesome.customer@provider.com", "Awesome", "Customer", "awesome.customer@provider.com")
         List<Subscriber> subscribers = [subscriber1]
         Map<String,String> projectsWithTitles = ["QMCDP": "first project",
                                                  "QMAAP": ""]
@@ -150,7 +150,7 @@ class CreateNotificationSpec extends Specification{
                                               "QMAAP018A2":Status.SAMPLE_RECEIVED,
                                               "QMAAP04525":Status.SAMPLE_QC_FAIL]
 
-        Subscriber subscriber1 = new Subscriber("Awesome", "Customer", "awesome.customer@provider.com")
+        Subscriber subscriber1 = new Subscriber("awesome.customer@provider.com", "Awesome", "Customer", "awesome.customer@provider.com")
         List<Subscriber> subscribers = [subscriber1]
         Map<String,String> projectsWithTitles = ["QMCDP": "first project",
                                                  "QMAAP": ""]
@@ -186,8 +186,8 @@ class CreateNotificationSpec extends Specification{
                                               "QMCDP007A2":Status.SAMPLE_QC_FAIL,
                                               "QMCDP007A1":Status.DATA_AVAILABLE]
 
-        Subscriber subscriber1 = new Subscriber("Awesome", "Customer", "awesome.customer@provider.com")
-        Subscriber subscriber2 = new Subscriber("Good", "Customer", "good.customer@provider.de")
+        Subscriber subscriber1 = new Subscriber("awesome.customer@provider.com", "Awesome", "Customer", "awesome.customer@provider.com")
+        Subscriber subscriber2 = new Subscriber("good.customer@provider.de", "Good", "Customer", "good.customer@provider.de")
         List<Subscriber> subscribers = [subscriber1, subscriber2]
         Map<String,String> projectsWithTitles = ["QMCDP": "first project"]
 
@@ -227,7 +227,7 @@ class CreateNotificationSpec extends Specification{
                                               "QMAAP04525":Status.LIBRARY_PREP_FINISHED,
                                               "QMAAP04526":Status.SEQUENCING_COMPLETE]
 
-        Subscriber subscriber1 = new Subscriber("Awesome", "Customer", "awesome.customer@provider.com")
+        Subscriber subscriber1 = new Subscriber("awesome.customer@provider.com", "Awesome", "Customer", "awesome.customer@provider.com")
         List<Subscriber> subscribers = [subscriber1]
         Map<String,String> projectsWithTitles = ["QMCDP": "A test project title",
                                                  "QMAAP": "Sequencing of bees"]
