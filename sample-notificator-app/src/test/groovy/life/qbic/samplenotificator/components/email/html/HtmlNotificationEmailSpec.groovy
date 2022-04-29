@@ -58,4 +58,20 @@ class HtmlNotificationEmailSpec extends Specification {
     subject.contains("MY_PROJECT_CODE")
   }
 
+  def "given a filled notification email, the content is structured as expected"() {
+    given: "a filled notification email"
+    notificationContentBuilder.setProjectCode("QTEST")
+    def title = "A long project name with some uncommon symbols, like, for example, commas and periods."
+    notificationContentBuilder.setProjectTitle(title)
+    NotificationContent notificationContent = notificationContentBuilder.build()
+    NotificationEmail notificationEmail = new HtmlNotificationEmail(unsubscriptionLinkSupplier)
+    notificationEmail.fill(notificationContent)
+
+    when: "the body is retrieved"
+    def content = notificationEmail.body()
+
+    then: "the body contains a line break after the intro and contains the project title"
+    content.contains("This is an automated email to inform you about recent updates on your subscribed project<br>")
+    content.contains(title)
+  }
 }
