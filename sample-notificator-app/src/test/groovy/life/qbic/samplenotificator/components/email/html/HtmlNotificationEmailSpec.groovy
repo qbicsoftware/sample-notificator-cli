@@ -70,8 +70,8 @@ class HtmlNotificationEmailSpec extends Specification {
     when: "the body is retrieved"
     def content = notificationEmail.body()
 
-    then: "the body contains a line break after the intro and contains the project title"
-    content.contains("This is an automated email to inform you about recent updates on your subscribed project<br>")
+    then: "the body contains header as its own paragraph and the project title"
+    content.contains("<p>This is an automated email to inform you about recent updates on your subscribed project:</p>")
     content.contains(title)
   }
 }
